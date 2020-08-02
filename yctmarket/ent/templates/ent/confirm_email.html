@@ -1,0 +1,33 @@
+{% extends 'ent/base.html' %}
+
+
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+
+
+{% block container %}
+<br>
+<h3>
+	Please confirm your email address to complete the registration.
+</h3>
+{% endblock %}

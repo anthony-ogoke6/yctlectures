@@ -1,0 +1,35 @@
+{% extends 'ent/base.html' %}
+
+{% block title %}Thanks! | {{ block.super }}{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+  </style>
+
+
+{% endblock %}
+
+
+
+{% block jumbotron %}
+    <main role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+    
+          <h1 id='grw' class="display-3">Thank you!</h1>
+
+          <div class="article">
+                                       <p>Your will be connected to the seller shortly.</p>
+                                       <p>An email will be sent to you for notification.</p>
+                                       <p><a class="btn btn-primary btn-lg" href="{% url 'ent:article_list' %}" role="button">Back to Home &raquo;</a></p>
+                            </div>
+
+     </main>
+{% endblock %}
+

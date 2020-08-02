@@ -1,0 +1,408 @@
+{% extends 'ent/base.html' %}
+
+
+{% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content=href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+<!--  <meta name="twitter:image" content="{{ url }}">  -->
+
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content=href="{{ post.get_absolute_url }}" />
+<!-- <meta property="og:image" content="{{ url }}" /> -->
+
+<meta name="description" content="{{ post.snippet|safe }}">
+<meta name="keywords" content="{{ post.snippet|safe }}">
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+  <h2>{{ post.title|linebreaks }}</h2>
+  <small id="small" class="info">Post created by: {{ post.author|capfirst }} | {{ post.view_count }} view{{ post.view_count|pluralize }}</small>
+  <hr>
+
+    {% if post.video %}
+    <div class="row gallery">
+
+        <video src="{{ post.video.url }}" alt="Image Not Found" class="img-thumbnail" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+    </div>
+    <br>
+  {% endif %}
+
+
+  {% if post.image %}
+      <div>
+        <a href="{{ post.image.url }}" target="_blank"> <img src="{{ post.image.url }}" alt="Image Not Found" class="img-thumbnail"></a>
+      </div>
+      <br>
+    {% endif %}
+
+
+
+
+  {% if post.body %}
+  <p>{{ post.body|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video2 %}
+  <div class="row gallery">
+        <video src="{{ post.video2.url }}" alt="Image Not Found" class="img-thumbnail" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.image2 %}
+      <div>
+        <a href="{{ post.image2.url }}" target="_blank"> <img src="{{ post.image2.url }}" alt="Image Not Found" class="img-thumbnail"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link1 %}
+  <a href="{{ post.link1 }}" target="_blank">{{ post.link1 }}</a>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.body1 %}
+  <p>{{ post.body1|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video3 %}
+  <div class="row gallery">
+        <video src="{{ post.video3.url }}" alt="Image Not Found" class="img-thumbnail" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+    {% endif %}
+
+
+  {% if post.image3 %}
+      <div>
+        <a href="{{ post.image3.url }}" target="_blank"> <img src="{{ post.image3.url }}" alt="Image Not Found" class="img-thumbnail"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link2 %}
+  <a href="{{ post.link2 }}" target="_blank">{{ post.link2 }}</a>
+  <br>
+  {% endif %}
+
+
+  {% if post.body2 %}
+  <p>{{ post.body2|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video4 %}
+  <div class="row gallery">
+        <video src="{{ post.video4.url }}" alt="Image Not Found" class="img-thumbnail" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+  {% if post.image4 %}
+      <div>
+        <a href="{{ post.image4.url }}" target="_blank"> <img src="{{ post.image4.url }}" alt="Image Not Found" class="img-thumbnail"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link3 %}
+  <a href="{{ post.link3 }}" target="_blank">{{ post.link3 }}</a>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.body3 %}
+  <p>{{ post.body3|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video5 %}
+  <div class="row gallery">
+        <video src="{{ post.video5.url }}" alt="Image Not Found" class="img-thumbnail" controls>
+          <p>Your browser does not surpport video</p>
+        </video><br>
+  </div>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.image5 %}
+      <div>
+        <a href="{{ post.image5.url }}" target="_blank"> <img src="{{ post.image5.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link4 %}
+  <a href="{{ post.link4 }}" target="_blank">{{ post.link4 }}</a>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.body4 %}
+  <p>{{ post.body4|safe|linebreaks }}</p><br>
+  {% endif %}
+
+    {% if post.video6 %}
+  <div class="row gallery">
+        <video src="{{ post.video6.url }}" alt="Image Not Found" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+  {% if post.image6 %}
+      <div>
+        <a href="{{ post.image6.url }}" target="_blank"> <img src="{{ post.image6.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link5 %}
+  <a href="{{ post.link5 }}" target="_blank">{{ post.link5 }}</a>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.body5 %}
+  <p>{{ post.body5|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video7 %}
+  <div class="row gallery">
+        <video src="{{ post.video7.url }}" alt="Image Not Found"controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+  {% if post.image7 %}
+      <div>
+        <a href="{{ post.image7.url }}" target="_blank"> <img src="{{ post.image7.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link6 %}
+  <a href="{{ post.link6 }}" target="_blank">{{ post.link6 }}</a>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.body6 %}
+  <p>{{ post.body6|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video8 %}
+  <div class="row gallery">
+
+        <video src="{{ post.video8.url }}" alt="Image Not Found" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.image8 %}
+      <div>
+        <a href="{{ post.image8.url }}" target="_blank"> <img src="{{ post.image8.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link7 %}
+  <a href="{{ post.link7 }}" target="_blank">{{ post.link7 }}</a>
+  <br>
+  {% endif %}
+
+  {% if post.body7 %}
+  <p>{{ post.body7|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video9 %}
+  <div class="row gallery">
+
+        <video src="{{ post.video9.url }}" alt="Image Not Found" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+  {% if post.image9 %}
+      <div>
+        <a href="{{ post.image9.url }}" target="_blank"> <img src="{{ post.image9.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link8 %}
+  <a href="{{ post.link8 }}" target="_blank">{{ post.link8 }}</a>
+  <br>
+  {% endif %}
+
+  {% if post.body8 %}
+  <p>{{ post.body8|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video10 %}
+  <div class="row gallery">
+
+        <video src="{{ post.video10.url }}" alt="Image Not Found" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+  {% if post.image10 %}
+      <div>
+        <a href="{{ post.image10.url }}" target="_blank"> <img src="{{ post.image10.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link9 %}
+  <a href="{{ post.link9 }}" target="_blank">{{ post.link9 }}</a>
+  <br>
+  {% endif %}
+
+  {% if post.body9 %}
+  <p>{{ post.body9|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video11 %}
+  <div class="row gallery">
+
+        <video src="{{ post.video11.url }}" alt="Image Not Found"controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.image11 %}
+      <div>
+        <a href="{{ post.image11.url }}" target="_blank"> <img src="{{ post.image11.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+  {% if post.link10 %}
+  <a href="{{ post.link10 }}" target="_blank">{{ post.link10 }}</a>
+  <br>
+  {% endif %}
+
+  {% if post.body10 %}
+  <p>{{ post.body10|safe|linebreaks }}</p><br>
+  {% endif %}
+
+
+    {% if post.video12 %}
+  <div class="row gallery">
+
+        <video src="{{ post.video12.url }}" alt="Image Not Found" controls>
+          <p>Your browser does not surpport video</p>
+        </video>
+  </div>
+  <br>
+  {% endif %}
+
+
+
+  {% if post.image12 %}
+      <div>
+        <a href="{{ post.image12.url }}" target="_blank"> <img src="{{ post.image12.url }}" alt="Image Not Found"></a>
+      </div>
+      <br>
+  {% endif %}
+
+
+
+
+  {% if post.link11 %}
+  <a href="{{ post.link11 }}" target="_blank">{{ post.link11 }}</a>
+  <br>
+  {% endif %}
+
+
+  {% if post.link12 %}
+  <a href="{{ post.link12 }}" target="_blank">{{ post.link12 }}</a>
+  <br>
+  {% endif %}
+
+
+  <div id="favourite-section">
+  {% if is_favourite %}
+  <a href="{% url 'ent:favourite_post' id=post.id %}">
+    <i class="fas fa-heart fa-lg"></i>
+  </a>
+  {% else %}
+  <a href="{% url 'ent:favourite_post' id=post.id %}">
+    <i class="far fa-heart fa-lg"></i>
+  </a>
+  {% endif %}
+</div>
+
+
+<br><br>
+<hr>
+<div id="like-section">
+  {% include 'ent/like_section.html' %}
+</div>
+<hr>
+{% if not post.restrict_comment %}
+  <div class="main-comment-section">
+    {% include 'ent/comments.html' %}
+  </div>
+{% endif %}
+
+{% endblock %}

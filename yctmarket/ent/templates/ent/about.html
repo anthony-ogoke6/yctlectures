@@ -1,0 +1,36 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% block title %}About Us! | {{ block.super }}{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+  </style>
+
+
+{% endblock %}
+
+
+
+{% block jumbotron %}
+    <main role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+
+          <h1 id='grw' class="display-3">About Us!</h1>
+
+          <div class="article">
+                                       <p>we are located at bla bla bla, bla bla bla</p>
+                                       <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+                            </div>
+
+     </main>
+{% endblock %}
+

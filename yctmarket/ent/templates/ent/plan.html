@@ -1,0 +1,92 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block con %}
+
+
+<div id="set1" style="display:unset"></div>
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="wrap-login100">
+        <hr>
+
+        <span class="login100-form-title">
+            Select A Plan
+          </span>
+
+
+     <div class="move">
+         <br>
+         <br>
+         <br>
+          <br>
+          <div class="container-login100-form-btn">
+            <a href="{% url 'pay_per_upload' %}" class="login100-form-btn water">
+              Pay per uploads
+          </a>
+          </div>
+          <hr>
+          <div class="crop">
+          <span class="txt1 p-b-9 new">
+            Before each product is being displayed on our products page, you will be charged based
+            on the duration of your choice. the duration is how long you wish for your product to
+            be displayed on the products page.
+          </span>
+        </div>
+        <hr>
+
+
+          <div class="flex-col-c p-t-170 p-b-40">
+
+
+            <a href="{% url 'pay_per_upload' %}" class="txt3">
+                Post product now
+            </a>
+          </div>
+    </div>
+
+
+    <div class="move more">
+      <br>
+
+
+      <hr>
+          <div class="container-login100-form-btn">
+
+              <a href="{% url 'upload_free_at_given' %}" class="login100-form-btn water">
+              Upload free at 0.5% per sale
+            </a>
+
+          </div>
+          <hr>
+          <div class="crop">
+          <span class="txt1 p-b-9 new">
+            Your product is uploaded and displayed on our products with no initial charge.
+            A charge of 0.5% is deducted at the purchase of each product.
+          </span>
+        </div>
+
+        <hr>
+
+
+
+          <div class="flex-col-c p-t-170 p-b-40">
+
+
+            <a href="{% url 'upload_free_at_given' %}" class="txt3">
+              Post product now
+            </a>
+          </div>
+    </div>
+
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}

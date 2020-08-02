@@ -1,0 +1,71 @@
+{% extends 'ent/base.html' %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Contact Us | {{ block.super }}{% endblock %}
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+      <h1>Contact Us!</h1><br>
+
+
+<form class="form-group" method="post"  action="" >
+  {% csrf_token %}
+
+  {% if form.name %}
+  {{ form.name }}<br>
+  {% endif %}
+
+  {% if form.email %}
+  {{ form.email }}<br>
+  {% endif %}
+
+  {% if form.comment %}
+  {{ form.comment }}<br>
+  {% endif %}
+
+    <button class="btn btn-success">Submit</button>
+  </form>
+</div>
+</div>
+
+<br><br>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

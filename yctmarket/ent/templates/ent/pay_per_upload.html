@@ -1,0 +1,205 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+
+
+  {% endblock %}
+
+
+{% block con %}
+<div id="set1"  style="display:unset">
+     <div class="limiter">
+            <div class="container-login100">
+              <div class="wrap-login100 normal">
+
+
+              {% if form %}
+
+                <form method="post" enctype="multipart/form-data" action="{% url 'pay_per_upload' %}" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                  {% csrf_token %}
+                  <span class="login100-form-title">
+                    Upload Product
+                  </span>
+
+                  {{ form.category.label }}
+
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.category }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.category.errors }}</div>
+                  {% endif %}
+
+                  {{ form.title.label }}
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.title }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.title.errors }}</div>
+                  {% endif %}
+
+                    {{ form.description.label }}
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.description }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.description.errors }}</div>
+                  {% endif %}
+
+
+                   {{ form.amount.label }}
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.amount }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.amount.errors }}</div>
+                  {% endif %}
+
+
+                  {{ form.duration.label }}
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.duration }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.duration.errors }}</div>
+                  {% endif %}
+
+                   {{ form.image.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.image }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.image.errors }}</div>
+                  {% endif %}
+
+                  {{ form.image2.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.image2 }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.image2.errors }}</div>
+                  {% endif %}
+
+
+                  {{ form.image3.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.image3 }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.image3.errors }}</div>
+                  {% endif %}
+
+
+                    {{ form.status.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.status }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.status.errors }}</div>
+                  {% endif %}
+                  <br>
+                  <br>
+
+                  <div class="container-login100-form-btn">
+                    <button id="submitt" class="login100-form-btn">
+                      Upload
+                    </button>
+                  </div>
+
+                  {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                  {% endif %}
+
+                  <br>
+                  <br>
+                  <br>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+
+
+          <hr>
+
+        </div> <!-- /container -->
+    </div>
+
+{% endblock %}
+
+
+{% block java %}
+  <script>
+        var inputs = document.querySelectorAll('input');
+        var text_area = document.querySelector('#id_description');
+        var category = document.querySelector('#id_category');
+        var amount = document.querySelector('#id_amount');
+        var duration = document.querySelector('#id_duration');
+        var image = document.querySelector('#id_image');
+        var image2 = document.querySelector('#id_image2');
+        var image3 = document.querySelector('#id_image3');
+        var status1 = document.querySelector('#id_status');
+        var label = document.createElement('label');
+
+        label.setAttribute('amount', 'Amount in naira')
+
+
+        text_area.setAttribute('class', 'input100');
+        amount.setAttribute('class', 'input100');
+        amount.setAttribute('label', 'Amount in Naira');
+        image.setAttribute('class', 'input100');
+        image2.setAttribute('class', 'input100');
+        image3.setAttribute('class', 'input100');
+        category.setAttribute('class', 'input100');
+        duration.setAttribute('class', 'input100');
+        status1.setAttribute('class', 'input100');
+        amount.setAttribute('class', 'input100');
+        text_area.style.height = "50%";
+        image.style.height = "10%";
+        image2.style.height = "10%";
+        image3.style.height = "10%";
+        category.style.height = "10%";
+        duration.style.height = "10%";
+        status1.style.height = "10%";
+        text_area.required = true;
+        duration.required = true;
+
+
+        for (var index = 0; index < inputs.length; ++index){
+
+            inputs[1].setAttribute('class', 'input100');
+            inputs[2].setAttribute('class', 'input100');
+            inputs[4].setAttribute('class', 'input100');
+
+            inputs[index].required = true;
+
+
+
+        }
+
+        var error = document.querySelector('li');
+        error.style.color = red;
+
+    </script>
+    {% endblock %}

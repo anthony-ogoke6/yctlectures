@@ -1,0 +1,77 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}  <!-- check meerasblog settings.py for this -->
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+{% block title %}Home | {{ block.super }}{% endblock %}
+
+
+
+
+
+
+
+{% block post %}
+     <div class="topnav">
+  <h2 style="text-align:center;" >Available Stores On YCT-Market</h2>
+</div>
+    <section id="tasklist" class="boxes center infinite-container">
+
+      {% for p in stores %}
+        <div class="box infinite-item">
+
+
+          <h3 id="ppp" ><a id="amntt" href="{{ p.get_absolute_url }}">{{ p.storename|upper }}</a></h3>
+          <h6 id="amnt"> Owner: {{ p.owner.username|title }} </h6>
+        </div>
+        {% endfor %}
+        </section>
+
+        {% if article.has_next %}
+        <a id="more" class="infinite-more-link" href="?page={{ article.next_page_number }}" style="text-align:center;">Loading...</a>
+      {% endif %}
+
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+<script>
+
+console.log('mee');
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+    $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+    $('.loading').hide();
+    }
+});
+
+</script>
+{% endblock %}
