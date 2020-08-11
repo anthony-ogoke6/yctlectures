@@ -10,24 +10,24 @@
     </div>
 
     <div class="logo">
+        <a href="{% url 'ent:article_list' %}">
         <img src="{% static 'img/yctmarket.png' %}" alt="Image Not Found">
+        </a>
     </div>
 
 
     <ul class="nav-links">
         {% url 'ent:article_list' as article_list %}
         {% url 'about' as about %}
-        {% url 'plan' as plan %}
+        {% url 'upload_free_at_given' as upload_free_at_given %}
         {% url 'contact_page' as contact_page %}
         <li >
             <a class="{% if request.path == article_list %}active{% endif %}" href="{% url 'ent:article_list' %}">Market</a>
         </li>
-        <li>
-              <a class="">Shops</a>
-          </li>
+
 
         <li >
-            <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'plan' %}">Post</a>
+            <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'upload_free_at_given' %}">Post</a>
         </li>
 
         {% if not request.user.is_authenticated %}
@@ -40,9 +40,7 @@
             </li>
         {% else %}
 
-              <li>
-              <a  href="#">Profile</a>
-          </li>
+
           <li>
               <a  href="{% url 'user_logout' %}">Logout</a>
           </li>

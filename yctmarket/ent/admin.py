@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, AdvertImages, Profile, Post, PurchaseReference, InfiniteScroll, Stores, Category # Images,  AdvertImages
+from .models import Article, AdvertImages, Profile, Post, PurchaseReference, InfiniteScroll, Stores, Category, PhoneNumber # Images,  AdvertImages
 # Register your models here.
 
 
@@ -29,6 +29,9 @@ class PostAdmin(admin.ModelAdmin):
 class InfiniteScrollAdmin(admin.ModelAdmin):
     list_display = ('start', 'end')
 
+class PhoneNumberAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number')
+
 
 class StoresAdmin(admin.ModelAdmin):
     list_display = ('storename',)
@@ -57,4 +60,5 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(AdvertImages)
 admin.site.register(InfiniteScroll, InfiniteScrollAdmin)
+admin.site.register(PhoneNumber, PhoneNumberAdmin)
 

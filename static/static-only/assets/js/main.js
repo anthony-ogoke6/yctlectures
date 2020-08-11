@@ -81,16 +81,6 @@
 			});
 		};
 
-		function addToCart1(event) {
-			event.preventDefault();
-			if(animatingQuantity) return;
-			var cartIsEmpty = Util.hasClass(cart[0], 'cd-cart--empty');
-			//update cart product list
-			addProduct(this);
-			//update number of items
-
-		};
-
 		function addToCart(event) {
 			event.preventDefault();
 			if(animatingQuantity) return;

@@ -134,14 +134,14 @@ body {
   </head>
 
   <body>
-      <div id="subheader">
-        <div class="cart">
+      <div id="subheader" style="display:none;">
+        <div class="cart" style="display:none;">
         Your cart is empty.
         </div>
     </div>
 
     {% include 'ent/navbar.html' %}
-    <a href="#0" onClick="addToCart()" id="clickonthis" data-price="{{ p.amount }}">Add To Cart</a>
+    <a href="#0" onClick="addToCart()" id="clickonthis" data-price="{{ p.amount }}" style="display:none;">Add To Cart</a>
 
 
 
@@ -179,34 +179,47 @@ body {
     {% endblock %}
 
     </div>
+
+     <div class="cd-cart__content1" style="display:none;">
+        <div class="cd-cart__layout" style="display:none;">
+            <header class="cd-cart__header" style="display:none;">
+                <h2 style="display:none;">Cart</h2>
+                <span class="cd-cart__undo" style="display:none;">Item removed. <a href="#0">Undo</a></span>
+            </header>
+
+            <div class="cd-cart__body" style="display:none;">
+                <ul style="display:none;">
+                    <!-- products added to the cart will be inserted here using JavaScript -->
+                </ul>
+            </div>
     {% block style %}
     {% endblock %}
-     <div class="cd-cart cd-cart--empty js-cd-cart">
-    <a href="#0" class="cd-cart__trigger text-replace">
+     <div class="cd-cart cd-cart--empty js-cd-cart" style="display:none;">
+    <a href="#0" class="cd-cart__trigger text-replace" style="display:none;">
         Cart
-        <ul class="cd-cart__count"> <!-- cart items count -->
-            <li>0</li>
-            <li>0</li>
+        <ul class="cd-cart__count" style="display:none;"> <!-- cart items count -->
+            <li style="display:none;">0</li>
+            <li style="display:none;">0</li>
         </ul> <!-- .cd-cart__count -->
     </a>
 
-    <div class="cd-cart__content">
-        <div class="cd-cart__layout">
-            <header class="cd-cart__header">
-                <h2>Cart</h2>
-                <span class="cd-cart__undo">Item removed. <a href="#0">Undo</a></span>
+    <div class="cd-cart__content" style="display:none;">
+        <div class="cd-cart__layout" style="display:none;">
+            <header class="cd-cart__header" style="display:none;">
+                <h2 style="display:none;">Cart</h2>
+                <span class="cd-cart__undo" style="display:none;">Item removed. <a href="#0">Undo</a></span>
             </header>
 
-            <div class="cd-cart__body">
-                <ul>
+            <div class="cd-cart__body" style="display:none;">
+                <ul style="display:none;">
                     <!-- products added to the cart will be inserted here using JavaScript -->
                 </ul>
             </div>
 
-            <footer class="cd-cart__footer">
-                <a href="#0" class="cd-cart__checkout">
+            <footer class="cd-cart__footer" style="display:none;">
+                <a href="#0" class="cd-cart__checkout" style="display:none;">
           <em>Checkout - #<span>0</span>
-            <svg class="icon icon--sm" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><line stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x1="3" y1="12" x2="21" y2="12"/><polyline stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="15,6 21,12 15,18 "/></g>
+            <svg class="icon icon--sm" viewBox="0 0 24 24" style="display:none;"><g fill="none" stroke="currentColor"><line stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x1="3" y1="12" x2="21" y2="12"/><polyline stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="15,6 21,12 15,18 "/></g>
             </svg>
           </em>
         </a>
@@ -247,7 +260,7 @@ body {
 
     <script src="{% static 'javascript/add.js' %}"></script>
     <script src="{% static 'assets/js/util.js' %}"></script> <!-- util functions included in the CodyHouse framework -->
-    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/main-delete.js' %}"></script>
 
   </body>
 </html>

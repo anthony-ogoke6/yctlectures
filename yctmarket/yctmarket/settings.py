@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'contact',
     'six',
+    'phonenumber_field',
 ]
 
 

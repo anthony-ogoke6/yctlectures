@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 
 #class CommentArticle(forms.ModelForm):
 	#class Meta:
@@ -37,17 +38,15 @@ class EmailFormForPayment(forms.ModelForm):
     lastname = forms.CharField(required=True, label='Last Name', max_length=100)
     address = forms.CharField(required=True, widget=forms.Textarea)
     email = forms.EmailField(required=True)
-    phoneNumber = forms.CharField(required=True, label='Phone Number', max_length=11)
+    phoneNumber = forms.CharField(required=True, max_length=11)
     def clean_number1(self):
         n = self.cleaned_data.get('phoneNumber')
+        print(n)
         allowed_characters = '0123456789'
         for char in n:
             if char not in allowed_characters:
                 raise forms.ValidationError("Please only use digits")
         return n
-
-    email = forms.EmailField(required=True)
-
 
 
     class Meta:
@@ -78,17 +77,16 @@ class EmailFormForMeetUp(forms.ModelForm):
     firstname = forms.CharField(required=True, label='First Name',max_length=100)
     lastname = forms.CharField(required=True, label='Last Name', max_length=100)
     address = forms.CharField(required=True, widget=forms.Textarea)
-    phoneNumber = forms.CharField(required=True, label='Phone Number', max_length=11)
+    email = forms.EmailField(required=True)
+    phoneNumber = forms.CharField(required=True, max_length=11)
     def clean_number1(self):
         n = self.cleaned_data.get('phoneNumber')
+        print(n)
         allowed_characters = '0123456789'
         for char in n:
             if char not in allowed_characters:
                 raise forms.ValidationError("Please only use digits")
         return n
-
-
-
     class Meta:
         model = Post
         exclude = ('title',
@@ -110,11 +108,6 @@ class EmailFormForMeetUp(forms.ModelForm):
         'status',
         'amount',
         )
-
-
-
-EmailFormForMeetUp
-
 
 class PostCreateForm(forms.ModelForm):
 
@@ -157,8 +150,8 @@ class UserLoginForm(forms.Form):
 
 
 class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label="", widget = forms.PasswordInput(attrs = {'id': 'pass1','class': 'input100', 'placeholder':'Enter Password Here...'}))
-    confirm_password = forms.CharField(label="",  widget = forms.PasswordInput(attrs = {'id': 'pass2', 'class': 'input100'}))
+    password1 = forms.CharField(widget = forms.PasswordInput())
+    password2 = forms.CharField(widget = forms.PasswordInput())
     class Meta:
         model = User
         fields = (
@@ -167,9 +160,11 @@ class UserRegistrationForm(forms.ModelForm):
             'last_name',
             'email',
             )
+
+
     def clean_confirm_password(self):
-        password = self.cleaned_data.get('password')
-        confirm_password = self.cleaned_data.get('confirm_password')
+        password = self.cleaned_data.get('password1')
+        confirm_password = self.cleaned_data.get('password2')
         if password != confirm_password:
             raise forms.ValidationError("Password Mismatch")
         return confirm_password
@@ -197,3 +192,6 @@ class UserEditForm(forms.ModelForm):
 #    class Meta:
 #        model = Profile
 #        exclude = ('user',)
+class ReRequestActivationForm(forms.Form):
+    email = forms.EmailField(required=True)
+

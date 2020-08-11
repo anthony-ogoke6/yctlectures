@@ -15,6 +15,16 @@ from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 
+class PhoneNumber(models.Model):
+	user            =      models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_number')
+	phone_number    =      models.CharField(max_length=200)
+
+	class Meta:
+		verbose_name = 'phone number'
+		verbose_name_plural = 'phone numbers'
+
+	def __str__(self):
+		return self.user.username
 
 
 class Category(models.Model):
@@ -91,8 +101,8 @@ class Article(models.Model):
 
     author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
     amount              =       models.PositiveIntegerField(default='')
-    category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products1')
-    #category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
+    #category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products1')
+    category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
     description         =       models.TextField()
     video               =       models.FileField(blank=True, null=True)
     image               =       models.ImageField(blank=True, null=True)

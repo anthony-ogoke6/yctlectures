@@ -16,9 +16,9 @@ app_name = 'ent'
 #]
 urlpatterns = [
     path('', views.article_list, name='article_list'),
-    #re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/$', views.article_detail, name="article_detail"), #using function views here
+    re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/$', views.article_details, name="article_detail"), #using function views here
     #re_path('activate/<uidb64>/<token>', yct_views.ActivateAccountView.as_view(), name="activate"),
-    re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/$', views.ArticleDetail.as_view(), name="article_detail"), #using class based views here
+    #re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/$', views.ArticleDetail.as_view(), name="article_detail"), #using class based views here
 
 
 ]
