@@ -1,6 +1,9 @@
 {% extends 'ent/base.html' %}
 
 
+{% load humanize %}
+
+
 
 {% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
 
@@ -62,7 +65,7 @@
   <div class="col-md-8">
     <h2 id="increase">{{ post.title|upper }}</h2>
     <br>
-    <div class="price">Price: {{ post.amount }} NGN</div>
+    <div class="price">Price: {{ amount|intcomma }} NGN</div>
     <hr/>
 
 
@@ -75,9 +78,9 @@
             </a>
           </h4>
         </div>
-        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
           <div style="margin-left: 20px;color: #df1057;" class="panel-body">
-            {{ post.description }} </div>
+            {{ post.description|linebreaks }} </div>
         </div>
       </div>
       <div class="panel panel-default">
@@ -88,9 +91,9 @@
             </a>
           </h4>
         </div>
-        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div id="collapseTwo" class="" role="tabpanel" aria-labelledby="headingTwo">
           <div style="margin-left: 20px;color: #df1057;" class="panel-body">
-            {{ post.specification }} </div>
+            {{ post.specification|linebreaks }} </div>
         </div>
       </div>
       <div class="panel panel-default">
@@ -101,7 +104,7 @@
             </a>
           </h4>
         </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+        <div id="collapseThree" class="" role="tabpanel" aria-labelledby="headingThree">
           <div class="panel-body">
             {% for pos in related %}
 
@@ -132,22 +135,17 @@
       </section>
 
 
-
-
-
-
-
-
-
-
-
-    <br/><br/><br/>
-
 <div id="addQuestion">
   <div class="col-sm-8 form-group-lg">
 
 
-<form action="{% url 'ent:article_detail' id=post.id slug=post.slug %}" method="post">
+
+
+  {% if post.link %}
+    <a href="{{ post.link }}" class="btn btn-success">Connect to your seller</a>
+  {% else %}
+  <br/><br/><br/>
+  <form action="{% url 'ent:article_detail' id=post.id slug=post.slug %}" method="post">
   {% csrf_token %}
 
   {% if form.firstname %}
@@ -169,10 +167,11 @@
   {% if form.phoneNumber %}
   {{ form.phoneNumber }}<br>
   {% endif %}
-
-
-    <button class="btn btn-success">Connect to your seller</button>
+  <button class="btn btn-success">Connect to your seller</button>
   </form>
+  {% endif %}
+
+
 
 
   <br>

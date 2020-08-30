@@ -10,3 +10,6 @@ class contactForm(forms.Form):
 	comment = forms.CharField(label='', required=True, widget= forms.Textarea
                            (attrs={'placeholder':'Comment', 'class':'form-control',
 				   }))
+
+
+	phoneNumber = forms.CharField(required=True, max_length=11)

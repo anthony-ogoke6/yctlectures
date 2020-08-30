@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('ent.urls', namespace="ent")),
     #path('', include('users.urls', namespace="users")),
     path('contact/', contact_views.contact_page, name="contact_page"),
+    #path('fetch_post/', yct_views.fetch_post, name='fetch_post'),
     path('about/', yct_views.about, name="about"),
     path('thank_you/', yct_views.thank_you, name="thank_you"),
     path('thanks/', yct_views.thanks, name="thanks"),

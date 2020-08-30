@@ -1,0 +1,132 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% block title %}
+{% if category %}Home |{{ category.name }}{% else %}Home |{{ block.super }}{% endif %}
+{% endblock %}
+
+
+
+{% block jumbotron %}
+{% include 'ent/nav.html' %}
+    <section class="top-container">
+
+        {% for img in pics %}
+        <header class="showcase mySlides w3-animate-fading" style="background: url({{ img.pic.url }})">
+
+          <h1>{{ img.title|upper }}</h1>
+
+          <a href="{{ img.get_absolute_url }}" class="btn">View More</a>
+        </header>
+
+        {% endfor %}
+
+        {% for imag in pic %}
+
+        <div class="top-box top-box-a" style="background: url({{ imag.image.url }})">
+          {% if request.user.is_authenticated %}
+          <h4>{{ user.username|capfirst }}</h4>
+          <a href="{% url 'user_logout' %}" class="btn">Logout</a>
+          {% else %}
+             <h4>WELCOME</h4>
+             <a href="{% url 'contact_page' %}" class="btn">Advertise Now</a>
+          {% endif %}
+
+        </div>
+        {% endfor %}
+        <div class="top-box top-box-b" style="background: url({{ .image.url }})">
+            <div>
+                <h4>PLACE YOUR ADS HERE</h4>
+          <p class="price"></p>
+          <a href="{% url 'contact_page' %}" class="btn">Advertise Now</a>
+
+        </div>
+      </section>
+
+{% endblock %}
+
+{%  block post %}
+<h2 style="color: #F44336;">{% if search %}{{ search|upper }}{% else %}All Products{% endif %}</h2>
+    <section id="tasklist" class="boxes center infinite-container">
+        </section>
+
+        <div id="more" class="infinite-more-link"  style="text-align:center;"></div>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+
+
+<script src="/static/javascript/jquery-2.2.4.min.js"></script>
+    <script src="/static/javascript/jquery.waypoints.min.js"></script>
+    <script src="/static/javascript/infinite.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        var limit = 6;
+        var start = 0;
+        console.log(limit)
+        console.log(start)
+        var action ='inactive';
+        function load_post_data(limit, start){
+            $.ajax({
+                url:'fetch_post/',
+                method:'GET',
+                data:{
+                    limit:limit,
+                    start:start
+                },
+                caches:false,
+                success:function(response){
+                    $('#tasklist').append(response);
+                    if(response==""){
+                        $('#more').html("<p>No post found</p>")
+                        action='active';
+                    }else {
+                        $('#more').html("<p></p>")
+                        action='inactive';
+                    }
+
+                }
+            })
+        }
+        if(action=='inactive'){
+            action='active',
+            load_post_data(limit, start);
+        }
+        $(window).scroll(function(){
+            if($(window).scrollTop() + $(window).height() > $('#tasklist').height() && action =='inactive'){
+                action='active';
+                start=start + limit;
+                setTimeout(function(){
+                    load_post_data(limit, start);
+                }, 1000)
+            }
+        })
+    })
+
+    var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 10000);
+}
+
+
+    </script>
+
+{% endblock %}

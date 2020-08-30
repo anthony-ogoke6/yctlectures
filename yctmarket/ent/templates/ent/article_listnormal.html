@@ -1,0 +1,118 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% block title %}
+{% if category %}Home |{{ category.name }}{% else %}Home |{{ block.super }}{% endif %}
+{% endblock %}
+
+
+
+{% block jumbotron %}
+{% include 'ent/nav.html' %}
+    <section class="top-container">
+
+        {% for img in pics %}
+        <header class="showcase mySlides w3-animate-fading" style="background: url({{ img.pic.url }})">
+
+          <h1>{{ img.title|upper }}</h1>
+
+          <a href="{{ img.get_absolute_url }}" class="btn">View More</a>
+        </header>
+
+        {% endfor %}
+
+        {% for imag in pic %}
+
+        <div class="top-box top-box-a" style="background: url({{ imag.image.url }})">
+          {% if request.user.is_authenticated %}
+          <h4>{{ user.username|capfirst }}</h4>
+          <a href="{% url 'user_logout' %}" class="btn">Logout</a>
+          {% else %}
+             <h4>WELCOME</h4>
+             <a href="{% url 'contact_page' %}" class="btn">Advertise Now</a>
+          {% endif %}
+
+        </div>
+        {% endfor %}
+        <div class="top-box top-box-b" style="background: url({{ .image.url }})">
+            <div>
+                <h4>PLACE YOUR ADS HERE</h4>
+          <p class="price"></p>
+          <a href="{% url 'contact_page' %}" class="btn">Advertise Now</a>
+
+        </div>
+      </section>
+
+{% endblock %}
+
+{% block post %}
+<h2 style="color: #F44336;">{% if search %}{{ search|upper }}{% else %}All Products{% endif %}</h2>
+    <section id="tasklist" class="boxes center infinite-container">
+      {% for p in article %}
+        <div class="box infinite-item">
+
+          {% if p.image %}
+          <a class="javs-link" href="{{ p.get_absolute_url }}">
+            <img class="javs-image" src="{{ p.image.url }}" alt="Image Not Found" >
+          </a>
+          {% endif %}
+          <div class="card-body">
+          <h5 id="ppp" ><a id="amntt" href="{{ p.get_absolute_url }}">{{ p.title|upper }}</a></h5>                                    <h5>{{post.title}}</h5>
+                                    <p class="card-text">
+                                        {{p.description|truncatewords:20}}
+                                    </p>
+                                </div>
+          <p id="amnt" class="javs-price">#{{ p.amount|safe }}</p>
+
+          <p class="javs-id" style="display:none;">{{ p.id }}</p>
+
+        </div>
+        {% endfor %}
+        </section>
+
+
+        {% if article.has_next %}
+        <a id="more" class="infinite-more-link" href="?page={{ article.next_page_number }}" style="text-align:center;">Loading...</a>
+      {% endif %}
+
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+<script>
+
+
+
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+    $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+    $('.loading').hide();
+    }
+});
+
+
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 9000);
+}
+
+</script>
+{% endblock %}

@@ -30,6 +30,14 @@
             <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'upload_free_at_given' %}">Post</a>
         </li>
 
+        <li>
+            <a class="{% if request.path == contact_page %}active{% endif %}" href="{% url 'contact_page' %}">Contact</a>
+        </li>
+
+        <li>
+            <a class="{% if request.path == about %}active{% endif %}" href="{% url 'about' %}">Policy</a>
+        </li>
+
         {% if not request.user.is_authenticated %}
 
             <li >

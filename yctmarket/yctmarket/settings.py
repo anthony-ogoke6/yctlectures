@@ -16,8 +16,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'tonybrainsblog@gmail.com'
-EMAIL_HOST_PASSWORD = 'chinonso19906114'
+EMAIL_HOST_USER = 'yctmarket@gmail.com'
+EMAIL_HOST_PASSWORD = 'chinonso1990'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 
@@ -31,7 +31,8 @@ SECRET_KEY = '&2=i=#tpkeq4@=y7uydihv-!3t1zri2#y6*(dr*s=51qnuf8sx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['yctmarket.pythonanywhere.com']
+
+ALLOWED_HOSTS = ['www.yctmarket.com']
 
 
 # Application definition
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'contact',
     'six',
     'phonenumber_field',
+    'django.contrib.humanize',
 ]
 
 

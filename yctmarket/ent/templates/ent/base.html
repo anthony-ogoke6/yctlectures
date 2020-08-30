@@ -8,9 +8,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="google-site-verification" content="TN_9e6IFIZ7rarwBvdQ0AnNaCK4uILQ5kuNDggoUpDc" />
-    <meta name="ycthub" content="Yabatech, O.A.U, Unilag, gist, entertainment, fashion, products, advertise, sell, blog">
+    <script data-ad-client="ca-pub-9430893294856522" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="yctmarket" content="Yabatech, O.A.U, Unilag, gist, entertainment, fashion, products, advertise, buy, sell, blog">
     <script>document.getElementsByTagName("html")[0].className += " js";</script>
+
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" >
 
 
@@ -134,14 +135,8 @@ body {
   </head>
 
   <body>
-      <div id="subheader" style="display:none;">
-        <div class="cart" style="display:none;">
-        Your cart is empty.
-        </div>
-    </div>
 
     {% include 'ent/navbar.html' %}
-    <a href="#0" onClick="addToCart()" id="clickonthis" data-price="{{ p.amount }}" style="display:none;">Add To Cart</a>
 
 
 
@@ -179,54 +174,8 @@ body {
     {% endblock %}
 
     </div>
-
-     <div class="cd-cart__content1" style="display:none;">
-        <div class="cd-cart__layout" style="display:none;">
-            <header class="cd-cart__header" style="display:none;">
-                <h2 style="display:none;">Cart</h2>
-                <span class="cd-cart__undo" style="display:none;">Item removed. <a href="#0">Undo</a></span>
-            </header>
-
-            <div class="cd-cart__body" style="display:none;">
-                <ul style="display:none;">
-                    <!-- products added to the cart will be inserted here using JavaScript -->
-                </ul>
-            </div>
     {% block style %}
     {% endblock %}
-     <div class="cd-cart cd-cart--empty js-cd-cart" style="display:none;">
-    <a href="#0" class="cd-cart__trigger text-replace" style="display:none;">
-        Cart
-        <ul class="cd-cart__count" style="display:none;"> <!-- cart items count -->
-            <li style="display:none;">0</li>
-            <li style="display:none;">0</li>
-        </ul> <!-- .cd-cart__count -->
-    </a>
-
-    <div class="cd-cart__content" style="display:none;">
-        <div class="cd-cart__layout" style="display:none;">
-            <header class="cd-cart__header" style="display:none;">
-                <h2 style="display:none;">Cart</h2>
-                <span class="cd-cart__undo" style="display:none;">Item removed. <a href="#0">Undo</a></span>
-            </header>
-
-            <div class="cd-cart__body" style="display:none;">
-                <ul style="display:none;">
-                    <!-- products added to the cart will be inserted here using JavaScript -->
-                </ul>
-            </div>
-
-            <footer class="cd-cart__footer" style="display:none;">
-                <a href="#0" class="cd-cart__checkout" style="display:none;">
-          <em>Checkout - #<span>0</span>
-            <svg class="icon icon--sm" viewBox="0 0 24 24" style="display:none;"><g fill="none" stroke="currentColor"><line stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x1="3" y1="12" x2="21" y2="12"/><polyline stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="15,6 21,12 15,18 "/></g>
-            </svg>
-          </em>
-        </a>
-            </footer>
-        </div>
-    </div> <!-- .cd-cart__content -->
-</div> <!-- cd-cart -->
 
     {% include 'ent/footer.html' %}
 
@@ -260,7 +209,7 @@ body {
 
     <script src="{% static 'javascript/add.js' %}"></script>
     <script src="{% static 'assets/js/util.js' %}"></script> <!-- util functions included in the CodyHouse framework -->
-    <script src="{% static 'assets/js/main-delete.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
 
   </body>
 </html>

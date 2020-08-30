@@ -101,6 +101,7 @@ class Article(models.Model):
 
     author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
     amount              =       models.PositiveIntegerField(default='')
+    amountInDols              =       models.PositiveIntegerField(default='1')
     #category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products1')
     category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
     description         =       models.TextField()
@@ -108,8 +109,10 @@ class Article(models.Model):
     image               =       models.ImageField(blank=True, null=True)
     bodysnippet         =       models.TextField(default='', blank=True, null=True)
     body                =       RichTextUploadingField(default='', blank=True, null=True)
+    link               =       models.TextField(blank=True, null=True)
     image2              =       models.ImageField(blank=True, null=True)
     image3              =       models.ImageField(blank=True, null=True)
+
     view_count          =       models.PositiveIntegerField(default=0)
 
     duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
@@ -199,6 +202,7 @@ class Post(models.Model):
 
     author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='article_posts')
     amount              =       models.PositiveIntegerField(default='')
+    amountInDols              =       models.PositiveIntegerField(default='1')
     #category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products2')
     category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
     description         =       models.TextField()
@@ -206,6 +210,7 @@ class Post(models.Model):
     image               =       models.ImageField(blank=True, null=True)
     bodysnippet         =       models.TextField(default='', blank=True, null=True)
     body                =       RichTextUploadingField(default='', blank=True, null=True)
+    link               =       models.TextField(blank=True, null=True)
     image2              =       models.ImageField(blank=True, null=True)
     image3              =       models.ImageField(blank=True, null=True)
     view_count          =       models.PositiveIntegerField(default=0)
@@ -288,13 +293,31 @@ def pre_save_slug3(sender, **kwargs):
 
 
 class AdvertImages(models.Model):
+
+    DURATION_CHOICES = (
+        (7,'1 Week'),
+        (14,'2 Weeks'),
+        (28,'3 Weeks'),
+        (31,'1 Month'),
+        (366,'1 Year'),
+
+    )
+
+
+    title               =       models.CharField(max_length=200)
+    slug                =       models.SlugField(max_length=200)
     company_name    =       models.CharField(max_length=200)
     amount          =       models.PositiveIntegerField(default=0)
-    duration        =       models.CharField(max_length=10)
+    #duration        =       models.CharField(max_length=10)
+    description         =       models.TextField(default='')
     bodysnippet     =       models.TextField(default='', blank=True, null=True)
     body            =       RichTextUploadingField(default='', blank=True, null=True)
-    pic             =       models.ImageField(upload_to='images/', blank=True, null=True)
+    view_count          =       models.PositiveIntegerField(default=0)
+    pic             =       models.ImageField(upload_to='images/')
     vid             =       models.FileField(blank=True, null=True)
+    created             =       models.DateTimeField(auto_now_add=True)
+    updated             =       models.DateTimeField(auto_now=True)
+    duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
 
 
     def __str__(self):
@@ -305,6 +328,13 @@ class AdvertImages(models.Model):
 
     def snippet(self):
         return self.bodysnippet[:100] + "..."
+
+    def get_absolute_url(self):
+        return reverse("ent:advert_detail", args=[self.id, self.slug, self.amount])
+
+
+
+
 
 
 

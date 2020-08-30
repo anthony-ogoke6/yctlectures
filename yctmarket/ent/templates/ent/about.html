@@ -2,7 +2,7 @@
 
 
 
-{% block title %}About Us! | {{ block.super }}{% endblock %}
+{% block title %}Policy! | {{ block.super }}{% endblock %}
 
 
 {% block style %}
@@ -24,11 +24,37 @@
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
 
-          <h1 id='grw' class="display-3">About Us!</h1>
+          <h1 id='grw' class="display-3">Our Policy</h1>
+          <br>
 
           <div class="article">
-                                       <p>we are located at bla bla bla, bla bla bla</p>
-                                       <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+              <h3>Seller</h3>
+              <p>* You must register(sign up) before you can upload your product on yctmaket.</p>
+                                       <p>* As we showcase your product to a large customer base,
+                                       we get 5% on every sale for each product uploaded. This is to ensure that you state the appropriate amount when uploading your product on yctmarket.
+                                       </p>
+                                       <p>* Your product(s) will be displayed free on yctmarket for a period of one month,
+                                       after which it will be deleted if customers do not purchase it during this period. If you want your product(s) to remain on
+                                       yctmarket for more than a month, then use the contact button on the navigation bar to contact yctmarket's admin.</p>
+                                       <p>* You can post as many products as you wish. Maximum duration of each product being displayed on yctmarket is a month.</p>
+                                       <p>* Payments will be recieved on delivery.</p>
+                                       <hr>
+                                       <br>
+                                       <br>
+                                       <h3>Customer</h3>
+                                       <p>* You will be contacted as soon as you show interest on a product by entering your contact details in the form provided.</p>
+                                       <p>* You will be notified about the product if its still available or not. In a situation when the product is unavailable you can still check on yctmarket for similar products.</p>
+                                       <p>* Note that delivery payment is not included in the product amount as this will be discussed with the seller based on your location.</p>
+                                       <p>* Payments should be made on delivery.</p>
+                                       <hr>
+                                       <br>
+                                       <br>
+                                       <h3>Adverts</h3>
+                                       <p>* For advert placements, use the contact button on the navigation bar to contact yctmarket's admin for the procedures of placing advert on yctmaret.</p>
+                                       <br>
+                                       <br>
+
+                                       <p><a class="btn btn-primary btn-lg" href="{% url 'ent:article_list' %}" role="button">Back to homepage &raquo;</a></p>
                             </div>
 
      </main>

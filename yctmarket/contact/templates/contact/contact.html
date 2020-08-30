@@ -29,8 +29,13 @@
 {% block content %}
 <div id="addQuestion">
   <div class="col-sm-8 form-group-lg">
-      <h1>Contact Us!</h1><br>
+      <h1>{{ title }}</h1><br>
 
+      {% if confirm_message %}
+      <p>{{ confirm_message }}</p>
+      {% endif %}
+
+{% if form %}
 
 <form class="form-group" method="post"  action="" >
   {% csrf_token %}
@@ -43,12 +48,18 @@
   {{ form.email }}<br>
   {% endif %}
 
+  {% if form.phoneNumber %}
+  {{ form.phoneNumber }}<br>
+  {% endif %}
+
   {% if form.comment %}
   {{ form.comment }}<br>
   {% endif %}
 
     <button class="btn btn-success">Submit</button>
   </form>
+
+  {% endif %}
 </div>
 </div>
 
@@ -57,7 +68,21 @@
 {% endblock %}
 
 
+{% block java %}
+<script>
+    var phone = document.querySelector('#id_phoneNumber');
 
+    phone.setAttribute('placeholder', "Phone Number");
+
+    phone.setAttribute('class', 'form-control');
+
+    phone.setAttribute('type', 'number');
+
+    phone.required = true;
+</script>
+
+
+{% endblock %}
 
 
 
