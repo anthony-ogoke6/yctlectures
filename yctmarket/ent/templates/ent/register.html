@@ -74,6 +74,23 @@
                   {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.phoneNumber.errors }}</div>
                   {% endif %}
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter Matric Number">
+                      {{ form.matric_number }}
+                      <span class="focus-input100"></span>
+                  </div>
+
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.matric_number.errors }}</div>
+                  {% endif %}
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter your date of birth">
+                      {{ profile_form.dob }}
+
+                      <span class"focus-input100"></span>
+                  </div>
+                  {% if profile_form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form.dob.errors }}</div>
+                  {% endif %}
 
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.password1 }}
@@ -83,13 +100,22 @@
 
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.password2 }}
-
-
                     <span class="focus-input100"></span>
                   </div>
                   {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password2 }}</div>
                   {% endif %}
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please upload profile your picture">
+                      {{ profile_form.photo.label }}
+                      {{ profile_form.photo }}
+                      {{ profile_form.photo.help_text }}
+                      <span class= "focus-inout100"></span>
+                  </div>
+                  {% if profile_form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form.errors.photo }}</div>
+                  {% endif %}
+
 
 
 
@@ -143,9 +169,12 @@
         var last_name = document.querySelector('#id_last_name');
         var email = document.querySelector('#id_email');
         var phone = document.querySelector('#id_phoneNumber');
+        var matric = document.querySelector('#id_matric_number');
+        var dob = document.querySelector('#id_dob');
         var password1 = document.querySelector('#id_password1');
         var password2 = document.querySelector('#id_password2');
         var phoneNumber = document.querySelector('#id_phoneNumber');
+        var photo = document.querySelector('#id_photo');
         var label = document.createElement('label');
 
         username.setAttribute('placeholder',"Username");
@@ -158,20 +187,33 @@
         email.setAttribute('class', 'input100');
         phone.setAttribute('placeholder',"Phone Number");
         phone.setAttribute('class', 'input100');
+        matric.setAttribute('class', 'input100');
+        matric.setAttribute('placeholder', 'Matric Number')
+        dob.setAttribute('type', 'text');
+        dob.setAttribute('onfocus', "(this.type='date')");
+        dob.setAttribute('onblur', "(this.type='text')");
+        dob.setAttribute('placeholder', 'Date of Birth');
+        dob.setAttribute('class', 'input100');
         password1.setAttribute('placeholder',"Password");
         password1.setAttribute('class', 'input100');
         password2.setAttribute('placeholder',"Confirm Password");
         password2.setAttribute('class', 'input100');
+        photo.setAttribute('placeholder', 'Profile Picture');
+        photo.setAttribute('class', 'input100');
+        photo.setAttribut('help_text', "Upload profile photo")
         phoneNumber.setAttribute('type', 'number');
 
         username.required = true;
         first_name.required = true;
         last_name.required = true;
         email.required = true;
+        dob.required = true;
         phone.required = true;
         password1.required = true;
         password2.required = true;
-        phoneNumber = true;
+        photo.required = true;
+        phoneNumber.required = true;
+        matric.required = true;
 
         var error = document.querySelector('#err');
         error.style.color = red;

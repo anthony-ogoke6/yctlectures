@@ -1,0 +1,120 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+ <meta name="twitter:image" content="{{ url }}">
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content="" href="{{ post.get_absolute_url }}" />
+<meta property="og:image" content="{{ url }}" />
+
+<meta name="description" content="{{ post.snippet|safe }}">
+<meta name="keywords" content="{{ post.snippet|safe }}">
+
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+<section id="" class="">
+  <div class="row">
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-8">
+
+    {% if post.pic %}
+
+    
+    <img class="main-image mySlides" src="{{ post.pic.url }}" style="width:100%"/>
+    
+  </div>
+    {% endif %}
+  </div> <!-- col-md-4 -->
+  <br><br>
+  <div class="col-md-8" style="background-color: white;">
+    <h2 id="increase">{{ post.title|upper }}</h2>
+    <hr/>
+    <br>
+    <div class="price">Sponsor: {{ post.company_name }}</div>
+    <hr/>
+
+    <h3 id="increase">Description<h3>
+
+    <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.description|linebreaks }} </div>
+
+
+    
+      <hr/>
+      
+      
+          </div>
+        </div> <!-- col-md-8 -->
+      </div> <!-- row -->
+      </div> <!-- col-md-8 -->
+      
+
+        </div> <!-- row -->
+      </section>
+
+
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+
+
+  <br>
+
+</div>
+</div>
+    <br/><br/><br/>
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+
+
+    </script>
+    {% endblock %}

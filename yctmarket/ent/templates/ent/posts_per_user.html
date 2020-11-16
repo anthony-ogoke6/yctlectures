@@ -1,0 +1,15 @@
+{% load humanize %}
+<div class="w3-row w3-grayscale">
+    {% for post in user_posts %}
+    <div class="w3-col l3 s6">
+        <a href="{{ post.get_absolute_url }}">
+        <div class="w3-container">
+            <img src="{{ post.image.url }}" style="width:100%;">
+            <p>
+                {{ post.title }}<br><b>Price: #{{ post.amount|intcomma }}</b>
+            </p>
+        </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>

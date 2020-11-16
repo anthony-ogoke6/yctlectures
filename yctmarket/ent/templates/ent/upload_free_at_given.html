@@ -39,7 +39,7 @@
                     Upload Product
                   </span>
 
-                  {{ form.category.label }}
+                  {{ form.category.label }}*
 
 
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
@@ -51,7 +51,7 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.category.errors }}</div>
                   {% endif %}
 
-                  {{ form.title.label }}
+                  {{ form.title.label }}*
 
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.title }}
@@ -62,7 +62,7 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.title.errors }}</div>
                   {% endif %}
 
-                    {{ form.description.label }}
+                    {{ form.description.label }}*
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.description }}
 
@@ -74,7 +74,9 @@
                   {% endif %}
 
 
-                   {{ form.amount.label }}
+
+
+                   {{ form.amount.label }}*
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.amount }}
 
@@ -84,7 +86,7 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.amount.errors }}</div>
                   {% endif %}
 
-                   {{ form.image.label }}
+                   {{ form.image.label }}*
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.image }}
 
@@ -94,7 +96,7 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.image.errors }}</div>
                   {% endif %}
 
-                  {{ form.image2.label }}
+                  {{ form.image2.label }}*
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.image2 }}
 
@@ -105,7 +107,7 @@
                   {% endif %}
 
 
-                  {{ form.image3.label }}
+                  {{ form.image3.label }}*
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.image3 }}
 
@@ -116,7 +118,7 @@
                   {% endif %}
 
 
-                    {{ form.status.label }}
+                    {{ form.status.label }}*
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.status }}
 
@@ -159,6 +161,8 @@
   <script>
 
         var inputs = document.querySelectorAll('input');
+        var image2 = document.querySelector('id_image2');
+        var image3 = document.querySelector('id_image3');
         var text_area = document.querySelector('#id_description');
         var category = document.querySelector('#id_category');
         var amount = document.querySelector('#id_amount');
@@ -170,7 +174,7 @@
 
         text_area.setAttribute('class', 'input100');
         amount.setAttribute('class', 'input100');
-        amount.setAttribute('label', 'Amount in Naira');
+        amount.setAttribute('label', 'Amount in Naira*');
         image.setAttribute('class', 'input100');
         image2.setAttribute('class', 'input100');
         image3.setAttribute('class', 'input100');
@@ -194,6 +198,8 @@
             inputs[4].setAttribute('class', 'input100');
 
             inputs[index].required = true;
+            //image2.required = false;
+            //image3.required = false;
 
 
 

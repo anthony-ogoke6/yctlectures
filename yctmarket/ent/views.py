@@ -1,6 +1,6 @@
 
 from .forms import *
-from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, PostCreateFormForFree, UserLoginForm, UserRegistrationForm, ReRequestActivationForm
+from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, PostCreateFormForFree, UserLoginForm, UserRegistrationForm, ReRequestActivationForm, CommentForm, ProfileForm, UserEditForm, ProfileEditForm
 import requests
 import uuid
 from django.contrib.auth.forms import UserCreationForm
@@ -25,16 +25,24 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from .utils import generate_token
-
-from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.list import ListView
+from braces.views import LoginRequiredMixin, PermissionRequiredMixin
+from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images, Comment
 import datetime
+from taggit.models import Tag
+from django.db.models import Count
 import hmac
 import hashlib
 import json
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def paystack_confirmation(request):
+def processPaystackWebhook(request):
     # paystack_sk = "sk_liveffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
     '''
     The function takes an http request object containing the json data
@@ -45,7 +53,7 @@ def paystack_confirmation(request):
     json_body = json.loads(request.body)
     computed_hmac = hmac.new(
         bytes(paystack_sk, 'utf-8'),
-        str.encode(request.body.decode('utf-8')),
+    str.encode(request.body.decode('utf-8')),
         digestmod=hashlib.sha512
         ).hexdigest()
     if 'HTTP_X_PAYSTACK_SIGNATURE' in request.META:
@@ -89,15 +97,103 @@ def paystack_confirmation(request):
     return HttpResponse(status=400)
 
 
+def my_webhook_view(request):
+    json_body = json.loads(request.body)
+    status = json_body['status']
+    if status == "successful":
+        reference = json_body["txRef"]
+        user_ref = Reference(user_reference=reference)
+        user_ref.save()
+        articles = Articles.published.all()
+        for article in articles:
+            if article.reference == reference:
+                title = article.title
+                slug = article.slug
+                status = article.status
+                author = article.author
+                amount = article.amount
+                category = article.category
+                description = article.description
+                video = article.video
+                image = article.image
+                bodysnippet = article.bodysnippet
+                body = article.body
+                image2 = article.image2
+                image3 = article.image3
+                view_count = article.view_count
+                duration = article.duration
+                created = article.created
+                updated = article.updated
+
+                post = Post(title=title, slug=slug, status=status, author=author, amount=amount, category=category, description=description, video=video, image=image, bodysnppet=bodysnippet, body=body, image2=image2, image3=image3, view_count=view_count, duration=duration, created=created, updated=updated)
+                post.save()
+                return HttpResponse(status=200)
+        return HttpResponse(status=400)
 
 
-def article_list(request):
-    pics =  AdvertImages.objects.all()
-    pic = Images.objects.all()
 
 
+
+
+
+
+def article_list(request, tag_slug=None):
+    #pics =  AdvertImages.objects.all()
+    #pic = Images.objects.all()
 
     articles = []
+
+
+    posts = Post.published.all()
+
+    news_search = request.GET.get('search')
+
+    query = request.GET.get('q')
+    #search_query = query.split()
+    #if len(query)>=1:
+        #for word in query:
+    if query:
+        posts = Post.published.filter(
+            Q(title__icontains=query)|
+            Q(category__icontains=query)|
+            Q(tags__name__icontains=query)).distinct()
+
+                #posts= Post.published.filter(lookups, is_active=True).distinct()
+    ads = AdvertImages.objects.all()
+    a = ads[0]
+    b = ads[1]
+    c = ads[2]
+    d = ads[3]
+    e = ads[4]
+    f = ads[5]
+    g = ads[6]
+    h = ads[7]
+    i = ads[8]
+    j = ads[9]
+    if news_search:
+        ads = AdvertImages.objects.filter(
+            Q(title__icontains=news_search)|
+            Q(body__icontains=news_search)|
+            Q(company_name__icontains=news_search)).distinct()
+
+
+
+    #empty dict
+    logger.error("Test!!")
+    print('its working now')
+
+
+
+    #tag = None
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = Post.published.filter(tags__in=[tag])
+
+
+
+
+
 
     #empty dict
     #data = []
@@ -105,14 +201,7 @@ def article_list(request):
     #data = []
 
     #querry all post in Post model
-    search = request.GET.get('q')
-    posts = Post.published.all()
-    query = request.GET.get('q')
-    if query:
-        posts = Post.published.filter(
-        Q(title__icontains=query)|
-        Q(category__icontains=query)
-        )
+
 
     #iterate for post in posts and check if duration exceeded or not
     for post in posts:
@@ -151,20 +240,153 @@ def article_list(request):
         article = paginator.page(paginator.num_pages)
 
 
+    if news_search:
 
-    context = {
+        if len(ads) == 1:
+            a = ads[0]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            }
+
+        elif len(ads) == 2:
+            b = ads[1]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            }
+
+        elif len(ads) == 3:
+            c = ads[2]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            }
+
+        elif len(ads) == 4:
+            d = ads[3]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            'd': d,
+            }
+
+        elif len(ads) == 5:
+            e = ads[4]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            'd': d,
+            'e': e,
+            }
+
+        elif len(ads) == 6:
+            f = ads[5]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            'd': d,
+            'e': e,
+            'f': f,
+            }
+
+        elif len(ads) == 7:
+            g = ads[6]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            'd': d,
+            'e': e,
+            'f': f,
+            'g': g,
+            }
+
+        elif len(ads) == 8:
+            h = ads[7]
+            context = {
+            'article': article,
+            'news_search':news_search,
+            'a': a,
+            'b': b,
+            'c': c,
+            'd': d,
+            'e': e,
+            'f': f,
+            'g': g,
+            'h': h,
+            }
+        elif len(ads) == 9:
+            i = ads[8]
+            context = {
+                'article':article,
+                'news_search':news_search,
+                'a':a,
+                'b':b,
+                'c':c,
+                'd':d,
+                'e':e,
+                'f':f,
+                'g':g,
+                'h':h,
+                'i':i,
+                }
+        elif len(ads) == 10:
+            context = {
+                'article':article,
+                'news_search':news_search,
+                'a':a,
+                'b':b,
+                'c':c,
+                'd':d,
+                'e':e,
+                'f':f,
+                'g':g,
+                'h':h,
+                'i':i,
+                'j':j,
+                }
+
+
+
+    else:
+        context = {
         'article': article,
         #'content': content,
-        'pics': pics,
-        'pic': pic,
-        'search': search,
-    }
-
-
+        #'pics': pics,
+        #'pic': pic,
+        'query': query,
+        'news_search':news_search,
+        'a': a,
+        'b': b,
+        'c': c,
+        'd': d,
+        'e': e,
+        'f': f,
+        'g': g,
+        'h': h,
+        'i':i,
+        'j':j,
+        }
 
     return render(request, 'ent/article_list.html', context)
-
-
 
 
 
@@ -188,6 +410,12 @@ def article_details(request, id, slug):
 
     # else:
     #     amount = post.amount
+
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(tags__in=post_tags_ids)\
+     .exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+     .order_by('-same_tags','-created')[:3]
 
 
 
@@ -246,6 +474,7 @@ def article_details(request, id, slug):
         'url' : url,
         'form' : form,
         'related':related,
+        'similar_posts': similar_posts
     }
 
     return render(request, 'ent/article_detail.html', context)
@@ -253,10 +482,12 @@ def article_details(request, id, slug):
 
 def advert_details(request, id, slug, amount):
     post_increament = get_object_or_404(AdvertImages, id=id, slug=slug, amount=amount)
+
     post_increament.view_count +=1
     post_increament.save()
     related = []
     post = get_object_or_404(AdvertImages, id=id, slug=slug, amount=amount)
+    comments = Comment.objects.filter(post=post, reply=None).order_by('-id')
     url = f"https://yctmarket.pythonanywhere.com{post.pic.url}"
     q = post.title
 
@@ -278,11 +509,110 @@ def advert_details(request, id, slug, amount):
         related.append(similar[3])
 
 
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST or None)
+        if comment_form.is_valid():
+            content = request.POST.get('content')
+            reply_id = request.POST.get('comment_id')
+            comment_qs = None
+
+            #messge_content = f"Post Title: {post.title} \n Comment by: {request.user} \n \n \nComment Content: \n{content}"
+            #subject = "New comment from yctmarket.com"
+            #message = '%s' %(messge_content)
+
+            #emailFrom = [settings.EMAIL_HOST_USER]
+            #emailTo = [settings.EMAIL_HOST_USER]
+            #send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            if reply_id:
+                comment_qs = Comment.objects.get(id=reply_id)
+                #subject = 'Comments reply from yctmarket'
+                #message = '%s %s ' %(comment_qs, content,)
+                #emailFrom = [settings.EMAIL_HOST_USER]
+                #emailTo = [settings.EMAIL_HOST_USER]
+                #send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            comment = Comment.objects.create(post=post, user=request.user, content=content, reply=comment_qs)
+            comment.save()
+
+
+
+
+        comments1 = Comment.objects.filter(post=post, reply=None).order_by('-id')
+        email_list = []
+        if comments1:
+            for comment in comments1:
+                email = comment.user.email
+
+                if email in email_list:
+                    pass
+                else:
+                    email_list.append(email)
+
+        email_list.append(settings.EMAIL_HOST_USER)
+
+        if comment_form.is_valid():
+            content = request.POST.get('content')
+            reply_id = request.POST.get('comment_id')
+            email_msg = []
+            for email in email_list:
+                if str(email) == str(request.user.email):
+                    pass
+                else:
+                    email_msg.append(email)
+            if reply_id:
+                reply_email = []
+                comment_qs = Comment.objects.get(id=reply_id)
+                email_owner_comment = comment_qs.user.email
+                for reply in comment_qs.replies.all():
+                    user_email = reply.user.email
+                    if user_email in reply_email:
+                        pass
+                    else:
+                        reply_email.append(user_email)
+                    if email_owner_comment in reply_email:
+                        pass
+                    else:
+                        reply_email.append(email_owner_comment)
+                        print(reply_email)
+
+                reply_email_list = []
+                for mail in reply_email:
+                    if str(mail) == str(request.user.email):
+                        pass
+                    else:
+                        reply_email_list.append(mail)
+
+                reply_email_list.append(settings.EMAIL_HOST_USER)
+
+
+                subject = 'Comments reply from www.yctmarket.com'
+                message = '%s %s' %(comment_qs, f"\nreply by: {request.user.username} \n \nContent: \n{content} \n \n \nhttps://www.yctmarket.com{post.get_absolute_url()}",)
+                print("look here")
+                print(reply_email_list)
+                emailFrom = [settings.EMAIL_HOST_USER]
+                emailTo = reply_email_list
+                send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            else:
+                messge_content = f"Post Title: \n{post.title} \n \nComment by: {request.user} \n \nContent: \n{content} \n \n \nhttps://www.yctmarket.com{post.get_absolute_url()}"
+                subject = "New comment from yctmarket.com"
+                message = '%s' %(messge_content)
+                emailFrom = [settings.EMAIL_HOST_USER]
+                emailTo = email_msg
+                send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+
+    else:
+        comment_form= CommentForm()
+
+
     context = {
         'post': post,
         'url' : url,
         'related':related,
+        'comments': comments,
+        'comment_form': comment_form,
     }
+    if request.is_ajax():
+        html = render_to_string('ent/comments.html', context, request=request)
+        return JsonResponse({'form': html})
 
     return render(request, 'ent/advert_detail.html', context)
 
@@ -440,6 +770,7 @@ def article_detail(request, id, slug):
         'form' : form,
         'related':related,
     }
+
     #return render(request, 'ent/upload_free_at_given.html', context)
     return render(request, 'ent/article_detail.html', context)
 
@@ -601,22 +932,24 @@ def re_request_activation(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST or None)
+        form = UserCreationForm(request.POST, request.FILES)
+        profile_form = ProfileForm(request.POST, request.FILES)
         if form.is_valid():
             new_user = form.save(commit=False)
             email = form.cleaned_data['email']
-            #firstname = form.cleaned_data['firstname']
-            #lastname = form.cleaned_data['lastname']
+            dob = request.POST['dob']
+            photo = request.POST['photo']
             username = form.cleaned_data['username']
             phone_number = form.cleaned_data['phoneNumber']
+            matric_number = form.cleaned_data['matric_number']
             password = form.cleaned_data['password1']
             new_user.set_password(form.cleaned_data['password1'])
             #new_user.is_active=False
             new_user.save()
             saved_user = User.objects.get(username=username)
-            user_phone = PhoneNumber(user=saved_user, phone_number=phone_number)
+            user_phone = PhoneNumber(user=saved_user, phone_number=phone_number, matric_number=matric_number)
             user_phone.save()
-            Profile.objects.create(user=new_user)
+            Profile.objects.create(user=new_user, dob=dob, photo=photo)
             subject = f"Seller name {username} just registered at yctmarket"
             message = '%s %s ' %(email, phone_number)
             emailFrom = [settings.EMAIL_HOST_USER]
@@ -642,8 +975,10 @@ def signup_view(request):
             #return redirect('user_login')
     else:
         form = UserCreationForm()
+        profile_form = ProfileForm()
     context = {
         'form': form,
+        'profile_form': profile_form,
     }
     return render(request, "ent/register.html", context)
 
@@ -701,6 +1036,7 @@ def upload_free_at_given(request):
             title = post.title
             amount = post.amount
             post.reference = reference
+            post.body = request.POST['description']
             post.save()
             subject = f"{user} just made a new post on yctmarket"
             message = '%s %s %s ' %(title, amount, user)
@@ -720,9 +1056,7 @@ def upload_free_at_given(request):
 
 
 
-
-
-@login_required(login_url="ogokeanthony187scrumy:login")
+@login_required(login_url="user_login")
 def pay_per_upload(request):
     if request.method == 'POST':
         form = PostCreateForm(request.POST, request.FILES)
@@ -745,9 +1079,11 @@ def pay_per_upload(request):
             #reference = str(article[0].reference)
             email = request.user.email
             name = request.user.username
-            number = request.user.phoneNumber
+            #number = request.user.phoneNumber
+            user_number = PhoneNumber.objects.get(user=request.user)
+            number = user_number.phone_number
             print(name)
-            print(number)
+            #print(number)
 
             headers = {
                 'Authorization': 'Bearer FLWSECK-775e1a45406c76dc400f8cb52db4c62f-X',
@@ -774,7 +1110,7 @@ def pay_per_upload(request):
                "tx_ref":reference,
                "amount":payment,
                "currency":"NGN",
-               "redirect_url":"https://yctmarket.pythonanywhere.com/thank_you/",
+               "redirect_url":"https://www.yctmarket.com/thank_you/",
                "payment_options":"card",
                "customer":{
                   "email":email,
@@ -817,6 +1153,9 @@ def user_login(request):
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
+            if '@' in username:
+                user =  User.objects.get(email=username)
+                username = user.username
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
@@ -846,10 +1185,63 @@ def user_login(request):
 
 
 
+@login_required
+def edit(request):
+    username = request.user
+    user = User.objects.get(username=username)
+    profile = Profile.objects.get(user=user)
+    print('first print')
+    print(profile.photo)
+    user_posts = Post.objects.filter(author=username)
+    if request.method == 'POST':
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            #profile_form.save(commit=False)
+            #user_form.save(commit=False)
+            print("up")
+            #print(prof.cleaned_data['photo'])
+            profile.photo = request.POST['photo']
+            print("down")
+            print(profile.photo)
+            #prof.photo = profile_form.cleaned_data['photo']
+            profile.dob = request.POST['dob']
+            user.username = request.POST['username']
+            user.first_name = request.POST['first_name']
+            user.last_name = request.POST['last_name']
+            user.email = request.POST['email']
+            profile.save()
+            user.save()
+            #prof = Profile.objects.get(user=user)
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+    return render(request, 'ent/edit.html', {'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile})
+
+
 
 
 
 
 def user_logout(request):
     logout(request)
+    return redirect('ent:article_list')
+
+
+
+def teacher(request):
+    #collect id number
+    return None
+
+
+def student(request):
+    #collect matric number
+    return None
+
+def post_delete(request, id, slug):
+    post = get_object_or_404(Post, id=id, slug=slug)
+    if request.user != post.author:
+        raise Http404()
+    post.delete()
+    messages.warning(request, 'Post has been successfully deleted')
     return redirect('ent:article_list')

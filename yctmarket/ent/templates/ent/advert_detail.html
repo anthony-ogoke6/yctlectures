@@ -42,9 +42,9 @@
 
     {% if post.pic %}
 
-    
+
     <img class="main-image mySlides" src="{{ post.pic.url }}" style="width:100%"/>
-    
+
   </div>
     {% endif %}
   </div> <!-- col-md-4 -->
@@ -53,27 +53,43 @@
     <h2 id="increase">{{ post.title|upper }}</h2>
     <hr/>
     <br>
-    <div class="price">Sponsor: {{ post.company_name }}</div>
+    <div class="price">{{ post.company_name }} ||||| {{ post.created }}</div>
     <hr/>
 
-    <h3 id="increase">Description<h3>
+    <h3 id="increase">--->><h3>
 
     <div style="margin-left: 20px;color: #df1057;" class="panel-body">
-            {{ post.description|linebreaks }} </div>
+            {{ post.body|safe|linebreaks }} </div>
 
 
-    
+
       <hr/>
-      
-      
+
+
+
+
           </div>
         </div> <!-- col-md-8 -->
       </div> <!-- row -->
+      <div class="col-md-8">
+
+<div>
+     {% if not post.restrict_comment %}
+        <div class="main-comment-section">
+          {% include 'ent/comments.html' %}
+        </div>
+      {% endif %}
+
+  </div>
+
+  </div> <!-- col-md-4 -->
+
       </div> <!-- col-md-8 -->
-      
+
 
         </div> <!-- row -->
       </section>
+
 
 
 <div id="addQuestion">

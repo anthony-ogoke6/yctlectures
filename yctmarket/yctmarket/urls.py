@@ -19,6 +19,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from ent import views as yct_views
 from contact import views as contact_views
+from django.contrib.sitemaps.views import sitemap
+from ent.feeds import LatestPostsFeed
+
+from ent.sitemaps import PostSitemap
+
+
+sitemaps = {
+    'posts': PostSitemap,
+    }
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +39,8 @@ urlpatterns = [
     path('about/', yct_views.about, name="about"),
     path('thank_you/', yct_views.thank_you, name="thank_you"),
     path('thanks/', yct_views.thanks, name="thanks"),
-    path('paystack_confirmation/', yct_views.paystack_confirmation, name="paystack_confirmation"),
+    path('paystack_confirmation/', yct_views.processPaystackWebhook, name="paystack_confirmation"),
+    path('my_webhook_view/', yct_views.my_webhook_view, name='my_webhook_view'),
     path('login/', yct_views.user_login, name="user_login"),
     #path('post_create/', yct_views.post_create, name="post_create"),
     path('plan/', yct_views.plan, name="plan"),
@@ -47,6 +57,10 @@ urlpatterns = [
     #path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     #path('reset/done/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('accounts/', include('django.contrib.auth.urls')),
+    #path('sitemap\.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('feed/',  LatestPostsFeed(), name='post_feed'),
 ]
 
 

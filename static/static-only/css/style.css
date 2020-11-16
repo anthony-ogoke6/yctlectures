@@ -293,6 +293,8 @@ box-shadow: var(--shadow);
 }
 
 /* Footer */
+
+
 footer {
 
 margin-top: 2rem;
@@ -304,6 +306,15 @@ padding: 1rem;
  footer p {
     color: var(--light);
  }
+
+
+.comment-footer{
+        margin-top: 2rem;
+    background-color: #333333;
+    color: var(--light);
+    text-align: left;
+    padding: 1rem;
+}
 
 .contact1 {
     grid-area: contact;

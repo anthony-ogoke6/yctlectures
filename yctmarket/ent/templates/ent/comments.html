@@ -1,0 +1,58 @@
+{% load crispy_forms_tags %}
+{{ comments.count }} Comment{{ comments|pluralize }}
+<div class="container-fluid mt-2">
+  <div class="form-group row">
+    <form method="post" class="comment-form" action=".">
+      {% csrf_token %}
+      {{ comment_form|crispy }}
+      {% if request.user.is_authenticated %}
+        <input type="submit" value="Submit" class="btn btn-outline-success">
+      {% else %}
+        <small id="colorr">You must be logged in to post a comment</small><br>
+          <small>
+                                                  <a style="color:red;" href="{% url 'user_login' %}">Login</a> |||||
+                                                  <a style="color:red;" href="{% url 'signup_view' %}">Register</a>
+                                                </small>
+                                                <br>
+
+        <input type="submit" value="Submit" title="you must be logged in to make a comment" class="btn btn-outline-success" disabled>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<br>
+<br>
+
+
+{% for comment in comments %}
+  <blockquote class="blockquote">
+    <p class="mb-0"><small style="font-size: 15px; margin: 20px;">{{ comment.content }}</small></p>
+    <footer style="text-align: left; margin-top: 0; background-color: #33333300; font-size: 70%; padding: 10px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ comment.user|capfirst }} -->> Reply ({{ comment.replies.count }})</cite></small>
+      <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
+    </footer>
+  </blockquote>
+
+  <div class="replied-comments container mt-2" style="display:none;">
+    {% for reply in comment.replies.all %}
+
+    <blockquote class="blockquote">
+      <p class="mb-0"><small style="font-size: 15px;  margin: 20px; padding: 20px;">{{ reply.content }}</small></p>
+      <footer style="text-align: left; left; margin-top: 0; paddin:0; background-color: #33333300; font-size: 70%; padding: 30px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ reply.user|capfirst }}</cite></small>
+    </footer>
+    </blockquote>
+    {% endfor %}
+    <div class="form-group row">
+      <form method="post" class="reply-form" action=".">
+        {% csrf_token %}
+        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+        {{ comment_form.as_p }}
+        {% if request.user.is_authenticated %}
+          <input type="submit" value="Submit" class="btn btn-outline-success">
+        {% else %}
+          <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+{% endfor %}

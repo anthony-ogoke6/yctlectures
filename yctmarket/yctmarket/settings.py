@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'yctmarket@gmail.com'
+EMAIL_HOST_USER = 'yctmarketinfo@gmail.com'
 EMAIL_HOST_PASSWORD = 'chinonso1990'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
@@ -29,10 +29,12 @@ EMAIL_USE_TLS = True
 SECRET_KEY = '&2=i=#tpkeq4@=y7uydihv-!3t1zri2#y6*(dr*s=51qnuf8sx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['www.yctmarket.com']
+
+SITE_ID = 1
 
 
 # Application definition
@@ -53,6 +55,9 @@ INSTALLED_APPS = [
     'six',
     'phonenumber_field',
     'django.contrib.humanize',
+    'taggit',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 
@@ -122,6 +127,7 @@ CKEDITOR_CONFIGS = {
 }
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+#CKEDITOR_IMAGE_MAX_WIDTH = '40%'
 
 
 
@@ -218,8 +224,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
 STATICFILES_DIRS = (
     os.path.join(os.path.dirname(BASE_DIR), "static", "static"),
 )
-
-SITE_ID = 1
 
 
 

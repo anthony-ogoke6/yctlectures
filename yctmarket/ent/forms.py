@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 	#class Meta:
 		#model = models.Article
 		#fields = ['title', 'body', 'slug', 'thumb']
-from .models import Article, Post, InfiniteScroll
+from .models import Article, Post, InfiniteScroll, Comment, Profile
 from django.contrib.auth.models import User
 
 
@@ -188,10 +188,23 @@ class UserEditForm(forms.ModelForm):
             'email',
         )
 
-#class ProfileEditForm(forms.ModelForm):
-#    class Meta:
-#        model = Profile
-#        exclude = ('user',)
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('user', 'dob', 'photo',)
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        exclude = ('user',)
 class ReRequestActivationForm(forms.Form):
     email = forms.EmailField(required=True)
+
+
+
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder' : 'Comment here!!!', 'rows': '4', 'cols':'50'}))
+    class Meta:
+        model = Comment
+        fields = ('content',)
 

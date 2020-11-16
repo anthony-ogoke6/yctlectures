@@ -8,16 +8,21 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
+
 #from ckeditor.fields import RichTextField
 
 
 # Create your models here.
 
 
+
+
 class PhoneNumber(models.Model):
 	user            =      models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_number')
 	phone_number    =      models.CharField(max_length=200)
+	matric_number   =      models.CharField(max_length=15, default="0")
 
 	class Meta:
 		verbose_name = 'phone number'
@@ -192,7 +197,6 @@ class Post(models.Model):
         ('Services','Services'),
         ('Sport, Art & Outdoors','Sport, Art & Outdoors'),
         ('Vehicles','Vehicles'),
-
     )
 
     reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -201,6 +205,7 @@ class Post(models.Model):
     status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
 
     author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='article_posts')
+    tags                = TaggableManager()
     amount              =       models.PositiveIntegerField(default='')
     amountInDols              =       models.PositiveIntegerField(default='1')
     #category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products2')
@@ -284,12 +289,6 @@ class Stores(models.Model):
         return reverse("ent:store_detail", args=[self.id, self.slug])
 
 
-@receiver(pre_save, sender=Stores)
-def pre_save_slug3(sender, **kwargs):
-    slug = slugify(kwargs['instance'].storename)
-    kwargs['instance'].slug = slug
-
-
 
 
 class AdvertImages(models.Model):
@@ -310,11 +309,18 @@ class AdvertImages(models.Model):
     amount          =       models.PositiveIntegerField(default=0)
     #duration        =       models.CharField(max_length=10)
     description         =       models.TextField(default='')
-    bodysnippet     =       models.TextField(default='', blank=True, null=True)
     body            =       RichTextUploadingField(default='', blank=True, null=True)
-    view_count          =       models.PositiveIntegerField(default=0)
-    pic             =       models.ImageField(upload_to='images/')
+
+    pic             =       models.ImageField(upload_to='images/', blank=True, null=True)
     vid             =       models.FileField(blank=True, null=True)
+
+    pic2              =       models.ImageField(blank=True, null=True)
+    pic3              =       models.ImageField(blank=True, null=True)
+    pic4              =       models.ImageField(blank=True, null=True)
+    link               =       models.TextField(blank=True, null=True)
+    restrict_comment    =       models.BooleanField(default=False)
+    view_count          =       models.PositiveIntegerField(default=0)
+
     created             =       models.DateTimeField(auto_now_add=True)
     updated             =       models.DateTimeField(auto_now=True)
     duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
@@ -326,14 +332,17 @@ class AdvertImages(models.Model):
     class Meta:
         ordering = ['-id']
 
-    def snippet(self):
-        return self.bodysnippet[:100] + "..."
+
 
     def get_absolute_url(self):
         return reverse("ent:advert_detail", args=[self.id, self.slug, self.amount])
 
 
 
+@receiver(pre_save, sender=AdvertImages)
+def pre_save_slug4(sender, **kwargs):
+    slug = slugify(kwargs['instance'].title)
+    kwargs['instance'].slug = slug
 
 
 
@@ -375,9 +384,7 @@ class InfiniteScroll(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     dob = models.DateField(null=True, blank=True)
-    photo = models.ImageField(null=True, blank=True)
-
-
+    photo = models.ImageField(upload_to='images/', null=True, blank=True)
     def __str__(self):
         return "Profile of user {}".format(self.user.username)
 
@@ -388,3 +395,15 @@ class Images(models.Model):
 
     def __str__(self):
         return str(self.post.id)
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(AdvertImages, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reply = models.ForeignKey('Comment', on_delete=models.CASCADE, null=True, related_name="replies")
+    content = models.TextField(max_length=160)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Post Title: \n{} \n \nComment by: {} \n'.format(self.post.title, str(self.user.username))
+

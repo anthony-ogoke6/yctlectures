@@ -64,6 +64,9 @@
   <br><br>
   <div class="col-md-8">
     <h2 id="increase">{{ post.title|upper }}</h2>
+    <p class="tags">Tags: {{ post.tags.all|join:", " }} {% if request.user == post.author %}|||||
+    <a class="btn btn-success" href="{% url 'ent:post_delete' id=post.id slug=post.slug %}">Delete Post</a></p>
+    {% endif %}
     <br>
     <div class="price">Price: {{ amount|intcomma }} NGN</div>
     <hr/>
@@ -80,7 +83,7 @@
         </div>
         <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
           <div style="margin-left: 20px;color: #df1057;" class="panel-body">
-            {{ post.description|linebreaks }} </div>
+            {{ post.body|safe|linebreaks }} </div>
         </div>
       </div>
       <div class="panel panel-default">
@@ -106,13 +109,15 @@
         </div>
         <div id="collapseThree" class="" role="tabpanel" aria-labelledby="headingThree">
           <div class="panel-body">
-            {% for pos in related %}
+            {% for post in similar_posts %}
 
-              <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
-                <img class="demo w3-opacity w3-hover-opacity-off class="javs-image"" src="{{ pos.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
-                <p style="text-align:center;color: #df1057;bottom:0px;">{{ pos.title|upper }}</p>
+            <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off class="javs-image"" src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
+                <p style="text-align:center;color: #df1057;bottom:0px;">{{ post.title|upper }}</p>
                 </div>
-              {% endfor %}
+            {% empty %}
+             There are no related posts yet.
+            {% endfor %}
               </div>
         </div>
       </div>
@@ -232,7 +237,7 @@ firstname.required = true;
 lastname.required = true;
 email.required = true;
 address.required = true;
-phoneNumber = true;
+phoneNumber.required = true;
 
 var error = document.querySelector('li');
 error.style.color = red;

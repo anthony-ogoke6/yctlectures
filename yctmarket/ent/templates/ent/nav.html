@@ -1,7 +1,7 @@
      <div class="topnav">
     <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a class="active" href="{% url "ent:article_list" %}">All Category</a>
+                <a class="active" href="{% url "ent:article_list" %}">Search Products</a>
             </li>
         {% for c in categories %}
             <li {% if category.slug == c.slug %}class="selected"{% endif %}>
@@ -12,14 +12,14 @@
 
   <div class="search-container">
     <form action="{% url 'ent:article_list' %}">
-      <input type="text" placeholder="Search Category.."  name="q">
+      <input type="text" placeholder="Type In Search Here.."  name="q">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>
   </div>
 </div>
 
 <div style="padding-left:16px">
-  <h2 style="color: #F44336;">Your Market Place On Campus Where You Can Buy Affordable Goods.</h2>
+  <h2 style="color: #F44336;">Your Market Place On Campus.</h2>
   <p>Navigate through to view the products online.</p>
-  <p>You can upload your products to reach out to a large customer base by just clicking on Post on the navigation bar.</p>
+  <p>You can upload your products by clicking on <bold>Post</bold> on the navigation bar.</p>
 </div>

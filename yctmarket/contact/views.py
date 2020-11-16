@@ -16,7 +16,8 @@ def contact_page(request):
 	    name = form.cleaned_data['name']
 	    comment = form.cleaned_data['comment']
 	    subject = 'message from YCT-Market.com'
-	    message = '%s %s %s %s' %(comment, name, email, phone_number)
+	    message_content= f"Name: {name}\nEmail: {email}\nPhone Number: {phone_number}\n \n \nMessage:\n{comment}"
+	    message = '%s' %(message_content)
 	    emailFrom = form.cleaned_data['email']
 	    emailTo = [settings.EMAIL_HOST_USER]
 	    send_mail(subject, message, emailFrom, emailTo, fail_silently=True )

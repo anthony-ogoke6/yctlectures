@@ -34,9 +34,9 @@
             <a class="{% if request.path == contact_page %}active{% endif %}" href="{% url 'contact_page' %}">Contact</a>
         </li>
 
-        <li>
+        <!--<li>
             <a class="{% if request.path == about %}active{% endif %}" href="{% url 'about' %}">Policy</a>
-        </li>
+        </li>-->
 
         {% if not request.user.is_authenticated %}
 
@@ -47,6 +47,10 @@
                 <a class="{% if request.path == signup_view %}active{% endif %}" href="{% url 'signup_view' %}">Sign-Up</a>
             </li>
         {% else %}
+
+        <li >
+            <a class="{% if request.path == edit %}active{% endif %}" href="{% url 'ent:edit' %}">Profile</a>
+          </li>
 
 
           <li>

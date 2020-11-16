@@ -1,7 +1,5 @@
 {% load staticfiles %}
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +9,9 @@
     <script data-ad-client="ca-pub-9430893294856522" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <meta name="yctmarket" content="Yabatech, O.A.U, Unilag, gist, entertainment, fashion, products, advertise, buy, sell, blog">
     <script>document.getElementsByTagName("html")[0].className += " js";</script>
-
+    <meta name="google-site-verification" content="KAPpfGoUJqvsIARQ2kNse0hnlSH6gpLD_K7aDDwKP-I" />
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" >
+
 
 
     {% block tweet %}
@@ -51,6 +50,10 @@ body {
 .topnav {
   overflow: hidden;
   background-color: #e9e9e9;
+}
+
+.d-md-block {
+    display:block!important;
 }
 
 .topnav a {
@@ -114,9 +117,21 @@ body {
   .topnav input[type=text] {
     border: 1px solid #ccc;
   }
+  #searchnews {
+  width: 130px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+/* When the input field gets focus, change its width to 100% */
+#searchnews:focus {
+  width: 100%;
+}
 }
 </style>
 <!--===============================================================================================-->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/modern-business.css' %}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 
@@ -149,6 +164,7 @@ body {
               {{ message }}
             </div>
         {% endfor %}
+
 
     {% block jumbotron %}
     {% endblock %}
@@ -206,10 +222,86 @@ body {
     {% endblock %}
 
 
-
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}" ></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'javascript/add.js' %}"></script>
     <script src="{% static 'assets/js/util.js' %}"></script> <!-- util functions included in the CodyHouse framework -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+
+
+    <script>
+ $(document).ready(function() {
+
+ {% block domready %}
+
+ {% endblock %}
+ });
+ </script>
+
+
+<script type="text/javascript">
+      $(document).ready(function(event){
+        $('#delete').click(function(){
+          return confirm("Are you sure to delete this post?");
+        });
+
+        $('.reply-btn').click(function() {
+          $(this).parent().parent().next('.replied-comments').fadeToggle()
+        });
+
+
+        $(function(){
+          setTimeout(function(){
+            $('.alert').slideUp(2000);
+          }, 5000);
+        });
+
+        $(document).on('submit', '.comment-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
+          });
+        });
+
+
+        $(document).on('submit', '.reply-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
+          });
+        });
+      });
+    </script>
 
   </body>
 </html>
