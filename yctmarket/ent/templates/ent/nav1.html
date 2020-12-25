@@ -1,0 +1,25 @@
+     <div class="topnav">
+    <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a class="active" href="{% url 'store' %}">Search Stores</a>
+            </li>
+        {% for c in categories %}
+            <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+                <a class="active" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+  <div class="search-container">
+    <form action="{% url 'store' %}">
+      <input type="text" placeholder="Type in search here..."  name="q">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>
+
+<div style="padding-left:16px">
+  <h2 style="color: #F44336;">YCT STORES</h2>
+  <p>Navigate through to view the stores on yctmarket</p>
+  <p>You can create your store by clicking on <bold>Create Store</bold> on your profile page.</p>
+</div>

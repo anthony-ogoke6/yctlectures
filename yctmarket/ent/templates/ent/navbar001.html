@@ -1,0 +1,67 @@
+{% load staticfiles %}
+
+
+
+<nav>
+    <div class="lines">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+    </div>
+
+    <div class="logo">
+        <a href="{% url 'ent:article_list' %}">
+        <img src="{% static 'img/yctmarket.png' %}" alt="Image Not Found">
+        </a>
+    </div>
+
+
+    <ul class="nav-links">
+        {% url 'ent:article_list' as article_list %}
+        {% url 'about' as about %}
+        {% url 'upload_free_at_given' as upload_free_at_given %}
+        {% url 'contact_page' as contact_page %}
+        <li >
+            <a class="{% if request.path == article_list %}active{% endif %}" href="{% url 'ent:article_list' %}">Market</a>
+        </li>
+
+
+        <li >
+            <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'upload_free_at_given' %}">Post</a>
+        </li>
+
+        <li>
+            <a class="{% if request.path == contact_page %}active{% endif %}" href="{% url 'contact_page' %}">Contact</a>
+        </li>
+
+        <!--<li>
+            <a class="{% if request.path == about %}active{% endif %}" href="{% url 'about' %}">Policy</a>
+        </li>-->
+
+        {% if not request.user.is_authenticated %}
+
+            <li >
+            <a class="{% if request.path == user_login  %}active{% endif %}" href="{% url 'user_login' %}" >login</a>
+            </li>
+                <li >
+                <a class="{% if request.path == signup_view %}active{% endif %}" href="{% url 'signup_view' %}">Sign-Up</a>
+            </li>
+        {% else %}
+
+        <li >
+            <a class="{% if request.path == edit %}active{% endif %}" href="{% url 'ent:edit' %}">Profile</a>
+          </li>
+
+
+          <li>
+              <a  href="{% url 'user_logout' %}">Logout</a>
+          </li>
+
+
+        {% endif %}
+
+
+    </ul>
+
+
+</nav>

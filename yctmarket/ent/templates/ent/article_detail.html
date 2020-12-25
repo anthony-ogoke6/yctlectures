@@ -11,14 +11,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@tonybrainsblog">
 <meta name="twitter:creator" content="@tonybrainsblog">
-<meta name="twitter:url" content=href="{{ post.get_absolute_url }}">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
 <meta name="twitter:title" content="{{ post.title|linebreaks }}">
 <meta name="twitter:description" content="{{ post.description|linebreaks }}">
  <meta name="twitter:image" content="{{ url }}">
 <meta property="og:title" content="{{ post.title|linebreaks }}" />
 <meta property="og:type" content="article" />
 <meta property="og:description" content="{{ post.description|linebreaks }}" />
-<meta property="og:url" content=href="{{ post.get_absolute_url }}" />
+<meta property="og:url" content='' href="{{ post.get_absolute_url }}" />
 <meta property="og:image" content="{{ url }}" />
 
 <meta name="description" content="{{ post.snippet|safe }}">
@@ -73,6 +73,7 @@
 
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if post.body %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
@@ -86,6 +87,8 @@
             {{ post.body|safe|linebreaks }} </div>
         </div>
       </div>
+      {% endif %}
+      {% if post.specification %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
           <h4 class="panel-title">
@@ -99,6 +102,8 @@
             {{ post.specification|linebreaks }} </div>
         </div>
       </div>
+      {% endif %}
+      {% if similar_posts %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
           <h4 class="panel-title">
@@ -112,7 +117,7 @@
             {% for post in similar_posts %}
 
             <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
-                <img class="demo w3-opacity w3-hover-opacity-off class="javs-image"" src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
+                <img class="demo w3-opacity w3-hover-opacity-off" class="javs-image"src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
                 <p style="text-align:center;color: #df1057;bottom:0px;">{{ post.title|upper }}</p>
                 </div>
             {% empty %}
@@ -120,19 +125,13 @@
             {% endfor %}
               </div>
         </div>
+        {% endif %}
       </div>
           </div>
         </div> <!-- col-md-8 -->
       </div> <!-- row -->
       </div> <!-- col-md-8 -->
       <div class="col-md-4">
-      <div class="list-group">
-        <a href="#" class="list-group-item">Category One</a>
-        <a href="#" class="list-group-item">Category Two</a>
-        <a href="#" class="list-group-item">Category Three</a>
-        <a href="#" class="list-group-item">Category Four</a>
-        <a href="#" class="list-group-item">Category Five</a>
-      </div>
 
 
       </div> <!-- col-md-4 -->

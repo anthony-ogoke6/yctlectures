@@ -5,7 +5,7 @@
 
 
 {% block title %}
-{% if category %}Home |{{ category.name }}{% else %}Home |{{ block.super }}{% endif %}
+{% if category %}Home |{{ category.name }}{% else %}Market |{{ block.super }}{% endif %}
 {% endblock %}
 
 
@@ -59,7 +59,7 @@
         <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ a.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1 >{{ a.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ a.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ a.body|safe|linebreaks|slice:":0" }}{{ a.created }}</p>
             <a href="{{ a.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ b.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ b.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ b.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ b.body|safe|linebreaks|slice:":0" }}{{ b.created }}</p>
             <a href="{{ b.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -79,7 +79,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ c.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ c.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ c.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ c.body|safe|linebreaks|slice:":0" }}{{ c.created }}</p>
             <a href="{{ c.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -89,7 +89,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ d.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ d.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ d.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ d.body|safe|linebreaks|slice:":0" }}{{ d.created }}</p>
             <a href="{{ d.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -99,7 +99,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ e.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ e.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ e.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ e.body|safe|linebreaks|slice:":0" }}{{ e.created }}</p>
             <a href="{{ e.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -109,7 +109,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ f.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ f.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ f.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ f.body|safe|linebreaks|slice:":0" }}{{ f.created }}</p>
             <a href="{{ f.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -119,7 +119,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ g.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ g.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ g.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ g.body|safe|linebreaks|slice:":0" }}{{ g.created }}</p>
             <a href="{{ g.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
         </div>
@@ -129,7 +129,7 @@
         <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ h.pic.url }}')">
           <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
             <h1>{{ h.title|upper }}</h1>
-            <p style="color: #f2f2f2;">{{ h.body|safe|linebreaks|slice:":0" }}...</p>
+            <p style="color: #f2f2f2;">{{ h.body|safe|linebreaks|slice:":0" }}{{ h.created }}</p>
             <a href="{{ h.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
         </div>
       </div>
@@ -138,7 +138,7 @@
       <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ i.pic.url }}')">
           <div id="back" style="display: block!important;" class="carousel-caption d-none d-md-block">
           <h1>{{ i.title|upper }}</h1>
-          <p style="color: #f2f2f2;">{{ i.body|safe|linebreaks|slice:":0" }}...</p>
+          <p style="color: #f2f2f2;">{{ i.body|safe|linebreaks|slice:":0" }}{{ i.created }}</p>
           <a href="{{ i.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
       </div>
@@ -147,7 +147,7 @@
       <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ j.pic.url }}')">
           <div id="back" style="display: block!important;" class="carousel-caption d-none d-md-block">
               <h1>{{ j.title|upper }}</h1>
-              <p style="color: #f2f2f2;">{{ j.body|safe|linebreaks|slice:":0" }}...</p>
+              <p style="color: #f2f2f2;">{{ j.body|safe|linebreaks|slice:":0" }}{{ j.created }}</p>
               <a href="{{ j.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
           </div>
       </div>

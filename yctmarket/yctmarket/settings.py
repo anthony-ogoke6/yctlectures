@@ -29,7 +29,7 @@ EMAIL_USE_TLS = True
 SECRET_KEY = '&2=i=#tpkeq4@=y7uydihv-!3t1zri2#y6*(dr*s=51qnuf8sx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['www.yctmarket.com']
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'django.contrib.humanize',
     'taggit',
+    'shops',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 ]
@@ -205,7 +206,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 

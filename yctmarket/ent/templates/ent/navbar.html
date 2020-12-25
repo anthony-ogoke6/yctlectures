@@ -18,11 +18,19 @@
 
     <ul class="nav-links">
         {% url 'ent:article_list' as article_list %}
+        {% url 'store' as store %}
         {% url 'about' as about %}
+        {% url 'user_login' as user_login %}
+        {% url 'signup_view' as signup_view %}
+        {% url 'ent:edit' as edit %}
         {% url 'upload_free_at_given' as upload_free_at_given %}
         {% url 'contact_page' as contact_page %}
         <li >
             <a class="{% if request.path == article_list %}active{% endif %}" href="{% url 'ent:article_list' %}">Market</a>
+        </li>
+
+        <li >
+            <a class="{% if request.path == store %}active{% endif %}" href="{% url 'store' %}">Stores</a>
         </li>
 
 
@@ -40,7 +48,7 @@
 
         {% if not request.user.is_authenticated %}
 
-            <li >
+            <li>
             <a class="{% if request.path == user_login  %}active{% endif %}" href="{% url 'user_login' %}" >login</a>
             </li>
                 <li >

@@ -1,0 +1,161 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+
+
+  {% endblock %}
+
+
+{% block con %}
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div>
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div>
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
+<div id="set1"  style="display:unset">
+     <div class="limiter">
+            <div class="container-login100">
+              <div class="wrap-login100 normal">
+
+
+              {% if form %}
+
+                <form method="post" enctype="multipart/form-data" action="{% url 'pay_for_one_year' %}" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                  {% csrf_token %}
+                  <span class="login100-form-title">
+                    Create Shop for A Year
+                  </span>
+
+                  {{ form.storename.label }}*
+
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.storename }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.storename.errors }}</div>
+                  {% endif %}
+
+                  {{ form.category.label }}*
+
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.category }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.category.errors }}</div>
+                  {% endif %}
+
+
+                    {{ form.description.label }}*
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.description }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.description.errors }}</div>
+                  {% endif %}
+
+
+
+
+                   {{ form.logo.label }}*
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.logo }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.logo.errors }}</div>
+                  {% endif %}
+
+
+                  {{ form.status.label }}*
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.status }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.status.errors }}</div>
+                  {% endif %}
+
+
+                  <br>
+                  <br>
+
+                  <div class="container-login100-form-btn">
+                    <button id="submitt" class="login100-form-btn">
+                      Create Shop
+                    </button>
+                  </div>
+
+                  {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                  {% endif %}
+
+                  <br>
+                  <br>
+                  <br>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+
+
+          <hr>
+
+        </div> <!-- /container -->
+    </div>
+
+{% endblock %}
+
+
+{% block java %}
+  <script>
+        var storename = document.querySelector('#id_storename');
+        var category = document.querySelector('#id_category');
+        var description = document.querySelector('#id_description');
+        var logo = document.querySelector('#id_logo');
+        var status = document.querySelector('#id_status');
+
+        storename.setAttribute('class', 'input100');
+        category.setAttribute('class', 'input100');
+        description.setAttribute('class', 'input100');
+        logo.setAttribute('class', 'input100');
+        status.setAttribute('class', 'input100');
+        description.style.height = "50%";
+        logo.style.height = "10%";
+
+
+        storename.required = true;
+
+        description.required = true;
+        logo.required = true;
+        status.required = true;
+
+
+        var error = document.querySelector('li');
+        error.style.color = red;
+
+    </script>
+    {% endblock %}

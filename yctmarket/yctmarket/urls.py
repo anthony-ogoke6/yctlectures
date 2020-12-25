@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from ent import views as yct_views
@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('ent.urls', namespace="ent")),
+    path('', include('shops.urls', namespace="shops")),
     #path('', include('users.urls', namespace="users")),
     path('contact/', contact_views.contact_page, name="contact_page"),
     #path('fetch_post/', yct_views.fetch_post, name='fetch_post'),
@@ -43,11 +44,19 @@ urlpatterns = [
     path('my_webhook_view/', yct_views.my_webhook_view, name='my_webhook_view'),
     path('login/', yct_views.user_login, name="user_login"),
     #path('post_create/', yct_views.post_create, name="post_create"),
+    path('shops/', yct_views.store, name="store"),
+    re_path(r'shop/create/(?P<id>\d+)/(?P<slug>[\w-]+)$', yct_views.store_detail, name="store_detail"),
+
+    #path('post_create/', yct_views.post_create, name="post_create"),
     path('plan/', yct_views.plan, name="plan"),
+    path('free_month/', yct_views.free_month, name="free_month"),
+    path('pay_for_six_month/', yct_views.pay_for_six_month, name="pay_for_six_month"),
+    path('pay_for_one_year/', yct_views.pay_for_one_year, name="pay_for_one_year"),
     #path('posts/', yct_views.PostList.as_view(), name="posts"),
     #path('cart/', include('cart.urls', namespace='cart')),
     path('pay_per_upload/', yct_views.pay_per_upload, name="pay_per_upload"),
     path('upload_free_at_given/', yct_views.upload_free_at_given, name="upload_free_at_given"),
+    re_path(r'upload_product/(?P<store_id>\d+)/(?P<store_slug>[\w-]+)$', yct_views.upload_product, name="upload_product"),
     path('re_request_activation_link/', yct_views.re_request_activation, name="re_request_activation_link"),
     path('activate/<uidb64>/<token>', yct_views.activate, name="activate"),
     path('logout/', yct_views.user_logout, name="user_logout"),

@@ -90,8 +90,36 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   <!-- Push down content on small screens
   <div class="w3-hide-large" style="margin-top:83px"></div>-->
 
+  {% if request.user in shop_owners_list %}
+  <br>
 
-    <p class="w3-left">Profile Pic</p>
+  <a href="{{ shop_owned_by_user.get_absolute_url }}"><button class="btn btn-success">Open Store</button></a>
+
+  {% else %}
+  <br>
+
+
+   <a href="{% url 'plan' %}"><button class="btn btn-success">Create Store</button></a>
+
+  {% endif %}
+
+
+  <!--{% for shop in shops %}
+  {% if request.user == shop.owner %}
+    <a href="{% url 'plan' %}"><button class="btn btn-success">Shop</button></a>
+
+    {% else %}
+
+   <a href="{% url 'plan' %}"><button class="btn btn-success">Create Shop</button></a>
+
+  {% endif %}
+  {% endfor %}-->
+
+
+    <br>
+    <br>
+    <br>
+    <p class="w3-left">Profile Pic</p> <a src="" >
 
 
 
@@ -100,6 +128,8 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 
       {% if profile %}
     <img src="{{ profile.photo.url }}" alt="" style="width:100%">
+    {% else %}
+    <img src="{{ photo }}" alt="" style="width:100%">
     {% endif %}
     <div class="" style="padding:24px 48px">
       <h1 class="w3-jumbo w3-hide-small">{{ request.user.username }}</h1>
@@ -136,10 +166,10 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
   {{ profile_form.dob }}<br><br>
   {% endif %}
 
-  {% if profile_form.photo %}
+ <!-- {% if profile_form.photo %}
   {{ profile_form.photo.label }}<br>
   {{ profile_form.photo }}<br><br>
-  {% endif %}
+  {% endif %}-->
 
 
   <button class="btn btn-success">Save</button>

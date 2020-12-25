@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Article, AdvertImages, Profile, Post, PurchaseReference, InfiniteScroll, Stores, Category, PhoneNumber, Comment # Images,  AdvertImages
-
+from .models import Article, AdvertImages, Profile, Post, PurchaseReference, InfiniteScroll, Category, PhoneNumber, Comment, Images, Face
+from shops.models import Stores
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -25,6 +25,18 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('title',)}
     list_editable = ('status',)
     date_hierarchy = ('created')
+
+
+
+class FaceAdmin(admin.ModelAdmin):
+    list_display = ['title', 'slug','status', 'author', 'created', 'updated']
+    #list_display = ('title', 'slug', 'author', 'status')
+    list_filter = ('status', 'created', 'updated')
+    search_fields = ('author__username', 'title')
+    prepopulated_fields = {'slug':('title',)}
+    list_editable = ('status',)
+    date_hierarchy = ('created')
+
 
 class InfiniteScrollAdmin(admin.ModelAdmin):
     list_display = ('start', 'end')
@@ -63,4 +75,5 @@ admin.site.register(AdvertImages, AdvertImagesAdmin)
 admin.site.register(InfiniteScroll, InfiniteScrollAdmin)
 admin.site.register(PhoneNumber, PhoneNumberAdmin)
 admin.site.register(Comment)
+admin.site.register(Images)
 

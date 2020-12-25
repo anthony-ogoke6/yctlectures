@@ -51,15 +51,20 @@
   <br><br>
   <div class="col-md-8" style="background-color: white;">
     <h2 id="increase">{{ post.title|upper }}</h2>
+    <hr>
+    <h6>Views: {{ post.view_count }} </h6>
     <hr/>
-    <br>
     <div class="price">{{ post.company_name }} ||||| {{ post.created }}</div>
     <hr/>
 
     <h3 id="increase">--->><h3>
 
     <div style="margin-left: 20px;color: #df1057;" class="panel-body">
-            {{ post.body|safe|linebreaks }} </div>
+            {{ post.body|safe|linebreaks }}
+            {% if post.link %}
+            <a href="{{ post.link }}">{{ post.link }}</a>
+            {% endif %}
+            </div>
 
 
 

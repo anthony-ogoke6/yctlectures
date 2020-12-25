@@ -6,6 +6,8 @@ from django.core.validators import RegexValidator
 		#model = models.Article
 		#fields = ['title', 'body', 'slug', 'thumb']
 from .models import Article, Post, InfiniteScroll, Comment, Profile
+from shops.models import Product
+from shops.models import Stores, Shops
 from django.contrib.auth.models import User
 
 
@@ -109,6 +111,44 @@ class EmailFormForMeetUp(forms.ModelForm):
         'amount',
         )
 
+
+
+
+class ShopFreeForOneMonth(forms.ModelForm):
+
+    class Meta:
+        model = Stores
+        fields = ('storename',
+        'description',
+        'category',
+        'logo',
+        'status',
+        )
+
+
+class ShopPaymentSixMonth(forms.ModelForm):
+
+    class Meta:
+        model = Shops
+        fields = ('storename',
+        'category',
+        'description',
+        'logo',
+        'status',
+        )
+
+class ShopPaymentOneYearMonth(forms.ModelForm):
+
+    class Meta:
+        model = Stores
+        fields = ('storename',
+        'category',
+        'description',
+        'logo',
+        'status',
+        )
+
+
 class PostCreateForm(forms.ModelForm):
 
     class Meta:
@@ -130,6 +170,23 @@ class PostCreateFormForFree(forms.ModelForm):
 
     class Meta:
         model = Post
+        fields = (
+            'category',
+            'title',
+            'description',
+            'amount',
+            'image',
+            'image2',
+            'image3',
+            'available',
+            'status',
+        )
+
+
+class UploadProductForFree(forms.ModelForm):
+
+    class Meta:
+        model = Product
         fields = (
             'category',
             'title',

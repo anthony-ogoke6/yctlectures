@@ -1,6 +1,6 @@
 
 from .forms import *
-from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, PostCreateFormForFree, UserLoginForm, UserRegistrationForm, ReRequestActivationForm, CommentForm, ProfileForm, UserEditForm, ProfileEditForm
+from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, PostCreateFormForFree, UserLoginForm, UserRegistrationForm, ReRequestActivationForm, CommentForm, ProfileForm, UserEditForm, ProfileEditForm,  ShopFreeForOneMonth, ShopPaymentSixMonth, UploadProductForFree, ShopPaymentOneYearMonth
 import requests
 import uuid
 from django.contrib.auth.forms import UserCreationForm
@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View, CreateView
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
@@ -24,12 +25,14 @@ from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils import timezone
 from .utils import generate_token
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images, Comment
+from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images, Comment, Face
+from shops.models import Stores, Shops, NamesOfPeopleWhoHaveOwnedShops, Product
 import datetime
 from taggit.models import Tag
 from django.db.models import Count
@@ -43,13 +46,13 @@ logger = logging.getLogger(__name__)
 
 
 def processPaystackWebhook(request):
-    # paystack_sk = "sk_liveffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
+    # paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
     '''
     The function takes an http request object containing the json data
     from paystack webhook client. Django's http request and response
     object was used for this example
     '''
-    paystack_sk = "sk_test_3be5de37862bdd6a684d0f2fe08c2ef6dfbb5111"
+    paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
     json_body = json.loads(request.body)
     computed_hmac = hmac.new(
         bytes(paystack_sk, 'utf-8'),
@@ -64,7 +67,7 @@ def processPaystackWebhook(request):
                 reference = json_body['data']['reference']
                 user_reference = Reference(user_reference_number=reference)
                 user_reference.save()
-                articles = Article.published.all()
+                articles = Stores.objects.all()
                 for article in articles:
                     if article.reference == reference:
                         title = article.title
@@ -92,9 +95,59 @@ def processPaystackWebhook(request):
                             view_count=view_count, duration=duration, created=created, updated=updated
                         )
                         post.save()
+                        subject = f"webhook from paystack via yctmarket"
+                        message = '%s %s %s ' %(article.reference, title, author)
+                        emailFrom = [settings.EMAIL_HOST_USER]
+                        emailTo = [settings.EMAIL_HOST_USER]
+                        send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
                         return HttpResponse(status=200)
 
     return HttpResponse(status=400)
+
+
+def processPaystackWebhook1(request):
+    # paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
+    '''
+    The function takes an http request object containing the json data
+    from paystack webhook client. Django's http request and response
+    object was used for this example
+    '''
+    paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
+    json_body = json.loads(request.body)
+    computed_hmac = hmac.new(
+        bytes(paystack_sk, 'utf-8'),
+    str.encode(request.body.decode('utf-8')),
+        digestmod=hashlib.sha512
+        ).hexdigest()
+    if 'HTTP_X_PAYSTACK_SIGNATURE' in request.META:
+        if request.META['HTTP_X_PAYSTACK_SIGNATURE'] == computed_hmac:
+            #res = request.json()
+            status = json_body['data']['status']
+            if status == "success":
+                reference = json_body['data']['reference']
+                user_reference = Reference(user_reference_number=reference)
+                user_reference.save()
+                articles = Stores.objects.all()
+                for article in articles:
+                    if article.reference == reference:
+                        #todays_date = datetime.date.today()
+                        now = timezone.now()
+                        article.status == 'published'
+                        title = article.title
+                        author = article.author
+                        article.published_date = now
+                        article.save()
+                        subject = f"webhook from paystack via yctmarket"
+                        message = '%s %s %s ' %(article.reference, title, author)
+                        emailFrom = [settings.EMAIL_HOST_USER]
+                        emailTo = [settings.EMAIL_HOST_USER]
+                        send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+                        return HttpResponse(status=200)
+
+    return HttpResponse(status=400)
+
+
+
 
 
 def my_webhook_view(request):
@@ -104,7 +157,7 @@ def my_webhook_view(request):
         reference = json_body["txRef"]
         user_ref = Reference(user_reference=reference)
         user_ref.save()
-        articles = Articles.published.all()
+        articles = Article.published.all()
         for article in articles:
             if article.reference == reference:
                 title = article.title
@@ -131,10 +184,34 @@ def my_webhook_view(request):
         return HttpResponse(status=400)
 
 
+def my_webhook_view1(request):
+    json_body = json.loads(request.body)
+    status = json_body['status']
+    if status == "successful":
+        reference = json_body["txRef"]
+        user_ref = Reference(user_reference=reference)
+        user_ref.save()
+        shops = Shops.published.all()
+        for shop in shops:
+            if shop.reference == reference:
+                storename = shop.storename
+                slug = shop.slug
+                status = shop.status
+                owner = shop.owner
+                amount = shop.amount
+                category = shop.category
+                description = shop.description
+                logo = shop.logo
+                tags = shop.tags
+                available = shop.available
+                duration = shop.duration
+                created = shop.created
+                updated = shop.updated
 
-
-
-
+                post = Stores(storename=storename, slug=slug, status=status, author=author, amount=amount, category=category, description=description, video=video, image=image, bodysnppet=bodysnippet, body=body, image2=image2, image3=image3, view_count=view_count, duration=duration, created=created, updated=updated)
+                post.save()
+                return HttpResponse(status=200)
+        return HttpResponse(status=400)
 
 
 def article_list(request, tag_slug=None):
@@ -145,6 +222,9 @@ def article_list(request, tag_slug=None):
 
 
     posts = Post.published.all()
+
+    faces = Face.objects.all()
+    #a1 = faces[0]
 
     news_search = request.GET.get('search')
 
@@ -247,8 +327,10 @@ def article_list(request, tag_slug=None):
             context = {
             'article': article,
             'news_search':news_search,
+            #'a1: a1,
             'a': a,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 2:
             b = ads[1]
@@ -257,8 +339,9 @@ def article_list(request, tag_slug=None):
             'news_search':news_search,
             'a': a,
             'b': b,
+            #'a1: a1,
             }
-
+            return render(request, 'ent/article_list.html', context)
         elif len(ads) == 3:
             c = ads[2]
             context = {
@@ -267,7 +350,9 @@ def article_list(request, tag_slug=None):
             'a': a,
             'b': b,
             'c': c,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 4:
             d = ads[3]
@@ -278,7 +363,9 @@ def article_list(request, tag_slug=None):
             'b': b,
             'c': c,
             'd': d,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 5:
             e = ads[4]
@@ -290,7 +377,9 @@ def article_list(request, tag_slug=None):
             'c': c,
             'd': d,
             'e': e,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 6:
             f = ads[5]
@@ -303,7 +392,9 @@ def article_list(request, tag_slug=None):
             'd': d,
             'e': e,
             'f': f,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 7:
             g = ads[6]
@@ -317,7 +408,9 @@ def article_list(request, tag_slug=None):
             'e': e,
             'f': f,
             'g': g,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
 
         elif len(ads) == 8:
             h = ads[7]
@@ -332,7 +425,9 @@ def article_list(request, tag_slug=None):
             'f': f,
             'g': g,
             'h': h,
+            #'a1: a1,
             }
+            return render(request, 'ent/article_list.html', context)
         elif len(ads) == 9:
             i = ads[8]
             context = {
@@ -347,8 +442,11 @@ def article_list(request, tag_slug=None):
                 'g':g,
                 'h':h,
                 'i':i,
+                #'a1: a1,
                 }
+            return render(request, 'ent/article_list.html', context)
         elif len(ads) == 10:
+            j = ads[9]
             context = {
                 'article':article,
                 'news_search':news_search,
@@ -362,12 +460,15 @@ def article_list(request, tag_slug=None):
                 'h':h,
                 'i':i,
                 'j':j,
+                #'a1: a1,
                 }
+            return render(request, 'ent/article_list.html', context)
 
 
 
-    else:
-        context = {
+
+
+    context = {
         'article': article,
         #'content': content,
         #'pics': pics,
@@ -384,6 +485,7 @@ def article_list(request, tag_slug=None):
         'h': h,
         'i':i,
         'j':j,
+        #'a1: a1,
         }
 
     return render(request, 'ent/article_list.html', context)
@@ -417,6 +519,15 @@ def article_details(request, id, slug):
     similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
      .order_by('-same_tags','-created')[:3]
 
+    search = request.GET.get('search')
+
+    if search:
+        post = Product.published.filter(
+            Q(title__icontains=search)|
+            Q(author__icontains=search)|
+            Q(store__icontains=search)|
+            Q(description__icontains=search)
+            )
 
 
     similar = Post.published.filter(
@@ -617,94 +728,158 @@ def advert_details(request, id, slug, amount):
     return render(request, 'ent/advert_detail.html', context)
 
 
+def store(request, tag_slug=None):
+    #pics =  AdvertImages.objects.all()
+    #pic = Images.objects.all()
+
+    articles = []
 
 
-class ArticleDetail(View):
+    stores = Stores.published.all()
+    images = Images.objects.all()
+    img = images[0]
 
-    def get(self, request, id, slug):
-        related = []
-        post_increament = get_object_or_404(Post, id=id, slug=slug)
+    news_search = request.GET.get('search')
 
-        post_increament.view_count +=1
-        post_increament.save()
-        post = get_object_or_404(Post, id=id, slug=slug)
-        url = f"https://yctmarket.pythonanywhere.com/{post.image.url}"
-        q = post.title
-
-
-        similar = Post.published.filter(
-        Q(title__icontains=q)|
-        Q(category__icontains=q)
-        )
-
-        if len(similar)==2:
-            related.append(similar[1])
-
-        elif len(similar)==3:
-            related.append(similar[1])
-            related.append(similar[2])
-        elif len(similar)>3:
-            related.append(similar[1])
-            related.append(similar[2])
-            related.append(similar[3])
+    query = request.GET.get('q')
+    #search_query = query.split()
+    #if len(query)>=1:
+        #for word in query:
+    if query:
+        stores = Stores.published.filter(
+            Q(storename__icontains=query)|
+            Q(description__icontains=query)|
+            Q(owner__username__icontains=query)|
+            Q(owner__first_name__icontains=query)|
+            Q(owner__last_name__icontains=query)|
+            Q(description__icontains=query)|
+            Q(tags__name__icontains=query)).distinct()
 
 
 
-        #if post.duration:
-            #form = None
-            #form = EmailFormForMeetUp()
-        #else:
-        form = EmailFormForPayment()
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        stores = Post.published.filter(tags__in=[tag])
 
-        context = {
-            'post': post,
-            'url' : url,
-            'form' : form,
-            'related':related,
+    for shop in stores:
 
+        #check post duration for each post
+
+        #check when post was created
+        post_created = shop.published_date.date()
+
+        #check todays date
+        todays_date = datetime.date.today()
+
+        #subtract the date when post was created from todays date to get amount of days left for post to remain on blog
+        days_left = todays_date - post_created
+
+        #check if the days left is greater or equal to the post's duration
+        if days_left.days >= shop.duration:
+
+            #if duration exceeded delete post
+            shop.delete()
+        else:
+            #if duration not exceeded, append post to articles list
+            articles.append(shop)
+
+
+    paginator = Paginator(articles, 6)
+    page = request.GET.get('page')
+    try:
+        article = paginator.page(page)
+    except PageNotAnInteger:
+        article = paginator.page(1)
+    except EmptyPage:
+        article = paginator.page(paginator.num_pages)
+
+    context = {
+        'article': article,
+        #'content': content,
+        #'pics': pics,
+        #'pic': pic,
+        'query': query,
+        'news_search':news_search,
+        'img':img,
         }
-        return render(request, 'ent/article_detail.html', context)
+
+    return render(request, 'ent/shops.html', context)
 
 
-    def post(self, request, id, slug):
-        post = get_object_or_404(Post, id=id, slug=slug)
-        postTitle = post.title
-        #if 'email' in request.POST:
-        form = EmailFormForPayment(request.POST or None)
-        print('firstname')
-        if form.is_valid():
-            print("what is really going on")
-            firstname = form.cleaned_data['firstname']
-            print(firstname)
-            lastname = form.cleaned_data['lastname']
-            email = form.cleaned_data['email']
-            address = form.cleaned_data['address']
-            phoneNumber = form.cleaned_data['phoneNumber']
-            subject = f"Customer about to pay for your {postTitle} product at yctmarket.com"
-            message = '%s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber)
-            emailFrom = [settings.EMAIL_HOST_USER]
-            emailTo = [settings.EMAIL_HOST_USER]
-            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-            return redirect('thanks')
-
-
-        return redirect('thanks')
-
-
-
-def article_detail(request, id, slug):
-    post_increament = get_object_or_404(Post, id=id, slug=slug)
+def store_detail(request, id, slug):
+    post_increament = get_object_or_404(Stores, id=id, slug=slug)
     post_increament.view_count +=1
     post_increament.save()
     related = []
-    post = get_object_or_404(Post, id=id, slug=slug)
+    store = get_object_or_404(Stores, id=id, slug=slug)
+    products = store.product_in_store.all()
+    print(products)
+    url = f"https://yctmarket.pythonanywhere.com{store.logo.url}"
+    q = store.category
+    user_number = PhoneNumber.objects.get(user=store.owner)
+    number = user_number.phone_number
+
+    post_tags_ids = store.tags.values_list('id', flat=True)
+    similar_posts = Stores.published.filter(tags__in=post_tags_ids)\
+     .exclude(id=store.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+     .order_by('-same_tags','-created')[:3]
+
+    search = request.GET.get('search')
+    if search:
+        products = store.product_in_store.filter(
+            Q(title__icontains=search)|
+            Q(author__username__icontains=search)|
+            Q(author__first_name__icontains=search)|
+            Q(author__last_name__icontains=search)|
+            Q(description__icontains=search)
+            ).distinct()
+
+    context = {
+        'products': products,
+        'store': store,
+        'number': number,
+        'url' : url,
+        'search':search,
+    }
+
+    return render(request, 'ent/store_detail.html', context)
+
+
+def shop_detail(request, id, slug):
+    post_increament = get_object_or_404(Product, id=id, slug=slug)
+    post_increament.view_count +=1
+    post_increament.save()
+    related = []
+    post = get_object_or_404(Product, id=id, slug=slug)
+    print(post)
     url = f"https://yctmarket.pythonanywhere.com{post.image.url}"
     q = post.title
+    author = post.author
+    amount = post.amount
+    title = post.title
+    # if int(post.amountInDols) > 1:
+
+    #     urls = "https://api.exchangeratesapi.io/latest?symbols=USD,GBP"
+    #     req = requests.request("GET", urls)
+    #     print(req)
+    #     amount = None
+
+    # else:
+    #     amount = post.amount
+
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(tags__in=post_tags_ids)\
+     .exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+     .order_by('-same_tags','-created')[:3]
 
 
-    similar = Post.published.filter(
+
+    similar = Product.published.filter(
     Q(title__icontains=q)|
-    Q(category__icontains=q)
+    Q(category__icontains=q)|
+    Q(owner__icontains=q)
     )
     if len(similar)==2:
         related.append(similar[1])
@@ -717,147 +892,50 @@ def article_detail(request, id, slug):
         related.append(similar[2])
         related.append(similar[3])
 
-
-
-    amount = post.amount
-    postTitle = post.title
     if request.method == 'POST':
         print("it got here")
         form = EmailFormForPayment(request.POST or None)
+        print(form)
 
-        if form.is_valid():
-            firstname = request.POST['firstname']
-            print(firstname)
-            lastname = form.cleaned_data['lastname']
-            print(lastname)
-            email = form.cleaned_data['email']
-            print(email)
-            address = form.cleaned_data['address']
-            print(address)
-            phoneNumber = form.cleaned_data['phoneNumber']
-            print("it got here too")
-            print(phoneNumber)
-            subject = 'Customer about to pay at yctmarket'
-            message = '%s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber)
-            emailFrom = [settings.EMAIL_HOST_USER]
-            emailTo = [settings.EMAIL_HOST_USER]
-            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+        #if form.is_valid():
+        lastnme = request.POST.get('lastname')
+        print("check if this lastnme will show")
+        print(lastnme)
+        firstname = request.POST['firstname']
+        print(firstname)
+        lastname = form.cleaned_data['lastname']
 
-            r = PurchaseReference(firstname=firstname, lastname=lastname, email=email)
-            reference = str(r.reference)
-            r.save()
+        print(lastname)
+        email = form.cleaned_data['email']
+        print(email)
+        address = form.cleaned_data['address']
+        print(address)
+        phoneNumber = form.cleaned_data['phoneNumber']
+        print("it got here too")
+        print(phoneNumber)
+        subject = f"Customer about to pay for {post.title} at yctmarket"
+        message = '%s %s %s %s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber, author, amount, title)
+        emailFrom = [settings.EMAIL_HOST_USER]
+        emailTo = [settings.EMAIL_HOST_USER]
+        send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+        #checkout = res['data']['authorization_url']
+        #return redirect(checkout)
+        return redirect('thanks')
 
-            headers = {
-                     'Authorization': 'Bearer sk_test_3be5de37862bdd6a684d0f2fe08c2ef6dfbb5111',
-                     'Content-Type': 'application/json',
-                }
-
-
-            data = {"reference": reference, "amount": amount, "email": email}
-            url = "https://api.paystack.co/transaction/initialize"
-            response = requests.request("POST", url, headers=headers, json=data)
-            res = response.json()
-
-            checkout = res['data']['authorization_url']
-            #return redirect(checkout)
-            return redirect('thanks')
-
-    else:
-        form = EmailFormForPayment()
-    context = {
-        'post': post,
-        'url' : url,
-        'form' : form,
-        'related':related,
-    }
-
-    #return render(request, 'ent/upload_free_at_given.html', context)
-    return render(request, 'ent/article_detail.html', context)
-
-
-
-
-
-def detail(request, id, slug):
-    post_increament = get_object_or_404(Post, id=id, slug=slug)
-    post_increament.view_count +=1
-    post_increament.save()
-    related = []
-    post = get_object_or_404(Post, id=id, slug=slug)
-    url = f"https://yctmarket.pythonanywhere.com{post.image.url}"
-    q = post.title
-
-
-    similar = Post.published.filter(
-    Q(title__icontains=q)|
-    Q(category__icontains=q)
-    )
-
-    if len(similar)==2:
-        related.append(similar[1])
-
-    elif len(similar)==3:
-        related.append(similar[1])
-        related.append(similar[2])
-    elif len(similar)>3:
-        related.append(similar[1])
-        related.append(similar[2])
-        related.append(similar[3])
-
-
-
-    amount = post.amount
-    postTitle = post.title
-    if request.method == 'POST':
-        form = form = EmailFormForPayment(request.POST or None)
-
-        if form.is_valid():
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            email = form.cleaned_data['email']
-            address = form.cleaned_data['address']
-            phoneNumber = form.cleaned_data['phoneNumber']
-            subject = 'Customer about to pay at yctmarket'
-            message = '%s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber)
-            emailFrom = [settings.EMAIL_HOST_USER]
-            emailTo = [settings.EMAIL_HOST_USER]
-            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-
-            r = PurchaseReference(firstname=firstname, lastname=lastname, email=email)
-            reference = str(r.reference)
-            r.save()
-
-            headers = {
-                     'Authorization': 'Bearer sk_test_3be5de37862bdd6a684d0f2fe08c2ef6dfbb5111',
-                     'Content-Type': 'application/json',
-                }
-
-
-            data = {"reference": reference, "amount": amount, "email": email}
-            url = "https://api.paystack.co/transaction/initialize"
-            response = requests.request("POST", url, headers=headers, json=data)
-            res = response.json()
-
-            checkout = res['data']['authorization_url']
-            #return redirect(checkout)
-            return redirect('thanks')
-
+            # return HttpResponseRedirect(post.get_absolute_url())
     else:
         form = EmailFormForPayment()
 
-
-
-
-
     context = {
         'post': post,
+        'amount': amount,
         'url' : url,
         'form' : form,
         'related':related,
-
+        'similar_posts': similar_posts
     }
-    return render(request, 'ent/article_detail.html', context)
 
+    return render(request, 'ent/shop_detail.html', context)
 
 
 def about(request):
@@ -877,8 +955,14 @@ def thanks(request):
     template = 'ent/thanks.html'
     return render(request,template,context)
 
-
+@login_required(login_url="user_login")
 def plan(request):
+    try:
+        shop_owned_by_user = Shops.objects.get(owner=request.user or None)
+        if shop_owned_by_user:
+            shop_owned_by_user.delete()
+    except ObjectDoesNotExist:
+        shop_owned_by_user = None
     context = {}
     template = 'ent/plan.html'
     return render(request,template,context)
@@ -927,7 +1011,6 @@ def re_request_activation(request):
         'form': form,
     }
     return render(request, "ent/rerequest_activation.html", context)
-
 
 
 def signup_view(request):
@@ -981,23 +1064,6 @@ def signup_view(request):
         'profile_form': profile_form,
     }
     return render(request, "ent/register.html", context)
-
-
-# class ActivateAccountView(View):
-#     def get(self, request, uidb64, token):
-#         try:
-#             uid = force_text(urlsafe_base64_decode(uidb64))
-#             user = User.objects.get(pk=uid)
-#         except Exception as identifier:
-#             user = None
-
-
-#         if user is not None and generate_token.check_token(user, token):
-#             user.is_active = True
-#             user.save()
-#             messages.add_message(request, messages.INFO, 'account activated successfully')
-#             return redirect('user_login')
-#         return render(request, "ent/activate_failed.html", status=401)
 
 
 
@@ -1054,84 +1120,152 @@ def upload_free_at_given(request):
 
 
 
+@login_required(login_url="user_login")
+def upload_product(request, store_id, store_slug):
+    store_id = store_id
+    store_slug = store_slug
+    store = get_object_or_404(Stores, id=store_id, slug=store_slug)
+    user = request.user
+    if request.method == 'POST':
+        form = UploadProductForFree(request.POST, request.FILES)
+        if form.is_valid():
+            r = uuid.uuid4()
+            reference = str(r)
+            post = form.save(commit=False)
+            post.author = request.user
+            title = post.title
+            amount = post.amount
+            post.reference = reference
+            post.store = store
+            post.body = request.POST['description']
+            post.save()
+            subject = f"{user} just uploaded a product in their shop."
+            message = '%s %s %s ' %(title, amount, user)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            messages.success(request, "Product has been successfully created.")
+            return redirect('store_detail', id=store.id, slug=store.slug)
+    else:
+        form = UploadProductForFree()
+    context = {
+        'form': form,
+        'store_slug': store_slug,
+        'store_id': store_id,
+    }
+    return render(request, 'ent/upload_product.html', context)
+
+
 
 
 @login_required(login_url="user_login")
 def pay_per_upload(request):
     if request.method == 'POST':
         form = PostCreateForm(request.POST, request.FILES)
-        if form.is_valid():
-
-            title = request.POST['title']
-            duration = int(request.POST['duration'])
-            category = request.POST['category']
-            amount = request.POST['amount']
-            description = request.POST['description']
-            r = uuid.uuid4()
-            reference = str(r)
 
 
-            post = form.save(commit=False)
-            post.author = request.user
-            post.reference = reference
-            post.save()
-            #article = Article.objects.filter(reference=reference)
-            #reference = str(article[0].reference)
-            email = request.user.email
-            name = request.user.username
-            #number = request.user.phoneNumber
-            user_number = PhoneNumber.objects.get(user=request.user)
-            number = user_number.phone_number
-            print(name)
-            #print(number)
+        title = request.POST['title']
+        duration = int(request.POST['duration'])
+        category = request.POST['category']
+        amount = request.POST['amount']
+        description = request.POST['description']
+        r = uuid.uuid4()
+        reference = str(r)
 
-            headers = {
-                'Authorization': 'Bearer FLWSECK-775e1a45406c76dc400f8cb52db4c62f-X',
-                'Content-Type': 'application/json',
-            }
 
-            if duration == 7:
-                price = 40000
-            elif duration == 14:
-                price = 80000
-            elif duration == 21:
-                price = 120000
-            elif duration == 28:
-                price = 160000
-            elif duration == 31:
-                price = 200000
-            else:
-                price = 14640000
+        post = form.save(commit=False)
+        post.author = request.user
+        post.reference = reference
+        post.save()
+        #article = Article.objects.filter(reference=reference)
+        #reference = str(article[0].reference)
+        email = request.user.email
+        name = request.user.username
+        #number = request.user.phoneNumber
+        user_number = PhoneNumber.objects.get(user=request.user)
+        number = user_number.phone_number
+        print(name)
+        #print(number)
 
-            payment = price
+        # headers = {
+        #     'Authorization': 'Bearer FLWSECK-775e1a45406c76dc400f8cb52db4c62f-X',
+        #     'Content-Type': 'application/json',
+        # }
 
-            #data = {"tx_ref": reference, "amount":payment, "email":email}
-            data = {
-               "tx_ref":reference,
-               "amount":payment,
-               "currency":"NGN",
-               "redirect_url":"https://www.yctmarket.com/thank_you/",
-               "payment_options":"card",
-               "customer":{
-                  "email":email,
-                  "phonenumber":number,
-                  "name":name
-               },
-               "customizations":{
-                  "title":"Pay per upload",
-                  "description":"Customers pay a token to upload their product",
-                  "logo":"https://yctmarket.pythonanywhere.com/static/img/yctmarket.png"
-               }
-            }
-            url = "https://api.flutterwave.com/v3/payments"
-            response = requests.request("POST", url, headers=headers, json=data)
+        a
+        if duration == 7:
+            price = 10000
+        elif duration == 14:
+            price = 80000
+        elif duration == 21:
+            price = 120000
+        elif duration == 28:
+            price = 160000
+        elif duration == 31:
+            price = 200000
+        else:
+            price = 14640000
 
-            #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
-            res = response.json()
+        payment = price
+        headers = {
+                    'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+                    'Content-Type': 'application/json',
+                }
 
-            checkout = res['data']['link']
+        data = {"reference": reference, "amount":payment, "email":email}
+        url = "https://api.paystack.co/transaction/initialize"
+        response = requests.request("POST", url, headers=headers, json=data)
 
-            return redirect(checkout)
+        #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
+        res = response.json()
+        print(res)
+
+        checkout = res['data']['authorization_url']
+
+        return redirect(checkout)
+
+            # if duration == 7:
+            #     price = 40000
+            # elif duration == 14:
+            #     price = 80000
+            # elif duration == 21:
+            #     price = 120000
+            # elif duration == 28:
+            #     price = 160000
+            # elif duration == 31:
+            #     price = 200000
+            # else:
+            #     price = 14640000
+
+            # payment = price
+
+            # #data = {"tx_ref": reference, "amount":payment, "email":email}
+            # data = {
+            #    "tx_ref":reference,
+            #    "amount":payment,
+            #    "currency":"NGN",
+            #    "redirect_url":"https://www.yctmarket.com/thank_you/",
+            #    "payment_options":"card",
+            #    "customer":{
+            #       "email":email,
+            #       "phonenumber":number,
+            #       "name":name
+            #    },
+            #    "customizations":{
+            #       "title":"Pay per upload",
+            #       "description":"Customers pay a token to upload their product",
+            #       "logo":"https://yctmarket.pythonanywhere.com/static/img/yctmarket.png"
+            #    }
+            # }
+            # url = "https://api.flutterwave.com/v3/payments"
+            # response = requests.request("POST", url, headers=headers, json=data)
+
+            # #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
+            # res = response.json()
+
+            # checkout = res['data']['link']
+
+            # return redirect(checkout)
 
     else:
         form = PostCreateForm()
@@ -1139,12 +1273,6 @@ def pay_per_upload(request):
         'form': form,
     }
     return render(request, 'ent/pay_per_upload.html', context)
-
-
-
-
-
-
 
 
 def user_login(request):
@@ -1184,14 +1312,121 @@ def user_login(request):
 
 
 
-
-@login_required
+@login_required(login_url="user_login")
 def edit(request):
     username = request.user
     user = User.objects.get(username=username)
     profile = Profile.objects.get(user=user)
-    print('first print')
-    print(profile.photo)
+    shop_owners_list = []
+    try:
+        shop_owned_by_user = Stores.objects.get(owner=request.user or None)
+        if shop_owned_by_user:
+            shops = Stores.objects.all()
+            for shop in shops:
+                shop_owners_list.append(shop.owner)
+                clients = NamesOfPeopleWhoHaveOwnedShops(name=shop_owners_list)
+                clients.save()
+
+    except ObjectDoesNotExist:
+        try:
+            shop_owned_by_user = Shops.objects.get(owner=request.user or None)
+            if shop_owned_by_user:
+                shops = Shops.objects.all()
+        except ObjectDoesNotExist:
+            shop_owned_by_user = None
+    user_posts = Post.objects.filter(author=username)
+    if request.method == 'POST':
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            #profile_form.save()
+            #user_form.save()
+            profile_form.save(commit=False)
+            user_form.save(commit=False)
+            print("up")
+            #print(prof.cleaned_data['photo'])
+            #profile.photo = request.POST['photo']
+            print("down")
+            #print(profile.photo)
+            #photo = profile.photo
+            #prof.photo = profile_form.cleaned_data['photo']
+            profile.dob = request.POST['dob']
+            user.username = request.POST['username']
+            user.first_name = request.POST['first_name']
+            user.last_name = request.POST['last_name']
+            user.email = request.POST['email']
+            profile.save()
+            user.save()
+            #profile_form.save()
+            #user_form.save()
+            messages.success(request, 'Profile edited successfully')
+            #prof = Profile.objects.get(user=user)
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        #photo = None
+    return render(request, 'ent/edit.html', {'shop_owned_by_user': shop_owned_by_user, 'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile, 'shop_owners_list':shop_owners_list})
+
+
+
+@login_required(login_url="user_login")
+def upload_product1(request, store_id, store_slug):
+    store_id = store_id
+    store_slug = store_slug
+    store = get_object_or_404(Stores, id=store_id, slug=store_slug)
+    user = request.user
+    if request.method == 'POST':
+        form = UploadProductForFree(instance=request.user, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            r = uuid.uuid4()
+            reference = str(r)
+            post = form.save(commit=False)
+            post.author = request.user
+            title = post.title
+            amount = post.amount
+            post.reference = reference
+            post.store = store
+            post.body = request.POST['description']
+            post.save()
+            subject = f"{user} just uploaded a product in their shop."
+            message = '%s %s %s ' %(title, amount, user)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            messages.success(request, "Product has been edited")
+            return redirect('shop_detail', id=store.id, slug=store.slug)
+    else:
+        form = UploadProductForFree(instance=request.user)
+    context = {
+        'form': form,
+        'store_slug': store_slug,
+        'store_id': store_id,
+    }
+    return render(request, 'ent/upload_product.html', context)
+
+
+@login_required(login_url="user_login")
+def edit_product(request):
+    username = request.user
+    user = User.objects.get(username=username)
+    profile = Profile.objects.get(user=user)
+    shop_owners_list = []
+    try:
+        shop_owned_by_user = Stores.objects.get(owner=request.user or None)
+        if shop_owned_by_user:
+            shops = Stores.objects.all()
+            for shop in shops:
+                shop_owners_list.append(shop.owner)
+                clients = NamesOfPeopleWhoHaveOwnedShops(name=shop_owners_list)
+                clients.save()
+
+    except ObjectDoesNotExist:
+        try:
+            shop_owned_by_user = Shops.objects.get(owner=request.user or None)
+            if shop_owned_by_user:
+                shops = Shops.objects.all()
+        except ObjectDoesNotExist:
+            shop_owned_by_user = None
     user_posts = Post.objects.filter(author=username)
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
@@ -1216,17 +1451,207 @@ def edit(request):
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
-    return render(request, 'ent/edit.html', {'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile})
+    return render(request, 'ent/edit.html', {'shop_owned_by_user': shop_owned_by_user, 'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile, 'shop_owners_list':shop_owners_list})
 
 
 
+# @login_required
+# def edit(request):
+#     username = request.user
+#     user = User.objects.get(username=username)
+#     profile = Profile.objects.get(user=user)
+#     shop_owners_list = []
+#     try:
+#         shop_owned_by_user = Stores.objects.get(owner=request.user)
 
+#     except ObjectDoesNotExist:
+#         try:
+#             shop = Shops.objects.get(owner=request.user)
+#             payment = shop.payment
+#             reference  =  shop.reference
+#             email = request.user.email
+#             headers = {
+#                     'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+#                     'Content-Type': 'application/json',
+#                 }
+
+#             data = {"reference": reference, "amount":payment, "email":email}
+#             url = "https://api.paystack.co/transaction/initialize"
+#             response = requests.request("POST", url, headers=headers, json=data)
+
+#             #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
+#             res = response.json()
+#             checkout = res['data']['authorization_url']
+
+#             return redirect(checkout)
+#         except:
+#             shop_owned_by_user = None
+
+#     shops = Stores.objects.all()
+#     for shop in shops:
+#         shop_owners_list.append(shop.owner)
+#         clients = NamesOfPeopleWhoHaveOwnedShops(name=shop_owners_list)
+#         clients.save()
+#     print('first print')
+#     print(profile.photo)
+#     user_posts = Post.objects.filter(author=username)
+#     if request.method == 'POST':
+#         user_form = UserEditForm(instance=request.user, data=request.POST)
+#         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             #profile_form.save(commit=False)
+#             #user_form.save(commit=False)
+#             print("up")
+#             #print(prof.cleaned_data['photo'])
+#             profile.photo = request.POST['photo']
+#             print("down")
+#             print(profile.photo)
+#             #prof.photo = profile_form.cleaned_data['photo']
+#             profile.dob = request.POST['dob']
+#             user.username = request.POST['username']
+#             user.first_name = request.POST['first_name']
+#             user.last_name = request.POST['last_name']
+#             user.email = request.POST['email']
+#             profile.save()
+#             user.save()
+#             #prof = Profile.objects.get(user=user)
+#     else:
+#         user_form = UserEditForm(instance=request.user)
+#         profile_form = ProfileEditForm(instance=request.user.profile)
+#     return render(request, 'ent/edit.html', {'shop_owned_by_user': shop_owned_by_user, 'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile, 'shop_owners_list':shop_owners_list, 'shops':shops})
+
+
+@login_required(login_url="user_login")
+def free_month(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ShopFreeForOneMonth(request.POST, request.FILES)
+        if form.is_valid():
+            r = uuid.uuid4()
+            reference = str(r)
+            post = form.save(commit=False)
+            post.owner = request.user
+            post.reference = reference
+            post.duration = 11
+            storename = request.POST['storename']
+            post.save()
+            subject = f"{user} just created a free shop at yctmarket"
+            message = '%s %s ' %(storename, user)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            messages.success(request, "Shop has been successfully created.")
+            return redirect('store')
+    else:
+        form = ShopFreeForOneMonth()
+    context = {
+        'form': form,
+    }
+    return render(request, 'ent/upload_free_for_one_month.html', context)
+
+
+@login_required(login_url="user_login")
+def pay_for_six_month(request):
+    if request.method == 'POST':
+        form = ShopPaymentSixMonth(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                shop_owned_by_user = Shops.objects.get(owner=request.user or None)
+                if shop_owned_by_user:
+                    shop_owned_by_user.delete()
+            except ObjectDoesNotExist:
+                shop_owned_by_user = None
+            r = uuid.uuid4()
+            reference = str(r)
+            post = form.save(commit=False)
+            post.owner = request.user
+            post.duration = 41
+            #post.status = "draft"
+            post.reference = reference
+            post.payment = 400000
+            post.save()
+            email = request.user.email
+            name = request.user.username
+            user_number = PhoneNumber.objects.get(user=request.user)
+            number = user_number.phone_number
+            payment = 400000
+            headers = {
+                        'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+                        'Content-Type': 'application/json',
+                    }
+            data = {"reference": reference, "amount":payment, "email":email}
+            url = "https://api.paystack.co/transaction/initialize"
+            response = requests.request("POST", url, headers=headers, json=data)
+
+            #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
+            res = response.json()
+            print(res)
+
+            checkout = res['data']['authorization_url']
+
+            return redirect(checkout)
+
+    else:
+        form = ShopPaymentSixMonth()
+    context = {
+        'form': form,
+    }
+    return render(request, 'ent/pay_six_month.html', context)
+
+
+@login_required(login_url="user_login")
+def pay_for_one_year(request):
+    if request.method == 'POST':
+        form = ShopPaymentOneYearMonth(request.POST, request.FILES)
+        if form.is_valid():
+            r = uuid.uuid4()
+            reference = str(r)
+
+
+            post = form.save(commit=False)
+            post.owner = request.user
+            post.duration = 366
+            post.status = "draft"
+            post.payment = 5000000
+            post.reference = reference
+            post.save()
+            #article = Article.objects.filter(reference=reference)
+            #reference = str(article[0].reference)
+            email = request.user.email
+            name = request.user.username
+            #number = request.user.phoneNumber
+            user_number = PhoneNumber.objects.get(user=request.user)
+            number = user_number.phone_number
+            payment = 5000000
+
+            headers = {
+                        'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+                        'Content-Type': 'application/json',
+                    }
+
+            data = {"reference": reference, "amount":payment, "email":email}
+            url = "https://api.paystack.co/transaction/initialize"
+            response = requests.request("POST", url, headers=headers, json=data)
+
+            #response = requests.post('https://api.paystack.co.transaction/initialize', headers=headers, json=data)
+            res = response.json()
+            print(res)
+
+            checkout = res['data']['authorization_url']
+
+            return redirect(checkout)
+
+    else:
+        form = ShopPaymentOneYearMonth()
+    context = {
+        'form': form,
+    }
+    return render(request, 'ent/pay_one_year.html', context)
 
 
 def user_logout(request):
     logout(request)
     return redirect('ent:article_list')
-
 
 
 def teacher(request):
@@ -1243,5 +1668,5 @@ def post_delete(request, id, slug):
     if request.user != post.author:
         raise Http404()
     post.delete()
-    messages.warning(request, 'Post has been successfully deleted')
+    messages.error(request, 'Post has been successfully deleted')
     return redirect('ent:article_list')

@@ -21,7 +21,9 @@ urlpatterns = [
 
     re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/(?P<amount>\d+)/$', views.advert_details, name="advert_detail"),
     re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/$', views.article_details, name="article_detail"), #using function views here
+    #re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/(?P<reference>[\w-]+)$', views.shop_detail, name="shop_detail"),
     re_path(r'(?P<id>\d+)/(?P<slug>[\w-]+)/post_delete/$', views.post_delete, name="post_delete"),
+    #re_path(r'product_delete/(?P<id>\d+)/(?P<slug>[\w-]+)/product_delete/$', views.product_delete, name="product_delete"),
     path('edit/', views.edit, name='edit'),
 
 

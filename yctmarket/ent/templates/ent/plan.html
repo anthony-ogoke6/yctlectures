@@ -13,80 +13,117 @@
         <hr>
 
         <span class="login100-form-title">
-            Select A Plan
+            Pricing
           </span>
 
 
-     <div class="move">
-         <br>
-         <br>
-         <br>
-          <br>
-          <div class="container-login100-form-btn">
-            <a href="{% url 'pay_per_upload' %}" class="login100-form-btn water">
-              Pay per uploads
-          </a>
-          </div>
-          <hr>
-          <div class="crop">
-          <span class="txt1 p-b-9 new">
-            Before each product is being displayed on our products page, you will be charged based
-            on the duration of your choice. the duration is how long you wish for your product to
-            be displayed on the products page.
-          </span>
-        </div>
-        <hr>
 
+    <br>
+    <br>
+    <br>
+    <br>
 
-          <div class="flex-col-c p-t-170 p-b-40">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
 
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="pricing.css" rel="stylesheet">
 
-            <a href="{% url 'pay_per_upload' %}" class="txt3">
-                Post product now
-            </a>
-          </div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <br>
+  <br>
+  <br>
+  <br>
+  <p class="lead">Quickly build an effective shop for your potential customers with this platform.</p>
+</div>
+
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Free</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">0 NGN <small class="text-muted">/1 we</small></h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>10 users included</li>
+          <li>2 GB of storage</li>
+          <li>Email support</li>
+          <li>Help center access</li>
+        </ul>
+        <a href="{% url 'free_month' %}" class="txt3">
+            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Select</button></a>
+      </div>
     </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Pro</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">4,000 NGN<small class="text-muted">Top</small></h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>20 users included</li>
+          <li>10 GB of storage</li>
+          <li>Priority email support</li>
+          <li>Help center access</li>
+        </ul>
+        <a href="{% url 'pay_for_six_month' %}" class="txt3">
 
-
-    <div class="move more">
-      <br>
-
-
-      <hr>
-          <div class="container-login100-form-btn">
-
-              <a href="{% url 'upload_free_at_given' %}" class="login100-form-btn water">
-              Upload free at 0.5% per sale
-            </a>
-
-          </div>
-          <hr>
-          <div class="crop">
-          <span class="txt1 p-b-9 new">
-            Your product is uploaded and displayed on our products with no initial charge.
-            A charge of 0.5% is deducted at the purchase of each product.
-          </span>
-        </div>
-
-        <hr>
-
-
-
-          <div class="flex-col-c p-t-170 p-b-40">
-
-
-            <a href="{% url 'upload_free_at_given' %}" class="txt3">
-              Post product now
-            </a>
-          </div>
-    </div>
-
-          </div>
+        <button type="button" class="btn btn-lg btn-block btn-primary">Select</button></a>
       </div>
     </div>
   </div>
 
 
+    <div class="row">
+      <div class="col-12 col-md">
+        <img class="mb-2" src="/docs/4.5/assets/brand/bootstrap-solid.svg" alt="" width="24" height="24">
+        <small class="d-block mb-3 text-muted">&copy; 2019-2020</small>
+      </div>
+      <div class="col-6 col-md">
+        <h5>Features</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="#">Cool stuff</a></li>
+          <li><a class="text-muted" href="#">Random feature</a></li>
+          <li><a class="text-muted" href="#">Team feature</a></li>
+          <li><a class="text-muted" href="#">Stuff for developers</a></li>
+          <li><a class="text-muted" href="#">Another one</a></li>
+          <li><a class="text-muted" href="#">Last time</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md">
+        <h5>Resources</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="#">Resource</a></li>
+          <li><a class="text-muted" href="#">Resource name</a></li>
+          <li><a class="text-muted" href="#">Another resource</a></li>
+          <li><a class="text-muted" href="#">Final resource</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md">
+        <h5>About</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="#">Team</a></li>
+          <li><a class="text-muted" href="#">Locations</a></li>
+          <li><a class="text-muted" href="#">Privacy</a></li>
+          <li><a class="text-muted" href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
 
+</div>
 
 {% endblock %}

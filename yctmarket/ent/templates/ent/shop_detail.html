@@ -1,6 +1,10 @@
 {% extends 'ent/base.html' %}
 
 
+{% load humanize %}
+
+
+
 
 {% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
 
@@ -8,7 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@tonybrainsblog">
 <meta name="twitter:creator" content="@tonybrainsblog">
-<meta name="twitter:url" content=href="{{ post.get_absolute_url }}">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
 <meta name="twitter:title" content="{{ post.title|linebreaks }}">
 <meta name="twitter:description" content="{{ post.description|linebreaks }}">
 <!--  <meta name="twitter:image" content="{{ url }}">  -->
@@ -16,11 +20,9 @@
 <meta property="og:title" content="{{ post.title|linebreaks }}" />
 <meta property="og:type" content="article" />
 <meta property="og:description" content="{{ post.description|linebreaks }}" />
-<meta property="og:url" content=href="{{ post.get_absolute_url }}" />
+<meta property="og:url" content="" href="{{ post.get_absolute_url }}" />
 <!-- <meta property="og:image" content="{{ url }}" /> -->
 
-<meta name="description" content="{{ post.snippet|safe }}">
-<meta name="keywords" content="{{ post.snippet|safe }}">
 
 
 {% endblock %}
@@ -28,6 +30,35 @@
 
 {% block lin %}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block jumbotron %}
+    <header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+          {% if a %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        {% endif %}
+
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <!-- Slide One - Set the background image for this slide in the line below -->
+        {% if store %}
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ store.logo.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1 >{{ store.storename|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ store.description|safe|linebreaks|slice:":50" }}...</p>
+            <a href="{{ a.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}
+
+    </div>
+  </header>
+
+
 {% endblock %}
 
 
@@ -61,12 +92,18 @@
   <br><br>
   <div class="col-md-8">
     <h2 id="increase">{{ post.title|upper }}</h2>
+    <p class="tags">Tags: {{ post.tags.all|join:", " }} {% if request.user == post.author %}|||||
+    <a class="btn btn-success" href="{% url 'shops:product_delete' id=post.id slug=post.slug %}">Delete Product</a></p>
+    {% endif %}
     <br>
-    <div class="price">Price: {{ post.amount }} NGN</div>
+    <div class="price">Price: {{ post.amount|intcomma  }} NGN</div>
     <hr/>
 
 
+
+
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if post.body %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
@@ -75,11 +112,13 @@
             </a>
           </h4>
         </div>
-        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-          <div class="panel-body">
-            {{ post.description }} </div>
+        <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
+          <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.body|safe|linebreaks }} </div>
         </div>
       </div>
+      {% endif %}
+      {% if post.specification %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
           <h4 class="panel-title">
@@ -93,6 +132,7 @@
             {{ post.specification }} </div>
         </div>
       </div>
+      {% endif %}
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
           <h4 class="panel-title">
@@ -101,24 +141,24 @@
             </a>
           </h4>
         </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+        <div id="collapseThree" class="" role="tabpanel" aria-labelledby="headingThree">
           <div class="panel-body">
-            {{ post.related }}  </div>
+            {% for post in similar_posts %}
+
+            <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" class="javs-image"src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
+                <p style="text-align:center;color: #df1057;bottom:0px;">{{ post.title|upper }}</p>
+                </div>
+            {% empty %}
+             <small>There are no related posts yet.</small>
+            {% endfor %}
+              </div>
         </div>
       </div>
           </div>
         </div> <!-- col-md-8 -->
       </div> <!-- row -->
       </div> <!-- col-md-8 -->
-      <div class="col-md-4">
-      <div class="list-group">
-        <a href="#" class="list-group-item">Category One</a>
-        <a href="#" class="list-group-item">Category Two</a>
-        <a href="#" class="list-group-item">Category Three</a>
-        <a href="#" class="list-group-item">Category Four</a>
-        <a href="#" class="list-group-item">Category Five</a>
-      </div>
-      </div> <!-- col-md-4 -->
         </div> <!-- row -->
       </section>
 
@@ -138,7 +178,7 @@
   <div class="col-sm-8 form-group-lg">
 
 
-<form class="form-group" method="post"  action="{% url 'ent:article_detail' id=post.id slug=post.slug %}" >
+<form class="form-group" method="post"  action="{% url 'shops:shop_detail' id=post.id slug=post.slug %}" >
   {% csrf_token %}
 
   {% if form.firstname %}
@@ -160,13 +200,15 @@
   {% if form.phoneNumber %}
   {{ form.phoneNumber }}<br>
   {% endif %}
-<select class="form-control">
+  <label for="id_select"> Quantity </label>
+<select id="id_select" placeholder="Quantity" name="quantity" class="form-control">
   <option value="1">1</option>
   <option value="2">2</option>
   <option value="3">3</option>
   <option value="4">4</option>
   <option value="5">5</option>
 </select>
+<br>
 
     <button class="btn btn-success">Buy Now</button>
   </form>
@@ -217,7 +259,7 @@ lastname.setAttribute('placeholder', 'Last Name');
 email.setAttribute('class', 'form-control');
 email.setAttribute('placeholder', 'Email');
 address.setAttribute('class', 'form-control');
-address.setAttribute('placeholder', 'Address');
+address.setAttribute('placeholder', 'Address/Location/Description');
 phoneNumber.setAttribute('class', 'form-control');
 phoneNumber.setAttribute('placeholder', 'Phone Number');
 

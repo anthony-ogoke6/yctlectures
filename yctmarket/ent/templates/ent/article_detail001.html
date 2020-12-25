@@ -1,0 +1,246 @@
+{% extends 'ent/base.html' %}
+
+
+{% load humanize %}
+
+
+
+{% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content=href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+ <meta name="twitter:image" content="{{ url }}">
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content=href="{{ post.get_absolute_url }}" />
+<meta property="og:image" content="{{ url }}" />
+
+<meta name="description" content="{{ post.snippet|safe }}">
+<meta name="keywords" content="{{ post.snippet|safe }}">
+
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+<section id="" class="">
+  <div class="row">
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-4 w3-content">
+
+    {% if post.image %}
+
+    <img class="main-image mySlides" src="{{ post.image2.url }}" style="width:100%;display:none"/>
+    <img class="main-image mySlides" src="{{ post.image.url }}" style="width:100%"/>
+    <img class="main-image mySlides" src="{{ post.image3.url }}" style="width:100%;display:none"/>
+    <div class="w3-row-padding w3-section">
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image2.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(1)">
+    </div>
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(2)">
+    </div>
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image3.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(3)">
+    </div>
+  </div>
+    {% endif %}
+  </div> <!-- col-md-4 -->
+  <br><br>
+  <div class="col-md-8">
+    <h2 id="increase">{{ post.title|upper }}</h2>
+    <p class="tags">Tags: {{ post.tags.all|join:", " }} {% if request.user == post.author %}|||||
+    <a class="btn btn-success" href="{% url 'ent:post_delete' id=post.id slug=post.slug %}">Delete Post</a></p>
+    {% endif %}
+    <br>
+    <div class="price">Price: {{ amount|intcomma }} NGN</div>
+    <hr/>
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        Description
+            </a>
+          </h4>
+        </div>
+        <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
+          <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.body|safe|linebreaks }} </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Specifications
+            </a>
+          </h4>
+        </div>
+        <div id="collapseTwo" class="" role="tabpanel" aria-labelledby="headingTwo">
+          <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.specification|linebreaks }} </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+          <h4 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Related
+            </a>
+          </h4>
+        </div>
+        <div id="collapseThree" class="" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            {% for post in similar_posts %}
+
+            <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off class="javs-image"" src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
+                <p style="text-align:center;color: #df1057;bottom:0px;">{{ post.title|upper }}</p>
+                </div>
+            {% empty %}
+             There are no related posts yet.
+            {% endfor %}
+              </div>
+        </div>
+      </div>
+          </div>
+        </div> <!-- col-md-8 -->
+      </div> <!-- row -->
+      </div> <!-- col-md-8 -->
+      <div class="col-md-4">
+      <div class="list-group">
+        <a href="#" class="list-group-item">Category One</a>
+        <a href="#" class="list-group-item">Category Two</a>
+        <a href="#" class="list-group-item">Category Three</a>
+        <a href="#" class="list-group-item">Category Four</a>
+        <a href="#" class="list-group-item">Category Five</a>
+      </div>
+
+
+      </div> <!-- col-md-4 -->
+        </div> <!-- row -->
+      </section>
+
+
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+
+
+
+  {% if post.link %}
+    <a href="{{ post.link }}" class="btn btn-success">Connect to your seller</a>
+  {% else %}
+  <br/><br/><br/>
+  <form action="{% url 'ent:article_detail' id=post.id slug=post.slug %}" method="post">
+  {% csrf_token %}
+
+  {% if form.firstname %}
+  {{ form.firstname }}<br>
+  {% endif %}
+
+  {% if form.lastname %}
+  {{ form.lastname }}<br>
+  {% endif %}
+
+  {% if form.email %}
+  {{ form.email }}<br>
+  {% endif %}
+
+  {% if form.address %}
+  {{ form.address }}<br>
+  {% endif %}
+
+  {% if form.phoneNumber %}
+  {{ form.phoneNumber }}<br>
+  {% endif %}
+  <button class="btn btn-success">Connect to your seller</button>
+  </form>
+  {% endif %}
+
+
+
+
+  <br>
+
+</div>
+</div>
+    <br/><br/><br/>
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+
+
+var firstname = document.querySelector('#id_firstname');
+var lastname = document.querySelector('#id_lastname');
+var email = document.querySelector('#id_email');
+var address = document.querySelector('#id_address');
+var phoneNumber = document.querySelector('#id_phoneNumber');
+
+
+firstname.setAttribute('class', 'form-control');
+firstname.setAttribute('placeholder', 'First Name');
+lastname.setAttribute('class', 'form-control');
+lastname.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+address.setAttribute('class', 'form-control');
+address.setAttribute('placeholder', 'Address');
+phoneNumber.setAttribute('class', 'form-control');
+phoneNumber.setAttribute('placeholder', 'Phone Number');
+phoneNumber.setAttribute('type', 'number');
+
+firstname.required = true;
+lastname.required = true;
+email.required = true;
+address.required = true;
+phoneNumber.required = true;
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}

@@ -1,52 +1,210 @@
 {% extends 'ent/base.html' %}
 
+{% load humanize %}
 
 
-{% load crispy_forms_tags %}  <!-- check meerasblog settings.py for this -->
 
-{% block style %}
-  <style>
-  #fix {
-    position: fixed;
-    bottom: 0px;
-    width: 100%;
-  }
+{% block title %}
+{% if category %}Shop |{{ category.name }}{% else %}Shop |{{ block.super }}{% endif %}
+{% endblock %}
 
-  .set1 {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: auto;
-    grid-template-areas:
-      'contact';
-}
-  </style>
 
+
+
+
+{% block jumbotron %}
+{% include 'ent/nav1.html' %}
+    <header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+          {% if img %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        {% endif %}
+        <!--{% if b %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        {% endif %}
+        {% if c %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        {% endif %}
+        {% if d %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+        {% endif %}
+        {% if e %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+        {% endif %}
+        {% if f %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="5"></li>
+        {% endif %}
+        {% if g %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="6"></li>
+        {% endif %}
+        {% if h %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="7"></li>
+        {% endif %}
+        {% if i %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="8"></li>
+        {% endif %}
+        {% if j %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="9"></li>
+        {% endif %}-->
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <!-- Slide One - Set the background image for this slide in the line below -->
+        {% if img %}
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ img.image.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1 >WELCOME TO YCT STORES</h1>
+            <p style="color: #f2f2f2;">...</p>
+          </div>
+        </div>
+        {% endif %}
+        <!-- Slide Two - Set the background image for this slide in the line below -->
+        <!--{% if b %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ b.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ b.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ b.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ b.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}-->
+        <!-- Slide Three - Set the background image for this slide in the line below -->
+        <!--{% if c %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ c.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ c.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ c.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ c.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}-->
+        <!-- Slide Four - Set the background image for this slide in the line below -->
+        <!--{% if d %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ d.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ d.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ d.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ d.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}-->
+        <!-- Slide Five - Set the background image for this slide in the line below -->
+        <!--{% if e %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ e.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ e.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ e.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ e.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}-->
+        <!-- Slide Six - Set the background image for this slide in the line below -->
+        <!--{% if f %}
+        <!--<div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ f.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ f.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ f.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ f.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}-->
+        <!-- Slide Seven - Set the background image for this slide in the line below -->
+        <!--{% if g %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ g.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ g.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ g.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ g.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %} -->
+        <!-- Slide Eight - Set the background image for this slide in the line below -->
+        <!--{% if h %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ h.pic.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1>{{ h.title|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ h.body|safe|linebreaks|slice:":0" }}...</p>
+            <a href="{{ h.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+        </div>
+      </div>
+      {% endif %}-->
+      <!--{% if i %}
+      <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ i.pic.url }}')">
+          <div id="back" style="display: block!important;" class="carousel-caption d-none d-md-block">
+          <h1>{{ i.title|upper }}</h1>
+          <p style="color: #f2f2f2;">{{ i.body|safe|linebreaks|slice:":0" }}...</p>
+          <a href="{{ i.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+      </div>
+      {% endif %}-->
+      <!--{% if j %}
+      <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ j.pic.url }}')">
+          <div id="back" style="display: block!important;" class="carousel-caption d-none d-md-block">
+              <h1>{{ j.title|upper }}</h1>
+              <p style="color: #f2f2f2;">{{ j.body|safe|linebreaks|slice:":0" }}...</p>
+              <a href="{{ j.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+      </div>
+      {% endif %}-->
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </header>
 
 {% endblock %}
 
-{% block title %}Home | {{ block.super }}{% endblock %}
-
-
-
-
-
-
-
 {% block post %}
-     <div class="topnav">
-  <h2 style="text-align:center;" >Available Stores On YCT-Market</h2>
-</div>
+<h2 style="color: #F44336;">{% if query %}{{ query|upper }}{% else %}All Stores{% endif %}</h2>
     <section id="tasklist" class="boxes center infinite-container">
 
-      {% for p in stores %}
+
+
+
+      {% for p in article %}
+
+
+
+
+
         <div class="box infinite-item">
 
+          {% if p.logo %}
+          <a class="javs-link" href="{{ p.get_absolute_url }}">
+            <img class="javs-image" src="{{ p.logo.url }}" alt="Image Not Found" >
+          </a>
+          {% endif %}
+          <div class="card-body">
+          <h5 id="ppp" ><a id="amntt" href="{{ p.get_absolute_url }}">{{ p.storename|upper }}</a></h5>
+                                    <p class="card-text">
+                                        {{p.description|truncatewords:20}}
+                                    </p>
+                                </div>
 
-          <h3 id="ppp" ><a id="amntt" href="{{ p.get_absolute_url }}">{{ p.storename|upper }}</a></h3>
-          <h6 id="amnt"> Owner: {{ p.owner.username|title }} </h6>
+          <p class="javs-id" style="display:none;">{{ p.id }}</p>
+
+
+
+
+         <!-- <p class="tags">
+           Tags:
+           {% for tag in p.tags.all %}
+           <a href="{% url 'ent:post_list_by_tag' tag.slug %}">
+           {{ tag.name }}
+           </a>
+           {% if not forloop.last %}, {% endif %}
+           {% endfor %}
+          </p>-->
+
         </div>
         {% endfor %}
         </section>
+
 
         {% if article.has_next %}
         <a id="more" class="infinite-more-link" href="?page={{ article.next_page_number }}" style="text-align:center;">Loading...</a>
@@ -62,7 +220,8 @@
 {% block java %}
 <script>
 
-console.log('mee');
+
+
 var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
@@ -72,6 +231,22 @@ var infinite = new Waypoint.Infinite({
     $('.loading').hide();
     }
 });
+
+
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 9000);
+}
 
 </script>
 {% endblock %}

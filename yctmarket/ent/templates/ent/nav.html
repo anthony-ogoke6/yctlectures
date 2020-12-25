@@ -1,7 +1,7 @@
      <div class="topnav">
     <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a class="active" href="{% url "ent:article_list" %}">Search Products</a>
+                <a class="active" href="{% url "store" %}">Search Products</a>
             </li>
         {% for c in categories %}
             <li {% if category.slug == c.slug %}class="selected"{% endif %}>

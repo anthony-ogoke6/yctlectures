@@ -262,31 +262,115 @@ def pre_save_slug1(sender, **kwargs):
 
 
 
-
-class Stores(models.Model):
+class Face(models.Model):
     objects = models.Manager()      #Our default Manager
     published = PublishedManager()  #Our Custom Model Manager
 
-    storename       =       models.CharField(max_length=200)
-    description         =       models.TextField(default='')
+    STATUS_CHOICES = (
+        ('draft','Draft'),
+        ('published','Published'),
+    )
+
+    reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    title               =       models.CharField(max_length=200)
     slug                =       models.SlugField(max_length=200)
-    logo           =       models.ImageField(blank=True, null=True)
-    owner            =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_name')
+    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
+
+    author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='face_author')
+
+    image               =       models.ImageField(blank=True, null=True)
+    body                =       RichTextUploadingField(default='', blank=True, null=True)
+    link               =       models.TextField(blank=True, null=True)
+    view_count          =       models.PositiveIntegerField(default=0)
+
+    created             =       models.DateTimeField(auto_now_add=True)
+    updated             =       models.DateTimeField(auto_now=True)
 
 
     class Meta:
         ordering = ['-id']
 
     def __str__(self):
-        return self.storename
+        return self.title
 
-    def delete(self, *args, **kwargs):
-        self.image.delete()
-        super().delete(*args, **kwargs)
+    def snippet(self):
+        return self.bodysnippet[:200] + "..."
+
+    def total_likes(self):
+        return self.likes.count()
 
 
     def get_absolute_url(self):
-        return reverse("ent:store_detail", args=[self.id, self.slug])
+        return reverse("ent:article_detail", args=[self.id, self.slug])
+
+
+
+@receiver(pre_save, sender=Face)
+def pre_save_slug8(sender, **kwargs):
+    slug = slugify(kwargs['instance'].title)
+    kwargs['instance'].slug = slug
+
+
+
+
+
+
+# class Stores(models.Model):
+#     objects = models.Manager()      #Our default Manager
+#     published = PublishedManager()  #Our Custom Model Manager
+
+#     STATUS_CHOICES = (
+#         ('draft','Draft'),
+#         ('published','Published'),
+#     )
+
+#     CATEGORY_CHOICES = (
+#         ('Agriculture & Food','Agriculture & Food'),
+#         ('Animals & Pets','Animals & Pets'),
+#         ('Babies & Kids','Babies & Kids'),
+#         ('Commercial Equipment & Tool','Commercial Equipment & Tool'),
+#         ('Electronics','Electronics'),
+#         ('Fashion','Fashion'),
+#         ('Health & Beauty','Health & Beauty'),
+#         ('Home, Furniture & Appliances','Home, Furniture & Appliances'),
+#         ('Mobile Phones & Tablets','Mobile Phones & Tablets'),
+#         ('Property','Property'),
+#         ('Repair & Construction','Repair & Construction'),
+#         ('Seeking Work - CVs','Seeking Work - CVs'),
+#         ('Services','Services'),
+#         ('Sport, Art & Outdoors','Sport, Art & Outdoors'),
+#         ('Vehicles','Vehicles'),
+#     )
+
+#     #reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+#     storename       =       models.CharField(max_length=200)
+#     description         =       models.TextField(default='')
+#     status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
+#     slug                =       models.SlugField(max_length=200)
+#     category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
+#     logo           =       models.ImageField(blank=True, null=True)
+#     owner            =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_name')
+#     available           =       models.BooleanField(default=True)
+#     #stock               =       models.PositiveIntegerField(default=0)
+
+#     created             =       models.DateTimeField(auto_now_add=True)
+#     updated             =       models.DateTimeField(auto_now=True)
+
+
+#     class Meta:
+#         ordering = ['-id']
+
+#     def __str__(self):
+#         return self.storename
+
+#     def delete(self, *args, **kwargs):
+#         self.image.delete()
+#         super().delete(*args, **kwargs)
+
+
+#     def get_absolute_url(self):
+#         return reverse("ent:store_detail", args=[self.id, self.slug])
 
 
 
@@ -308,8 +392,8 @@ class AdvertImages(models.Model):
     company_name    =       models.CharField(max_length=200)
     amount          =       models.PositiveIntegerField(default=0)
     #duration        =       models.CharField(max_length=10)
-    description         =       models.TextField(default='')
-    body            =       RichTextUploadingField(default='', blank=True, null=True)
+    description         =       models.TextField(default='', blank=True, null=True)
+    body            =       RichTextUploadingField(default='')
 
     pic             =       models.ImageField(upload_to='images/', blank=True, null=True)
     vid             =       models.FileField(blank=True, null=True)
@@ -383,18 +467,16 @@ class InfiniteScroll(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    dob = models.DateField(null=True, blank=True)
-    photo = models.ImageField(upload_to='images/', null=True, blank=True)
+    dob = models.DateField(default='2020-01-01', null=True, blank=True)
+    photo = models.ImageField(upload_to='media/', null=True, blank=True)
     def __str__(self):
         return "Profile of user {}".format(self.user.username)
 
 
 class Images(models.Model):
-    post = models.ForeignKey(Article, on_delete=models.CASCADE)
+    #post = models.ForeignKey(Article, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/', blank=True, null=True)
 
-    def __str__(self):
-        return str(self.post.id)
 
 
 class Comment(models.Model):
