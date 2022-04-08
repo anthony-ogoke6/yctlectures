@@ -96,7 +96,12 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.image.errors }}</div>
                   {% endif %}
 
-                  {{ form.image2.label }}*
+                  <p id="toggle" style="cursor:pointer;"><span style="color:#007bff;">Click here to add 2 more images</span></p>
+                  <br>
+
+                  <div id="dept">
+
+                  {{ form.image2.label }}
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.image2 }}
 
@@ -107,7 +112,7 @@
                   {% endif %}
 
 
-                  {{ form.image3.label }}*
+                  {{ form.image3.label }}
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.image3 }}
 
@@ -116,6 +121,8 @@
                   {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.image3.errors }}</div>
                   {% endif %}
+
+                  </div>
 
 
                     {{ form.status.label }}*
@@ -188,22 +195,20 @@
         status1.style.height = "10%";
 
         text_area.required = true;
+        image.required = true;
         amount.required = true;
 
 
-        for (var index = 0; index < inputs.length; ++index){
-
-            inputs[1].setAttribute('class', 'input100');
-            inputs[2].setAttribute('class', 'input100');
-            inputs[4].setAttribute('class', 'input100');
-
-            inputs[index].required = true;
-            //image2.required = false;
-            //image3.required = false;
 
 
+        $(document).ready(function(){
+            $("#dept").hide();
+            var n = $("#toggle");
+            n.click(function(){
+                $("#dept").toggle(200);
+            });
+        });
 
-        }
 
         var error = document.querySelector('li');
         error.style.color = red;

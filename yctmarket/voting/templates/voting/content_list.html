@@ -1,0 +1,335 @@
+{% extends 'ent/base.html' %}
+
+{% load course %}
+
+{% block title %}
+ Voting Content {{ topic.order|add:1 }}: {{ topic.name }}
+{% endblock %}
+
+
+{% block content %}
+
+
+
+<!-- Large modal -->
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+
+
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle" style='color:#fa7506; font-weight: 600;'></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div id="data1">
+
+          </div>
+
+
+    <canvas id="population-chart"></canvas>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+{% with course=topic.course %}
+ <h1>VOTING TYPE NAME: {{ course.name|upper }}</h1>
+ <div class="contents">
+     <br>
+     <br>
+ <h3>ALL YEARS</h3>
+ <ul id="modules">
+ 	<hr>
+ {% for m in course.modules1.all %}
+ <li data-id="{{ m.id }}" {% if m == topic %} class="selected"{% endif %}>
+ <a href="{% url 'voting:topic_content_list' m.id %}">
+ <!--<span>
+ Set <span class="order">{{ m.order|add:1 }}</span>
+ </span>-->
+ <br>
+ <span class="order">{{ m.order|add:1 }}). </span>{{ m.name }} Set
+ </a>
+ <br>
+ <hr>
+ </li>
+ {% empty %}
+ <li>No voting system yet.</li>
+ {% endfor %}
+ </ul>
+ <p><a style='color:red' href="{% url 'voting:department_course_update' course.id %}"><b>Edit year<b></a></p>
+ </div>
+
+ <br>
+
+ <a id="edit_showww" style="visibility: hidden;" data-toggle="modal" data-target=".bd-example-modal-lg"></a>
+
+
+ <div class="module">
+
+ <ul class="content-types">
+
+ <h2>{{ topic.name|capfirst }} Position(s)</h2>
+ <br>
+  {% for i in assignment %}
+
+  {% if i.question %}
+  <h5> <b>({{ forloop.counter }}). {{i.question|capfirst}}</b>  <a id="view_res" data-topic="{{topic.id}}" data-course="{{course.id}}" data-position="{{i.id}}"   class="username" style="">View result</a></h5>
+  <br>
+  {% endif %}
+
+  {% endfor %}
+  <br>
+
+ <li>
+ 	<a class="btn btn-success" href="{% url 'voting:add_assignment' topic_id=topic.id slug=course.slug course_id=course.id %}">Add Position</a>
+
+ 	</li>
+ 	<br>
+ 	{% if assignment.0.question %}
+ 	<li>
+ 	<a class="btn btn-success" href="{% url 'voting:edit_assignment' topic_id=topic.id slug=course.slug course_id=course.id %}">Edit Position</a>
+
+ </li>
+ {% endif %}
+ </ul>
+ </div>
+ <br>
+ <br>
+ <br>
+
+{% endwith %}
+{% endblock %}
+
+
+
+
+
+{% block java %}
+
+
+
+<script>
+
+    var topic;
+    var course;
+    var position;
+    var r_url;
+    $('.username').click(function(e){
+        e.preventDefault();
+        topic = $(this).attr("data-topic");
+        course = $(this).attr("data-course");
+        position = $(this).attr("data-position");
+        saveans();
+
+
+        //r_url = `https://www.yctmarket.com/voters/vote-chart/`;
+    });
+
+
+
+
+    function saveans(){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'students1:vote-chart' %}",
+            headers: {'X-CSRFToken': csrftoken},
+            data : {
+              "topic_id": topic,
+              "course_id": course,
+              "question_id": position
+            },
+            dataType: 'json',
+            beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                $("#overlay").fadeIn(300);
+                $("#data1").empty();
+                $("#population-chart").empty();
+            },
+            success: function(data){
+                $("#exampleModalLongTitle").text(data.position);
+
+                for (let i = 0; i < data.labels.length; i++) {
+                 apnd = `<span class="left">${data.labels[i]} = ${data.data[i]}</span><br>`
+                 $('#data1').append(apnd);
+                }
+
+
+                var $populationChart = $("#population-chart");
+
+                var ctx = $populationChart[0].getContext("2d");
+
+                          new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                              labels: data.labels,
+                              datasets: [{
+                                data: data.data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                                  ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                  ],
+                                borderWidth: 1
+
+                              }]
+                            },
+                            options: {
+                              responsive: true,
+                              legend: {
+                                position: 'top',
+                              },
+                              title: {
+                                display: false,
+                                text: data.name1
+                              },
+                              scales: {
+                                  yAxes: [{
+                                    ticks: {
+                                      min: 0,
+                                      max: data.max_data,
+                                      stepSize: data.min_data,
+                                    }
+                                  }],
+                                  xAxes: [{
+                                      gridLines: {
+                                        zeroLineColor: "black",
+                                        zeroLineWidth: 2
+                                      },
+                                      scaleLabel: {
+                                        display: false,
+                                        labelString: data.position
+                                      }
+                                    }]
+                                }
+                            }
+                          });
+                            },
+                            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                                 $("#overlay").fadeOut(300);
+                                $("#edit_showww").click();
+
+                            }
+                        });
+                        return false;
+                    }
+
+
+
+                    function getCookie(name){
+                      let cookieValue = null;
+                      if (document.cookie && document.cookie !== '') {
+                          const cookies = document.cookie.split(';');
+                          for (let i = 0; i < cookies.length; i++) {
+                              const cookie = cookies[i].trim();
+                              // Does this cookie string begin with the name we want?
+                              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                  break;
+                              }
+                          }
+                      }
+                      return cookieValue;
+                    }
+                    const csrftoken = getCookie('csrftoken');
+
+
+</script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+{% block domready %}
+console.log("helooooooo1111111")
+$('#modules').sortable({
+	stop: function(event, ui) {
+		modules_order = {};
+		module_children = $('#modules').children()
+		$('#modules').children().each(function(){
+			// update the order field
+			$(this).find('.order').text($(this).index() + 1);
+			// associate the module's id with its order
+			modules_order[$(this).data('id')] = $(this).index();
+			console.log("Below is mudules_order:")
+			console.log(modules_order)
+ 	});
+ 	$.ajax({
+ 		type: 'POST',
+		url: '{% url "topic_order" %}',
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		data: JSON.stringify(modules_order),
+ 	});
+ }
+});
+
+$('#module-contents').sortable({
+	stop: function(event, ui) {
+		contents_order = {};
+		content_children = $('#module-contents').children()
+		$('#module-contents').children().each(function(){
+	 		// associate the module's id with its order
+	 		contents_order[$(this).data('id')] = $(this).index();
+	 		console.log("Below is content_order:")
+			console.log(contents_order)
+ 	});
+ 	$.ajax({
+ 		type: 'POST',
+ 		url: '{% url "voting:content_order" %}',
+ 		contentType: 'application/json; charset=utf-8',
+ 		dataType: 'json',
+ 		data: JSON.stringify(contents_order),
+ 	});
+ }
+});
+
+
+{% endblock %}

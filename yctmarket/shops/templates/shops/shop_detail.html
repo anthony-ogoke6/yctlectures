@@ -1,0 +1,343 @@
+{% extends 'ent/base.html' %}
+
+
+{% load humanize %}
+
+
+
+
+{% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+<!--  <meta name="twitter:image" content="{{ url }}">  -->
+
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content="" href="{{ post.get_absolute_url }}" />
+<!-- <meta property="og:image" content="{{ url }}" /> -->
+
+
+
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block jumbotron %}
+    <header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+          {% if a %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        {% endif %}
+
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <!-- Slide One - Set the background image for this slide in the line below -->
+        {% if store %}
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ store.logo.url }}')">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1 >{{ store.storename|upper }}</h1>
+            <p style="color: #f2f2f2;">{{ store.description|safe|linebreaks|slice:":50" }}...</p>
+            <a href="{{ a.get_absolute_url }}"><button type="button" class="btn btn-info">View More</button></a>
+          </div>
+        </div>
+        {% endif %}
+
+    </div>
+  </header>
+
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section id="" class="">
+  <div class="row">
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-4 w3-content">
+
+
+    {% if post.image2 %}
+
+    <img class="main-image mySlides" src="{{ post.image2.url }}" style="width:100%;display:none"/>
+    {% endif %}
+    {% if post.image %}
+    <img class="main-image mySlides" src="{{ post.image.url }}" style="width:100%"/>
+    {% endif %}
+    {% if post.image3 %}
+    <img class="main-image mySlides" src="{{ post.image3.url }}" style="width:100%;display:none"/>
+    {% endif %}
+    <div class="w3-row-padding w3-section">
+
+       {% if post.image2 %}
+
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image2.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(1)">
+    </div>
+    {% endif %}
+
+     {% if post.image %}
+
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(2)">
+    </div>
+    {% endif %}
+
+     {% if post.image3 %}
+
+    <div class="w3-col s4">
+      <img class="demo w3-opacity w3-hover-opacity-off" src="{{ post.image3.url }}" style="width:100%;cursor:pointer" onclick="currentDiv(3)">
+    </div>
+    {% endif %}
+  </div>
+
+  </div> <!-- col-md-4 -->
+  <br><br>
+
+
+
+
+
+  <div class="col-md-8">
+    {% if post.singer %}
+    {% if post.song %}
+  <h2 id="increase">{{post.singer|upper}}: {{post.title|upper}}</h2>
+  {% else %}
+  <h2 id="increase">{{post.singer|upper}}</h2>
+  {% endif %}
+  {% else %}
+  <h2 id="increase">{{ post.title|upper }}</h2>
+
+  {% endif %}
+    <p class="tags">{% if request.user == post.author %}|||||
+    <a class="btn btn-success" href="{% url 'shops:product_delete' id=post.id slug=post.slug %}">Delete Product</a></p>
+    {% endif %}
+    <br>
+    {% if post.amount %}
+    <div class="price">Price: {{ post.amount|intcomma  }} NGN</div>
+
+    <!--<form action="" method="post">
+      {{ cart_product_form }}
+      {% csrf_token %}
+      <input id="option1" type="hidden" name="name1" value="{{ post.id  }}">
+    <input id="option2" type="hidden" name="name1" value="{{ post.slug }}">
+    <input id="option4" type="hidden" name="name1" value="{{ post.amount }}">
+      <input id='add_cart' class="cd-add-to-cart js-cd-add-to-cart" type="submit" value="Add to cart">
+    </form>-->
+    {% endif %}
+    <hr/>
+
+
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if post.body %}
+
+      <div class="panel panel-default">
+        {% if post.amount %}
+        <div class="panel-heading" role="tab" id="headingOne">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        Description
+            </a>
+          </h4>
+        </div>
+        {% endif %}
+        <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
+          <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.body|safe|linebreaks }} </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if post.specification %}
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Specifications
+            </a>
+          </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            {{ post.specification }} </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="panel panel-default">
+        {% if post.amount %}
+        <div class="panel-heading" role="tab" id="headingThree">
+          <h4 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Related
+            </a>
+          </h4>
+        </div>
+        {% endif %}
+        <div id="collapseThree" class="" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            {% for post in similar_posts %}
+
+            <div style="text-align: center;box-shadow: var(--shadow);" class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" class="javs-image"src="{{ post.image.url }}" style="width:90%;cursor:pointer;display: block;margin-left: auto;margin-right: auto;" onclick="currentDiv(2)">
+                <p style="text-align:center;color: #df1057;bottom:0px;">{{ post.title|upper }}</p>
+                </div>
+            {% empty %}
+             <hr>
+            {% endfor %}
+              </div>
+        </div>
+        {% if post.song %}
+        <h3>Download -- {{post.singer}}: {{post.title}}</h3>
+        {% endif %}
+
+
+        {% if post.song %}
+        <audio controls ><source src="/media/{{post.song}}" type="audio/mp3"></audio>
+        <div>
+          <a download="{{post.singer}}:{{post.title}}" href="/media/{{post.song}}"><button class="btn btn-outline-danger">Download Song</button></a>
+        </div>
+        {% endif %}
+      </div>
+          </div>
+        </div> <!-- col-md-8 -->
+      </div> <!-- row -->
+      </div> <!-- col-md-8 -->
+        </div> <!-- row -->
+      </section>
+
+
+
+
+
+
+
+
+{% if post.song %}
+
+{% else %}
+{% if post.amount %}
+
+
+
+    <br/><br/><br/>
+
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+
+<form class="form-group" method="post"  action="{% url 'shops:shop_detail' id=post.id slug=post.slug %}" >
+  {% csrf_token %}
+
+  {% if form.firstname %}
+  {{ form.firstname }}<br>
+  {% endif %}
+
+  {% if form.lastname %}
+  {{ form.lastname }}<br>
+  {% endif %}
+
+  {% if form.email %}
+  {{ form.email }}<br>
+  {% endif %}
+
+  {% if form.address %}
+  {{ form.address }}<br>
+  {% endif %}
+
+  {% if form.phoneNumber %}
+  {{ form.phoneNumber }}<br>
+  {% endif %}
+  <label for="id_select"> Quantity </label>
+<select id="id_select" placeholder="Quantity" name="quantity" class="form-control">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+</select>
+<br>
+
+    <button class="btn btn-success">Buy Now</button>
+  </form>
+</div>
+</div>
+    <br/><br/><br/>
+
+{% endif %}
+{% endif %}
+
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+
+var firstname = document.querySelector('#id_firstname');
+var lastname = document.querySelector('#id_lastname');
+var email = document.querySelector('#id_email');
+var address = document.querySelector('#id_address');
+var phoneNumber = document.querySelector('#id_phoneNumber');
+
+
+
+firstname.setAttribute('class', 'form-control');
+firstname.setAttribute('placeholder', 'First Name');
+lastname.setAttribute('class', 'form-control');
+lastname.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+address.setAttribute('class', 'form-control');
+address.setAttribute('placeholder', 'Address/Location/Description');
+phoneNumber.setAttribute('class', 'form-control');
+phoneNumber.setAttribute('placeholder', 'Phone Number');
+
+firstname.required = true;
+lastname.required = true;
+email.required = true;
+address.required = true;
+phoneNumber = true;
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}

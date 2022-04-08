@@ -1,0 +1,46 @@
+{% extends 'ent/base.html' %}
+
+{% block title %}
+ {% if school %}
+ {{ school.name }} courses
+ {% else %}
+ All courses
+ {% endif %}
+
+ {% endblock %}
+
+
+
+{% block content %}
+
+<h1>
+ All Courses
+</h1>
+
+
+<div class="contents">
+ 
+ <ul id="modules">
+ {% for s in schools %}
+ <li {% if school == s %}class="selected"{% endif %}>
+ <a href="{% url 'courses:department_list_school' school=s.slug %}">
+ <br><span>{{ s.total_courses }} Courses</span>
+ </a>
+ </li>
+ {% endfor %}
+ </ul>
+</div>
+
+
+<div class="module">
+ {% for course in departments %}
+ {% with school=course.school %}
+ <h3><a href="{% url 'courses:department_detail' slug=course.slug %}">{{ course.name }}</a></h3>
+ <p>
+ {{ course.total_modules }} Modules.<br>
+ Instructor: {{ course.instructor.get_full_name }}
+ </p>
+ {% endwith %}
+ {% endfor %}
+</div>
+{% endblock %}

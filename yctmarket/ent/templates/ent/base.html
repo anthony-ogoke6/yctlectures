@@ -6,10 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script data-ad-client="ca-pub-9430893294856522" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <meta name="yctmarket" content="Yabatech, O.A.U, Unilag, gist, entertainment, fashion, products, advertise, buy, sell, blog">
+
     <script>document.getElementsByTagName("html")[0].className += " js";</script>
-    <meta name="google-site-verification" content="KAPpfGoUJqvsIARQ2kNse0hnlSH6gpLD_K7aDDwKP-I" />
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" >
 
 
@@ -18,7 +17,7 @@
 
     {% endblock %}
 
-    <title>{% block title %}YCT-Market{% endblock %}</title>
+    <title>{% block title %}YCTMarket{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
 
@@ -39,6 +38,7 @@
 <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
     * {box-sizing: border-box;}
 
@@ -46,6 +46,8 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
 
 .topnav {
   overflow: hidden;
@@ -55,6 +57,103 @@ body {
 .d-md-block {
     display:block!important;
 }
+
+.container1 {
+  width: 100%;
+  height: 100vh;
+  background-color: #a4152c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boxx {
+  width: 350px;
+  height: 610px;
+  background-color: #1e1e26;
+  border-radius: 10px;
+  box-shadow: 2px 10px 12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin: 20px 10px;
+}
+
+.model {
+  height: 350px;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+}
+
+.details p {
+  font-family: calibri;
+  font-weight: bold;
+  color: #6a6a74;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.marvel {
+  color: #32323e;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-family: bebas kai;
+  font-size: 25px;
+}
+
+.logo {
+  height: 60px;
+}
+
+.left{
+ margin-right: 60px;
+}
+
+#view_res {
+    color:#055db5;
+    cursor: pointer;
+}
+
+#view_res:hover {
+    color: #f8f9fa;
+}
+
+.boxx:hover {
+  background-color: #17171d;
+  transform-style: preserve-3d;
+  transform: scale(1.02);
+  transition: all ease 0.3s;
+}
+
+.boxx:hover .marvel {
+  color: #c0292b;
+  transition: all ease 0.5s;
+
+}
+
+@media(max-width:720px){
+  .boxx {
+    width: 94%;
+    height: 500px;
+  }
+  .model {
+    height: 250px;
+  }
+  .details p {
+    font-size: 16px;
+    width: 250px;
+  }
+}
+
 
 .topnav a {
   float: left;
@@ -102,6 +201,18 @@ body {
   background: #ccc;
 }
 
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 8vh;
+    background-color: #22186f;
+    box-shadow: var(--shadow);
+}
+.nav-links {
+  background-color: #333;
+}
+
 @media screen and (max-width: 600px) {
   .topnav .search-container {
     float: none;
@@ -123,6 +234,7 @@ body {
   transition: width 0.4s ease-in-out;
 }
 
+
 /* When the input field gets focus, change its width to 100% */
 #searchnews:focus {
   width: 100%;
@@ -132,8 +244,12 @@ body {
 <!--===============================================================================================-->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/modern-business.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+
+
 
     {% block lin %}
     {% endblock %}
@@ -145,29 +261,264 @@ body {
 
     <link href="{% static 'css/jumbotron.css' %}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        .nav-links {
+  background-color: #333;
+}
+nav a:hover {
+  background: #282828;
+  color: var(--dark);
+}
+    </style>
+
+    <!--<style>
+    nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 8vh;
+    background-color: #22186f;
+    box-shadow: var(--shadow);
+}
+
+body {
+    background: #ffffff;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    line-height: 1.4;
+}
+
+footer {
+    margin-top: 2rem;
+    background-color: #22186f;
+    color: var(--light);
+    text-align: center;
+    padding: 1rem;
+}
+
+.box {
+    background: #fff;
+    text-align: center;
+    padding: 1.5rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.btn {
+    background: #22186f;
+    color: var(--light);
+    padding: 0.6rem 1.3rem;
+    text-decoration: none;
+    border: 0;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #b0abd3;
+}
+
+.topnav a.active {
+    background-color: #22186f;
+    color: white;
+}
+
+.login100-form-title {
+    font-family: JosefinSans-Bold;
+    background-color: #22186f;
+}
+
+.login100-form-btn {
+    background-color: #22186f;
+}
+</style>
+        <style>
+
+.boxes {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.steady {
+    font-size: xxx-large;
+    font-weight: 700;
+    color: #e82b2b;
+}
+
+  </style>
+
+  <style>
+#overlay{
+ position: fixed;
+ top: 0;
+ z-index: 100;
+ width: 100%;
+ height:100%;
+ display: none;
+ background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+ height: 100%;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ /*color: black;*/
+}
+.spinner {
+ width: 40px;
+ height: 40px;
+ border: 4px #ddd solid;
+ border-top: 4px #2e93e6 solid;
+ border-radius: 50%;
+ animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+ 100% {
+ transform: rotate(360deg);
+ }
+}
+.is-hide{
+ display:none;
+}
+
+
+
+  </style>-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lightslider.css' %}">
+
+
+
+
+
+
+<script src="https://cdn.websitepolicies.io/lib/cookieconsent/1.0.3/cookieconsent.min.js" defer></script><script>window.addEventListener("load",function(){window.wpcc.init({"border":"thin","corners":"small","colors":{"popup":{"background":"#ffe4e1","text":"#000000","border":"#c25e5e"},"button":{"background":"#c25e5e","text":"#ffffff"}},"position":"bottom-right","content":{"href":"https://www.websitepolicies.com/policies/view/y8JwJBqF"}})});</script>
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1G8BSVD00E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1G8BSVD00E');
+</script>
+
+<script data-ad-client="ca-pub-9430893294856522" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 
 
   </head>
 
   <body>
 
-    {% include 'ent/navbar.html' %}
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '2847533872174572',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'version1'
+    });
 
+    FB.AppEvents.logPageView();
+
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    {% include 'ent/navbar.html' %}
+<div id="overlay">
+    <div class="cv-spinner">
+       <span class="spinner">
+
+       </span>
+    </div>
+</div>
 
 
 
 
     <div id="set1">
 
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags  }}">
-              {{ message }}
+        <!-- Large modal -->
+
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable3" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title steady" id="exampleModalLongTitle">Donate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form id="a_form6" role="form" method="POST" action="{% url 'ent:donation' %}">
+            {% csrf_token %}
+            <div id="post-edit">
+
+                <label for="firstname">First Name:</label><span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter your firstname">
+                    <input class="input100" type="text" name="firstname" placeholder="First Name" required>
+                    <span class="focus-input100"></span>
+                  </div>
+
+
+                  <label for="lastname">Last Name:</label><span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter your lastname">
+                    <input class="input100" type="text" name="lastname" placeholder="last Name" required>
+                    <span class="focus-input100"></span>
+                  </div>
+
+
+                <label for="email">Email</label><span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter email">
+                    <input class="input100" type="email" name="email" placeholder="Email" required>
+                    <span class="focus-input100"></span>
+                  </div>
+
+
+                  <label for="amount">Amount (NGN)</label><span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter amount">
+                    <input class="input100" type="number" name="amount" placeholder="Amount" required>
+                    <span class="focus-input100"></span>
+                  </div>
+
+
+                  <label for="phonenumber">Phone Number</label><span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter phonenumber">
+                    <input class="input100" type="number" name="phonenumber" placeholder="Phone Number" required>
+                    <span class="focus-input100"></span>
+                  </div>
+
+
             </div>
-        {% endfor %}
+        </form>
+      </div>
+      <div class="modal-footer container-login100-form-btn">
+        <button id="upload_form6" type="submit" class="btn btn-primary login100-form-btn" form="a_form6">Donate</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
     {% block jumbotron %}
     {% endblock %}
+
+    {% block page_content %}
+    {% endblock page_content %}
 
     {% block con %}
 
@@ -189,6 +540,47 @@ body {
 
     {% endblock %}
 
+
+    <div class="cd-cart cd-cart--empty js-cd-cart">
+  <a href="#0" class="cd-cart__trigger text-replace">
+    Cart
+    <ul class="cd-cart__count"> <!-- cart items count -->
+      <li>0</li>
+      <li>0</li>
+    </ul> <!-- .cd-cart__count -->
+  </a>
+
+  <div class="cd-cart__content">
+    <div class="cd-cart__layout">
+      <header class="cd-cart__header">
+        <h2>Cart</h2>
+        <span class="cd-cart__undo">Item removed. <a href="#0">Undo</a></span>
+      </header>
+
+      <div class="cd-cart__body">
+        <ul>
+          <!-- products added to the cart will be inserted here using JavaScript -->
+        </ul>
+      </div>
+
+      <footer class="cd-cart__footer">
+        <a href="#0" class="cd-cart__checkout">
+          <em>Checkout - $<span>0</span>
+            <svg class="icon icon--sm" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><line stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x1="3" y1="12" x2="21" y2="12"/><polyline stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="15,6 21,12 15,18 "/></g>
+            </svg>
+          </em>
+        </a>
+      </footer>
+    </div>
+  </div> <!-- .cd-cart__content -->
+</div> <!-- cd-cart -->
+</div> <!-- cd-cart -->
+
+
+
+
+
+
     </div>
     {% block style %}
     {% endblock %}
@@ -198,9 +590,16 @@ body {
 
 <!--===============================================================================================-->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="{% static 'javascript/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <!--<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>-->
+    <!--<script src="{% static 'javascript/jquery-3.1.1.min.js' %}"></script>-->
+    <script src="{% static 'javascript/jquery-3.5.1.js' %}"></script>
+    <!--<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>-->
+
+
+      <!--<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>-->
+
 
 <!--===============================================================================================-->
     <script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
@@ -215,18 +614,73 @@ body {
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 
     <script src="{% static 'javascript/jquery.waypoints.min.js' %}"></script>
-    <script src="{% static 'javascript/infinite.min.js' %}"></script>
+    <script src="{% static 'javascript/infinite.min.js' %}"></script><!--
+    <script src="{% static 'javascript/jquery.formset.js' %}"></script>-->
 
-    <script src="{% static 'javascript/main.js' %}"></script>
-    {% block java %}
-    {% endblock %}
+
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 
     <script src="{% static 'vendor/jquery/jquery.min.js' %}" ></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'javascript/add.js' %}"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script src="{% static 'javascript/main.js' %}"></script>
     <script src="{% static 'assets/js/util.js' %}"></script> <!-- util functions included in the CodyHouse framework -->
-    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/mainnew.js' %}"></script>
+
+    <script src="{% static 'javascript/script1.js' %}"></script>
+
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+    <script src="{% static 'javascript/jquery-formset.js' %}"></script>
+
+
+    {% block java %}
+    {% endblock %}
+
+
+    <script src="{% static 'javascript/lightslider.js' %}"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if 'success' in message.extra_tags %}
+      <script>
+        Swal.fire({
+          "title": "Thanks!",
+          "text": "{{ message }}",
+          "icon": "success"
+        })
+      </script>
+      {% elif 'warning' in message.extra_tags %}
+      <script>
+          Swal.fire({
+              "title": "Warning!",
+              "text": "{{ message }}",
+              "icon": "warning"
+          })
+      </script>
+      {% elif 'error' in message.extra_tags %}
+      <script>
+          Swal.fire({
+              "title": "Error!",
+              "text": "{{ message }}",
+              "icon": "error"
+          })
+      </script>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
+
 
 
     <script>
@@ -302,6 +756,40 @@ body {
         });
       });
     </script>
+
+    <script>
+    $(document).ready(function(){
+      $('.cd-cart__delete-item').click(function(e){
+    		e.preventDefault();
+    		post_id = $(this).val()
+    		console.log(post_id)
+    		delItem(post_id)
+    	});
+
+      function delItem(post_id){
+          $.ajax({
+              type: 'POST',
+              url: '/cart/remove/',
+              data : {
+                  'post_id': post_id
+
+              },
+              dataType: 'json',
+              success: function(data){
+                  /*console.log(data.cart)
+                  $('#dept').html(data.cart);*/
+              }
+          });
+          return false;
+      }
+
+
+    });
+
+    </script>
+
+
+
 
   </body>
 </html>

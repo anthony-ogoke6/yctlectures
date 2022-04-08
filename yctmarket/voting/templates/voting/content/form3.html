@@ -1,0 +1,267 @@
+
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+    .bigg{
+        font-size: 1rem;
+    }
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block title %}
+ {% if object %}
+ Edit position "{{ object.name }}"
+ {% else %}
+ Set Position
+ {% endif %}
+
+{% endblock %}
+
+
+
+{% block content %}
+ <h1>
+ {% if object %}
+ Edit position "{{ object.name }}"
+ {% else %}
+ Add Position
+ {% endif %}
+ </h1>
+
+
+ <div class="module" style="">
+
+ <form class="form-group" action="" method="post" enctype="multipart/form-data">
+
+
+ <!--{{ formset|crispy }}--><br>
+     {{ formset.management_form }}
+      {% csrf_token %}
+
+{% for form in formset %}
+
+<div class="inlineform">
+
+{% if form.question %}
+
+{{ form.id }}
+
+<br>
+<br>
+<br>
+
+<span style="color: #ea4444;"><b>Position</b></span>
+ {{ form.question }}<br>
+ {% endif %}
+
+
+{% if form.option1 %}
+{{ form.option1.label }}
+ {{ form.option1 }}<br>
+ {% endif %}
+
+
+{% if form.option2 %}
+{{ form.option2.label }}
+ {{ form.option2 }}<br>
+ {% endif %}
+
+
+{% if form.option3 %}
+{{ form.option3.label }}
+ {{ form.option3 }}<br>
+ {% endif %}
+
+
+{% if form.option4 %}
+{{ form.option4.label }}
+ {{ form.option4 }}<br>
+ {% endif %}
+
+
+
+{% if form.option5 %}
+{{ form.option5.label }}
+ {{ form.option5 }}<br>
+ {% endif %}
+
+
+{% if form.option6 %}
+{{ form.option6.label }}
+ {{ form.option6 }}<br>
+ {% endif %}
+
+
+{% if form.option7 %}
+{{ form.option7.label }}
+ {{ form.option7 }}<br>
+ {% endif %}
+
+
+{% if form.option8 %}
+{{ form.option8.label }}
+ {{ form.option8 }}<br>
+ {% endif %}
+
+
+
+{% if form.option9 %}
+{{ form.option9.label }}
+ {{ form.option9 }}<br>
+ {% endif %}
+
+
+{% if form.option10 %}
+{{ form.option10.label }}
+ {{ form.option10 }}<br>
+ {% endif %}
+
+
+{% if form.option11 %}
+{{ form.option11.label }}
+ {{ form.option11 }}<br>
+ {% endif %}
+
+
+{% if form.option12 %}
+{{ form.option12.label }}
+ {{ form.option12 }}<br>
+ {% endif %}
+
+
+
+{% if form.option13 %}
+{{ form.option13.label }}
+ {{ form.option13 }}<br>
+ {% endif %}
+
+
+{% if form.option14 %}
+{{ form.option14.label }}
+ {{ form.option14 }}<br>
+ {% endif %}
+
+
+{% if form.option15 %}
+{{ form.option15.label }}
+ {{ form.option15 }}<br>
+ {% endif %}
+
+
+{% if form.option16 %}
+{{ form.option16.label }}
+ {{ form.option16 }}<br>
+ {% endif %}
+
+
+
+
+
+
+{% if form.show_question %}
+Hide Position
+ {{ form.show_question }}<br>
+ {% endif %}
+
+
+
+
+
+{% if form.answer %}
+<span style="color: #ea4444;"><b>{{ form.answer.label }}</b></span>
+   {{ form.answer }}<br>
+{% endif %}
+
+ {% if formset.can_delete %}
+
+ {% if formset.instance.pk %}
+
+
+                {{ form.DELETE }}<br>
+
+            {% endif %}
+
+            {% endif %}
+
+
+
+
+
+
+
+            </div>
+    {% endfor %}
+
+ <p><br><input class="btn btn-success" type="submit" value="Save Position"></p>
+
+ </form>
+ </div>
+
+
+ <br>
+ <br>
+{% endblock %}
+
+
+
+
+{% block java %}
+  <script>
+
+
+        var inputs = document.querySelectorAll('.textinput ');
+         var labels = document.querySelectorAll('.ckeditoruploadingwidget');
+
+        for (var index = 0; index < inputs.length; ++index){
+
+            inputs[index].setAttribute('class', 'form-control');
+
+        }
+
+
+
+
+
+        var labels = document.querySelectorAll('.ckeditoruploadingwidget');
+
+        for (var index = 0; index < labels.length; ++index){
+            labels[index].setAttribute('class', 'form-control');
+            labels[index].style.height = "50%";
+        }
+
+
+
+        $(document).ready(function() {
+            $('.inlineform').formset({
+                prefix: '{{ formset.prefix }}'
+            });
+        })
+
+
+
+
+
+    </script>
+    {% endblock %}
+
+

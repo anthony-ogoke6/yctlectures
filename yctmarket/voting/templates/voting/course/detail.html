@@ -1,0 +1,541 @@
+{% extends 'ent/base.html' %}
+
+
+
+{% load humanize %}
+{% load students1_tags %}
+
+
+
+{% block title %}{{ object.name }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+ <meta name="twitter:image" content="{{ url }}">
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content='' href="{{ post.get_absolute_url }}" />
+<meta property="og:image" content="{{ url }}" />
+
+<meta name="description" content="{{ post.snippet|safe }}">
+<meta name="keywords" content="{{ post.snippet|safe }}">
+
+{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+<section id="" class="">
+  <div class="row">
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-4 w3-content">
+
+    {% if object.photo %}
+
+
+    <img class="main-image mySlides" src="{{ object.photo.url }}" style="width:100%"/>
+
+
+
+    {% endif %}
+  </div> <!-- col-md-4 -->
+  <br><br>
+
+  {% with school=course.school %}
+  <div class="col-md-8">
+    <!--<a href="{% url 'voting:department_list_school' object.slug %}"><h1 ><b>{{ object.name|upper }}</b></h1></a>-->
+    <h2 ><b>{{ object.name|upper }}</b></h2>
+    <div class="price">{{ object.school }}</div>
+
+    <hr/>
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+        <div class="panel panel-default">
+        <br>
+
+        {% if request.user.is_authenticated %}
+
+            {% if object.general == False %}
+                <a href="{% url 'students1:pay_for_course' id=object.id slug=object.slug %}" class="btn btn-success">Vote Now</a>
+
+            {% else %}
+                {% courses_students_is_in request.user as students1 %}
+                {% if object in students1 %}
+
+                    {% for m in object.modules1.all|slice:":1" %}
+                            <a href="{% url 'students1:student_department_detail_module' object.id m.id %}" class="btn btn-success">
+                            Continue Voting
+                            </a>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    {% if request.user == object.instructor %}
+
+                        <a href="{% url 'students1:pay_for_course' id=object.id slug=object.slug %}" class="btn btn-success">Vote Now</a>
+
+                    {% else %}
+
+                        {% if department_access|length > 0 %}
+                            {% if student.department %}
+                                {% if student.department in department_access %}
+                                    {% if department_access_level|length > 0 %}
+
+
+                                        {% if student.level in department_access_level %}
+                                            <a href="{% url 'students1:pay_for_course' id=object.id slug=object.slug %}" class="btn btn-success">Vote Now</a>
+
+                                        {% else %}
+                                            <h5>You are not eligible to vote.</h5>
+
+                                        {% endif %}
+
+
+                                    {% else %}
+                                        <a href="{% url 'students1:pay_for_course' id=object.id slug=object.slug %}" class="btn btn-success">Vote Now</a>
+
+                                    {% endif %}
+
+                                {% else %}
+                                    <h5>You are not eligible to vote.</h5>
+
+                                {% endif %}
+
+                            {% else %}
+                                <h5>You are not eligible to vote.</h5>
+
+                            {% endif %}
+
+
+                        {% else %}
+                            <a href="{% url 'students1:pay_for_course' id=object.id slug=object.slug %}" class="btn btn-success">Vote Now</a>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endif %}
+
+
+        {% else %}
+
+            <button id="id_open" class="btn btn-success">
+             Register to vote
+             </button> or <button id="id_open1" class="btn btn-success">Login</button>
+
+
+             <div id="dept">
+                 <br>
+              <br>
+              <br>
+
+                    {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+            {% if profileform.errors %}
+                {% for field in profileform %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in profileform.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span></strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+
+             {% if form %}
+            <form method="post" action="{% url 'students1:pay_for_course_register' id=object.id slug=object.slug %}">
+              {% csrf_token %}
+
+              {% if form.username %}
+              Username<span style="color: red">*</span>
+              {{ form.username }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.username.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.first_name %}
+              First Name<span style="color: red">*</span>
+              {{ form.first_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.first_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.last_name %}
+              Last Name<span style="color: red">*</span>
+              {{ form.last_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.last_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.email %}
+              Email<span style="color: red">*</span>
+              {{ form.email }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.password1 %}
+              Password<span style="color: red">*</span>
+              {{ form.password1 }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password1 }}</div>
+              {% endif %}
+              {% endif %}
+
+
+              {% if form.password2 %}
+              Confirm Password<span style="color: red">*</span>
+              {{ form.password2 }}
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.password2.errors }}</div>
+              {% endif %}
+              <span style="color:green;">{{ form.password2.help_text }}</span>
+              {% endif %}
+
+              <span>Show Password</span>
+              <input type="checkbox" id="box" onclick="reveal()"><br><br>
+
+
+              {% if profileform.department %}
+              Department (Optional)
+              {{ profileform.department }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.level %}
+              Level (Optional)
+              {{ profileform.level }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.level.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.matric_number %}
+              Matric No. (Optional)
+              {{ profileform.matric_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.matric_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.phone_number %}
+              Phone Number (Optional)
+              {{ profileform.phone_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.phone_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+              <br>
+              <br>
+
+
+                <button class="btn btn-success">Vote Now</button>
+              </form>
+              {% endif %}
+
+
+              <br>
+              <br>
+              <br>
+              <br>
+
+
+              </div>
+
+
+
+
+
+
+              <div id="dept2">
+
+                  <br>
+              <br>
+              <br>
+
+
+                    <form method="post" action="{% url 'students1:pay_for_course_login' id=object.id slug=object.slug %}">
+                      {% csrf_token %}
+
+
+                      <label for="username">Email</label><span style="color: red">*</span>
+                      <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                        <input class="input100" type="email" name="username" placeholder="Email" required>
+                        <span class="focus-input100"></span>
+                      </div>
+
+                      <label for="password">Password</label><span style="color: red">*</span>
+                      <div class="wrap-input100 validate-input" data-validate = "Please enter password">
+                        <input class="input100" type="password" id="login_password" name="password" placeholder="Password" required>
+                        <span class="focus-input100"></span>
+                      </div>
+                      <br>
+                              <span>Show Password</span>
+                              <input type="checkbox" id="box1" onclick="reveal1()">
+                              <br>
+
+
+                      {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        <br>
+                      {% endif %}
+
+                      <div class="text-right p-t-13 p-b-23">
+                        <span class="txt1">
+                          Forgot
+                        </span>
+
+                        <a href="{% url 'password_reset' %}" class="txt2">
+                          Password?
+                        </a>
+                      </div>
+
+                      <div class="container-login100-form-btn">
+                        <button class="login100-form-btn">
+                          Submit
+                        </button>
+                      </div>
+                      <br>
+                    </form>
+
+                <br>
+              <br>
+              <br>
+              <br>
+              </div>
+
+
+
+        {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+ {% endwith %}
+{% endblock %}
+
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+
+
+
+
+var username = document.querySelector('#id_username');
+var firstname = document.querySelector('#id_first_name');
+var lastname = document.querySelector('#id_last_name');
+var email = document.querySelector('#id_email');
+var password1 = document.querySelector('#id_password1');
+var password2 = document.querySelector('#id_password2');
+var login_password = document.querySelector('#login_password');
+
+
+var phone_number = document.querySelector('#id_phone_number');
+var matric_number = document.querySelector('#id_matric_number');
+var department = document.querySelector('#id_department');
+var level = document.querySelector('#id_level');
+
+
+username.setAttribute('class', 'form-control');
+username.setAttribute('placeholder', 'Username');
+
+
+firstname.setAttribute('class', 'form-control');
+firstname.setAttribute('placeholder', 'First Name');
+lastname.setAttribute('class', 'form-control');
+lastname.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+
+
+phone_number.setAttribute('class', 'form-control');
+phone_number.setAttribute('placeholder', 'Phone Number');
+
+
+matric_number.setAttribute('class', 'form-control');
+matric_number.setAttribute('placeholder', 'Matric Number');
+department.setAttribute('class', 'form-control');
+department.setAttribute('placeholder', 'Department');
+level.setAttribute('class', 'form-control');
+level.setAttribute('placeholder', 'Level');
+
+
+
+password1.setAttribute('class', 'form-control');
+password1.setAttribute('placeholder', 'Password');
+
+password2.setAttribute('class', 'form-control');
+password2.setAttribute('placeholder', 'Confirm password');
+firstname.required = true;
+lastname.required = true;
+email.required = true;
+password1.required = true;
+password2.required = true;
+
+
+
+function reveal(){
+    if(document.getElementById('box').checked){
+        password1.type='text';
+        password2.type='text';
+
+    }else{
+        password1.type='password';
+        password2.type='password';
+
+    }
+}
+
+
+function reveal1(){
+    if(document.getElementById('box1').checked){
+        login_password.type='text';
+
+    }else{
+        login_password.type='password';
+
+    }
+}
+
+
+
+
+$(document).ready(function(){
+    var n = $("#dept");
+    n.hide();
+});
+
+
+
+$(document).ready(function(){
+    var n = $("#id_open");
+    n.click(function(){
+        var check = $("#dept2").css("display");
+        if (check == "block"){
+            var check = $("#dept2")
+            check.hide();
+        }
+        $("#dept").toggle(200);
+
+
+
+    });
+});
+
+
+$(document).ready(function(){
+    var n = $("#dept2");
+    n.hide();
+});
+
+$(document).ready(function(){
+    var n = $("#id_open1");
+    n.click(function(){
+        var check = $("#dept").css("display");
+        if (check == "block"){
+            var check = $("#dept");
+            check.hide();
+        }
+        $("#dept2").toggle(200);
+
+    });
+});
+
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}

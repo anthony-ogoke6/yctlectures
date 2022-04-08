@@ -1,0 +1,143 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+  </style>
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}{% if object %}Edit Department "{{ object.title }}"
+
+ {% else %}
+ Create a new department
+ {% endif %} | {{ block.super }}
+
+ {% endblock %}
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+<h1>
+ {% if object %} Edit department "{{ object.title }}"
+  {% else %}
+  Create A New Course
+ {% endif %}
+ </h1>
+      <br>
+
+
+<form class="form-group" method="POST" enctype="multipart/form-data" action="" >
+  {% csrf_token %}
+
+  {% if form.school %}
+  Department<br>
+  {{ form.school }}<br>
+  {% endif %}
+  <br>
+
+  {% if form.name %}
+  {{ form.name.label }}<br>
+  {{ form.name }}<br>
+  {% endif %}
+  <br>
+
+  {% if form.amount %}
+  {{ form.amount.label }}<br>
+  {{ form.amount }}<br>
+  {% endif %}
+  <br>
+
+  {% if form.overview %}
+  {{ form.overview.label }}<br>
+  {{ form.overview }}<br>
+  {% endif %}
+  <br>
+
+  {% if form.photo %}
+  {{ form.photo.label }}<br>
+  {{ form.photo }}<br>
+  {% endif %}
+  <br>
+
+  <br>
+
+
+    <button class="btn btn-success">Save Course</button>
+ </form>
+</div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+
+<br><br>
+<br><br>
+
+
+{% endblock %}
+
+{% block java %}
+  <script>
+
+      var school = document.querySelector('#id_school');
+      var name1 = document.querySelector('#id_name');
+      var amount = document.querySelector('#id_amount');
+      var overview = document.querySelector('#id_overview');
+      var photo = document.querySelector('#id_photo');
+
+      school.setAttribute('class', 'form-control');
+      school.setAttribute('name', 'departments[]');
+      //school.setAttribute('multiple', 'multiple);
+      name1.setAttribute('class', 'form-control');
+      amount.setAttribute('class', 'form-control');
+      overview.setAttribute('class', 'form-control');
+      photo.setAttribute('class', 'form-control');
+
+
+      photo.style.height = "50%";
+
+
+
+
+
+
+
+      name1.required = true;
+      school.required = true;
+      //school.multiple = true;
+      //amount.required = true;
+      overview.required = true;
+      photo.required = true;
+
+      $(document).ready(function() {
+    $('#id_school').select2({
+        placeholder: "Select department",
+        allowClear: true,
+        //width: "element",
+        theme:"classic"
+    });
+});
+
+/*$(document).ready(function(){
+$('#id_school').select2();
+
+$('#id_school').on('select2:opening select2:closing', function( event ) {
+    var $searchfield = $(this).parent().find('.select2-search__field');
+    $searchfield.prop('disabled', true);
+});
+});*/
+    </script>
+    {% endblock %}

@@ -1,10 +1,11 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime, intcomma
 
 from .forms import *
-from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, PostCreateFormForFree, UserLoginForm, UserRegistrationForm, ReRequestActivationForm, CommentForm, ProfileForm, UserEditForm, ProfileEditForm,  ShopFreeForOneMonth, ShopPaymentSixMonth, UploadProductForFree, ShopPaymentOneYearMonth
+from .forms import EmailFormForMeetUp, EmailFormForPayment, InfiniteScrollForm, PostCreateForm, ProfileFormStudents, ProfileFormStudents1, ProfileFormTutors, PostCreateFormForFree, UserLoginForm, ProfileForm1, UserRegistrationForm, ReRequestActivationForm, CommentForm, ProfileForm, ProfileFormTutors, UserEditForm, ProfileEditForm,  ShopFreeForOneMonth, ShopPaymentSixMonth, UploadProductForFree, ShopPaymentOneYearMonth
 import requests
 import uuid
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -31,7 +32,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images, Comment, Face
+from .models import Article, Profile, Reference, Post, AdvertImages, PurchaseReference, PhoneNumber, Images, Comment, Face, DonationReference
 from shops.models import Stores, Shops, NamesOfPeopleWhoHaveOwnedShops, Product
 import datetime
 from taggit.models import Tag
@@ -39,13 +40,63 @@ from django.db.models import Count
 import hmac
 import hashlib
 import json
+from math import ceil
+from django.views.decorators.csrf import csrf_exempt
+
+from cart.forms import CartAddProductForm
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
+
+def user_donation(request):
+    if request.method == 'POST':
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        email = request.POST['email']
+        amount = int(request.POST['amount'])
+        phone_number = request.POST['phonenumber']
+        amount1 = intcomma(amount)
+
+
+        r = DonationReference(firstname=firstname, lastname=lastname, email=email, amount=amount, phone_number=phone_number)
+        r.save()
+        reference = str(r.reference)
+
+        subject = "User about to donate at allschoolsng"
+        message = '%s ' %(f"\nName: {firstname} {lastname}\n \nEmail: {email}\n \nPhone Number: {phone_number}\n \nAmount: {amount1} NGN\n \nReference: {reference}")
+        emailFrom = [settings.EMAIL_HOST_USER]
+        emailTo = [settings.EMAIL_HOST_USER]
+        send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+
+        headers = {
+            'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+            'Content-Type': 'application/json',
+            }
+
+
+        amount = int(str(amount) + "00")
+        data = {"reference": reference, "amount": amount, "email": email}
+        url = "https://api.paystack.co/transaction/initialize"
+        response = requests.request("POST", url, headers=headers, json=data)
+        res = response.json()
+
+        checkout = res['data']['authorization_url']
+
+        return redirect(checkout)
+
+
+
+@csrf_exempt
 def processPaystackWebhook(request):
+    info = "new webhook"
+    subject = f"webhook from paystack via allschoolsng"
+    message = '%s ' %(info)
+    emailFrom = [settings.EMAIL_HOST_USER]
+    emailTo = [settings.EMAIL_HOST_USER]
+    send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
     # paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
     '''
     The function takes an http request object containing the json data
@@ -95,7 +146,7 @@ def processPaystackWebhook(request):
                             view_count=view_count, duration=duration, created=created, updated=updated
                         )
                         post.save()
-                        subject = f"webhook from paystack via yctmarket"
+                        subject = f"webhook from paystack via allschoolsng"
                         message = '%s %s %s ' %(article.reference, title, author)
                         emailFrom = [settings.EMAIL_HOST_USER]
                         emailTo = [settings.EMAIL_HOST_USER]
@@ -106,6 +157,12 @@ def processPaystackWebhook(request):
 
 
 def processPaystackWebhook1(request):
+    info = "new webhook"
+    subject = f"webhook from paystack via allschoolsng"
+    message = '%s ' %(info)
+    emailFrom = [settings.EMAIL_HOST_USER]
+    emailTo = [settings.EMAIL_HOST_USER]
+    send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
     # paystack_sk = "sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11"
     '''
     The function takes an http request object containing the json data
@@ -137,7 +194,7 @@ def processPaystackWebhook1(request):
                         author = article.author
                         article.published_date = now
                         article.save()
-                        subject = f"webhook from paystack via yctmarket"
+                        subject = f"webhook from paystack via allschoolsng"
                         message = '%s %s %s ' %(article.reference, title, author)
                         emailFrom = [settings.EMAIL_HOST_USER]
                         emailTo = [settings.EMAIL_HOST_USER]
@@ -202,7 +259,6 @@ def my_webhook_view1(request):
                 category = shop.category
                 description = shop.description
                 logo = shop.logo
-                tags = shop.tags
                 available = shop.available
                 duration = shop.duration
                 created = shop.created
@@ -215,41 +271,51 @@ def my_webhook_view1(request):
 
 
 def article_list(request, tag_slug=None):
-    #pics =  AdvertImages.objects.all()
-    #pic = Images.objects.all()
-
     articles = []
+    article1 = []
+    stores = Stores.published.all()
+    n = len(article1)
+    nSlides = n//4 + ceil((n/4)+(n//4))
+
+    article2 = [[article1, range(1, nSlides), nSlides],
+    [article1, range(1, nSlides), nSlides]]
+
+    for shop in stores:
+
+        #check post duration for each post
+
+        #check when post was created
+        post_created = shop.published_date.date()
+
+        #check todays date
+        todays_date = datetime.date.today()
+
+        #subtract the date when post was created from todays date to get amount of days left for post to remain on blog
+        days_left = todays_date - post_created
+
+        #check if the days left is greater or equal to the post's duration
+        if days_left.days >= shop.duration:
+
+            #if duration exceeded delete post
+            shop.delete()
+        else:
+            #if duration not exceeded, append post to articles list
+            article1.append(shop)
 
 
     posts = Post.published.all()
 
     faces = Face.objects.all()
-    #a1 = faces[0]
 
     news_search = request.GET.get('search')
 
     query = request.GET.get('q')
-    #search_query = query.split()
-    #if len(query)>=1:
-        #for word in query:
     if query:
         posts = Post.published.filter(
             Q(title__icontains=query)|
-            Q(category__icontains=query)|
-            Q(tags__name__icontains=query)).distinct()
+            Q(category__icontains=query)).distinct()
 
-                #posts= Post.published.filter(lookups, is_active=True).distinct()
     ads = AdvertImages.objects.all()
-    a = ads[0]
-    b = ads[1]
-    c = ads[2]
-    d = ads[3]
-    e = ads[4]
-    f = ads[5]
-    g = ads[6]
-    h = ads[7]
-    i = ads[8]
-    j = ads[9]
     if news_search:
         ads = AdvertImages.objects.filter(
             Q(title__icontains=news_search)|
@@ -257,32 +323,7 @@ def article_list(request, tag_slug=None):
             Q(company_name__icontains=news_search)).distinct()
 
 
-
-    #empty dict
-    logger.error("Test!!")
-    print('its working now')
-
-
-
-    #tag = None
-
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        posts = Post.published.filter(tags__in=[tag])
-
-
-
-
-
-
-    #empty dict
-    #data = []
-
-    #data = []
-
     #querry all post in Post model
-
-
     #iterate for post in posts and check if duration exceeded or not
     for post in posts:
         #check post duration for each post
@@ -320,175 +361,22 @@ def article_list(request, tag_slug=None):
         article = paginator.page(paginator.num_pages)
 
 
-    if news_search:
-
-        if len(ads) == 1:
-            a = ads[0]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            #'a1: a1,
-            'a': a,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 2:
-            b = ads[1]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-        elif len(ads) == 3:
-            c = ads[2]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 4:
-            d = ads[3]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            'd': d,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 5:
-            e = ads[4]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            'd': d,
-            'e': e,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 6:
-            f = ads[5]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            'd': d,
-            'e': e,
-            'f': f,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 7:
-            g = ads[6]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            'd': d,
-            'e': e,
-            'f': f,
-            'g': g,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-
-        elif len(ads) == 8:
-            h = ads[7]
-            context = {
-            'article': article,
-            'news_search':news_search,
-            'a': a,
-            'b': b,
-            'c': c,
-            'd': d,
-            'e': e,
-            'f': f,
-            'g': g,
-            'h': h,
-            #'a1: a1,
-            }
-            return render(request, 'ent/article_list.html', context)
-        elif len(ads) == 9:
-            i = ads[8]
-            context = {
-                'article':article,
-                'news_search':news_search,
-                'a':a,
-                'b':b,
-                'c':c,
-                'd':d,
-                'e':e,
-                'f':f,
-                'g':g,
-                'h':h,
-                'i':i,
-                #'a1: a1,
-                }
-            return render(request, 'ent/article_list.html', context)
-        elif len(ads) == 10:
-            j = ads[9]
-            context = {
-                'article':article,
-                'news_search':news_search,
-                'a':a,
-                'b':b,
-                'c':c,
-                'd':d,
-                'e':e,
-                'f':f,
-                'g':g,
-                'h':h,
-                'i':i,
-                'j':j,
-                #'a1: a1,
-                }
-            return render(request, 'ent/article_list.html', context)
-
-
-
-
-
     context = {
         'article': article,
-        #'content': content,
-        #'pics': pics,
-        #'pic': pic,
+        'ads': ads,
+        'faces': faces,
+        'article1': article1,
+        'article2': article2,
         'query': query,
         'news_search':news_search,
-        'a': a,
-        'b': b,
-        'c': c,
-        'd': d,
-        'e': e,
-        'f': f,
-        'g': g,
-        'h': h,
-        'i':i,
-        'j':j,
-        #'a1: a1,
+        'no_of_slides':nSlides,
+        'range':(1, nSlides),
         }
 
     return render(request, 'ent/article_list.html', context)
+
+
+
 
 
 
@@ -498,9 +386,10 @@ def article_details(request, id, slug):
     post_increament.save()
     related = []
     post = get_object_or_404(Post, id=id, slug=slug)
-    url = f"https://yctmarket.pythonanywhere.com{post.image.url}"
+    url = f"https://www.allschoolsng.com{post.image.url}"
     q = post.title
     author = post.author
+    author_email = author.email
     amount = post.amount
     title = post.title
     # if int(post.amountInDols) > 1:
@@ -512,12 +401,6 @@ def article_details(request, id, slug):
 
     # else:
     #     amount = post.amount
-
-    post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids)\
-     .exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
-     .order_by('-same_tags','-created')[:3]
 
     search = request.GET.get('search')
 
@@ -546,8 +429,9 @@ def article_details(request, id, slug):
         related.append(similar[3])
 
     if request.method == 'POST':
-        print("it got here")
         form = EmailFormForPayment(request.POST or None)
+        cart_product_form = CartAddProductForm(request.POST or None)
+        print("it got here")
         print(form)
 
         #if form.is_valid():
@@ -566,26 +450,27 @@ def article_details(request, id, slug):
         phoneNumber = form.cleaned_data['phoneNumber']
         print("it got here too")
         print(phoneNumber)
-        subject = f"Customer about to pay for {post.title} at yctmarket"
-        message = '%s %s %s %s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber, author, amount, title)
+        subject = f"Customer is interested in {post.title} at allschoolsng"
+        msg = f"Name: {firstname} {lastname}\n \nEmail: {email}\n \nAdress: {address}\n \nPhone Number: {phoneNumber}\n \nOwner Of Product: {author}\n \nPost Title: {title}\n \nAmount: {amount}"
+        message = '%s ' %(msg)
         emailFrom = [settings.EMAIL_HOST_USER]
-        emailTo = [settings.EMAIL_HOST_USER]
+        emailTo = [settings.EMAIL_HOST_USER, author_email]
+        #emailTo = [settings.EMAIL_HOST_USER]
         send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
         #checkout = res['data']['authorization_url']
         #return redirect(checkout)
         return redirect('thanks')
-
             # return HttpResponseRedirect(post.get_absolute_url())
     else:
         form = EmailFormForPayment()
+        cart_product_form = CartAddProductForm()
 
     context = {
         'post': post,
         'amount': amount,
         'url' : url,
         'form' : form,
-        'related':related,
-        'similar_posts': similar_posts
+
     }
 
     return render(request, 'ent/article_detail.html', context)
@@ -599,7 +484,8 @@ def advert_details(request, id, slug, amount):
     related = []
     post = get_object_or_404(AdvertImages, id=id, slug=slug, amount=amount)
     comments = Comment.objects.filter(post=post, reply=None).order_by('-id')
-    url = f"https://yctmarket.pythonanywhere.com{post.pic.url}"
+    url = f"https://www.allschoolsng.com{post.pic.url}"
+    print(post.pic)
     q = post.title
 
 
@@ -628,7 +514,7 @@ def advert_details(request, id, slug, amount):
             comment_qs = None
 
             #messge_content = f"Post Title: {post.title} \n Comment by: {request.user} \n \n \nComment Content: \n{content}"
-            #subject = "New comment from yctmarket.com"
+            #subject = "New comment from www.allschoolsng.com"
             #message = '%s' %(messge_content)
 
             #emailFrom = [settings.EMAIL_HOST_USER]
@@ -636,7 +522,7 @@ def advert_details(request, id, slug, amount):
             #send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
             if reply_id:
                 comment_qs = Comment.objects.get(id=reply_id)
-                #subject = 'Comments reply from yctmarket'
+                #subject = 'Comments reply from allschoolsng'
                 #message = '%s %s ' %(comment_qs, content,)
                 #emailFrom = [settings.EMAIL_HOST_USER]
                 #emailTo = [settings.EMAIL_HOST_USER]
@@ -695,16 +581,16 @@ def advert_details(request, id, slug, amount):
                 reply_email_list.append(settings.EMAIL_HOST_USER)
 
 
-                subject = 'Comments reply from www.yctmarket.com'
-                message = '%s %s' %(comment_qs, f"\nreply by: {request.user.username} \n \nContent: \n{content} \n \n \nhttps://www.yctmarket.com{post.get_absolute_url()}",)
+                subject = 'Comments reply from allschoolsng'
+                message = '%s %s' %(comment_qs, f"\nreply by: {request.user.username} \n \nContent: \n{content} \n \n \nhttps://www.allschoolsng.com{post.get_absolute_url()}",)
                 print("look here")
                 print(reply_email_list)
                 emailFrom = [settings.EMAIL_HOST_USER]
                 emailTo = reply_email_list
                 send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
             else:
-                messge_content = f"Post Title: \n{post.title} \n \nComment by: {request.user} \n \nContent: \n{content} \n \n \nhttps://www.yctmarket.com{post.get_absolute_url()}"
-                subject = "New comment from yctmarket.com"
+                messge_content = f"Post Title: \n{post.title} \n \nComment by: {request.user} \n \nContent: \n{content} \n \n \nhttps://www.allschoolsng.com{post.get_absolute_url()}"
+                subject = "New comment from allschoolsng"
                 message = '%s' %(messge_content)
                 emailFrom = [settings.EMAIL_HOST_USER]
                 emailTo = email_msg
@@ -726,6 +612,41 @@ def advert_details(request, id, slug, amount):
         return JsonResponse({'form': html})
 
     return render(request, 'ent/advert_detail.html', context)
+
+
+
+
+def face_details(request, id, slug):
+    post_increament = get_object_or_404(Face, id=id, slug=slug)
+    post_increament.view_count +=1
+    post_increament.save()
+    related = []
+    post = get_object_or_404(Face, id=id, slug=slug)
+    url = f"https://www.allschoolsng.com{post.image.url}"
+    q = post.title
+    # if int(post.amountInDols) > 1:
+
+    #     urls = "https://api.exchangeratesapi.io/latest?symbols=USD,GBP"
+    #     req = requests.request("GET", urls)
+    #     print(req)
+    #     amount = None
+
+    # else:
+    #     amount = post.amount
+
+
+
+
+
+    context = {
+        'post': post,
+        'url' : url,
+    }
+
+    return render(request, 'ent/face_detail.html', context)
+
+
+
 
 
 def store(request, tag_slug=None):
@@ -752,14 +673,10 @@ def store(request, tag_slug=None):
             Q(owner__username__icontains=query)|
             Q(owner__first_name__icontains=query)|
             Q(owner__last_name__icontains=query)|
-            Q(description__icontains=query)|
-            Q(tags__name__icontains=query)).distinct()
+            Q(description__icontains=query)).distinct()
 
 
 
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        stores = Post.published.filter(tags__in=[tag])
 
     for shop in stores:
 
@@ -784,7 +701,7 @@ def store(request, tag_slug=None):
             articles.append(shop)
 
 
-    paginator = Paginator(articles, 6)
+    paginator = Paginator(articles, 4)
     page = request.GET.get('page')
     try:
         article = paginator.page(page)
@@ -814,16 +731,11 @@ def store_detail(request, id, slug):
     store = get_object_or_404(Stores, id=id, slug=slug)
     products = store.product_in_store.all()
     print(products)
-    url = f"https://yctmarket.pythonanywhere.com{store.logo.url}"
+    url = f"https://www.allschoolsng.com{store.logo.url}"
     q = store.category
     user_number = PhoneNumber.objects.get(user=store.owner)
     number = user_number.phone_number
 
-    post_tags_ids = store.tags.values_list('id', flat=True)
-    similar_posts = Stores.published.filter(tags__in=post_tags_ids)\
-     .exclude(id=store.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
-     .order_by('-same_tags','-created')[:3]
 
     search = request.GET.get('search')
     if search:
@@ -835,12 +747,28 @@ def store_detail(request, id, slug):
             Q(description__icontains=search)
             ).distinct()
 
+    paginator = Paginator(products, 4)
+    page = request.GET.get('page')
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    if request.method == 'POST':
+        cart_product_form = CartAddProductForm(request.POST or None)
+            # return HttpResponseRedirect(post.get_absolute_url())
+    else:
+        cart_product_form = CartAddProductForm()
+
     context = {
         'products': products,
         'store': store,
         'number': number,
         'url' : url,
         'search':search,
+        'cart_product_form': cart_product_form
     }
 
     return render(request, 'ent/store_detail.html', context)
@@ -853,7 +781,7 @@ def shop_detail(request, id, slug):
     related = []
     post = get_object_or_404(Product, id=id, slug=slug)
     print(post)
-    url = f"https://yctmarket.pythonanywhere.com{post.image.url}"
+    url = f"https://www.allschoolsng.com{post.image.url}"
     q = post.title
     author = post.author
     amount = post.amount
@@ -867,13 +795,6 @@ def shop_detail(request, id, slug):
 
     # else:
     #     amount = post.amount
-
-    post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids)\
-     .exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
-     .order_by('-same_tags','-created')[:3]
-
 
 
     similar = Product.published.filter(
@@ -913,7 +834,7 @@ def shop_detail(request, id, slug):
         phoneNumber = form.cleaned_data['phoneNumber']
         print("it got here too")
         print(phoneNumber)
-        subject = f"Customer about to pay for {post.title} at yctmarket"
+        subject = f"Customer about to pay for {post.title} at allschoolsng"
         message = '%s %s %s %s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber, author, amount, title)
         emailFrom = [settings.EMAIL_HOST_USER]
         emailTo = [settings.EMAIL_HOST_USER]
@@ -1032,8 +953,8 @@ def signup_view(request):
             saved_user = User.objects.get(username=username)
             user_phone = PhoneNumber(user=saved_user, phone_number=phone_number, matric_number=matric_number)
             user_phone.save()
-            Profile.objects.create(user=new_user, dob=dob, photo=photo)
-            subject = f"Seller name {username} just registered at yctmarket"
+            #Profile.objects.create(user=new_user, dob=dob, photo=photo)
+            subject = f"Student named {username} just registered at allschoolsng"
             message = '%s %s ' %(email, phone_number)
             emailFrom = [settings.EMAIL_HOST_USER]
             emailTo = [settings.EMAIL_HOST_USER]
@@ -1065,6 +986,147 @@ def signup_view(request):
     }
     return render(request, "ent/register.html", context)
 
+def signup_choice_view(request):
+    context = {}
+    template = 'ent/signup_choice.html'
+    return render(request,template,context)
+
+def signup_tutor_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        profile_form = ProfileForm1(request.POST)
+        #profile_form_tutors = ProfileFormTutors(request.POST, request.FILES)
+        if form.is_valid() and profile_form.is_valid():
+            new_user = form.save(commit=False)
+            new_profile = profile_form.save(commit=False)
+            email = form.cleaned_data['email']
+            #dob = request.POST['dob']
+            username = form.cleaned_data['username']
+            phone_number = request.POST['phoneNumber']
+            prefix = request.POST['prefix']
+            password = form.cleaned_data['password1']
+            new_user.set_password(form.cleaned_data['password1'])
+            #new_user.is_active=False
+            new_user.save()
+
+            my_group = Group.objects.get(name='Instructors')
+            user = User.objects.get(username=username)
+            #new_profile.user = user
+            #new_profile.save()
+            my_group.user_set.add(user)
+            saved_user = User.objects.get(username=username)
+            #Profile.objects.create(user=new_user, prefix=prefix)
+            user_phone = PhoneNumber(user=saved_user, phone_number=phone_number, prefix=prefix)
+            user_phone.save()
+            #Profile.objects.create(user=new_user, prefix=prefix)
+            subject = f"Tutor named {user.last_name} {user.first_name} just registered at allschoolsng"
+            msg = f"Full Name: {user.last_name} {user.first_name}\n \nEmail: {user.email}\n \nPhone Number: {phone_number}"
+            message = '%s ' %(msg)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    if 'next' in request.POST:
+                        messages.add_message(request, messages.SUCCESS, 'Account created successfully.', extra_tags='success')
+                        return HttpResponseRedirect(reverse(request.POST.get('next')))
+                    else:
+                        messages.add_message(request, messages.SUCCESS, 'Account created successfully.', extra_tags='success')
+                        return HttpResponseRedirect(reverse('ent:article_list'))
+                else:
+                    return HttpResponse("User is not active")
+            else:
+                return HttpResponse("User is None")
+
+            #messages.add_message(request, messages.SUCCESS, 'Account created successfully. An activation email has been sent to you.')
+            #return redirect('user_login')
+    else:
+        form = UserCreationForm()
+        profile_form = ProfileForm1()
+    context = {
+        'form': form,
+        'profile_form': profile_form,
+    }
+    return render(request, "ent/signup_tutor.html", context)
+
+
+
+
+def signup_students_view(request):
+    if request.method == 'POST':
+        print("request.POST")
+        print(request.POST)
+        form = UserCreationForm(request.POST)
+        #profile_form = ProfileForm(request.POST, request.FILES)
+        profile_form_students = ProfileFormStudents(request.POST)
+        print(form)
+        print(profile_form_students)
+        if form.is_valid() and profile_form_students.is_valid():
+            new_user = form.save(commit=False)
+            #new_profile = profile_form.save(commit=False)
+            email = form.cleaned_data['email']
+            #dob = request.POST['dob']
+            #photo = request.POST['photo']
+            username = form.cleaned_data['username']
+            phone_number = request.POST['phoneNumber']
+            matric_number = request.POST['matric_number'].upper()
+            level = request.POST['level']
+            department = request.POST['department']
+            password = form.cleaned_data['password1']
+            new_user.set_password(form.cleaned_data['password1'])
+            #new_user.is_active=False
+            new_user.save()
+
+            my_group = Group.objects.get(name='Students')
+            user = User.objects.get(username=username)
+            #new_profile.user = user
+            #new_profile.save()
+            my_group.user_set.add(user)
+            saved_user = User.objects.get(username=username)
+            user_phone = PhoneNumber(user=saved_user, phone_number=phone_number, matric_number=matric_number, department=department, level=level)
+            user_phone.save()
+            #Profile.objects.create(user=new_user, dob=dob, photo=photo)
+            subject = f"Student named {user.last_name} {user.first_name} just registered at allschoolsng"
+            msg = f"Full Name: {user.last_name} {user.first_name}\n \nEmail: {user.email}\n \nPhone Number: {phone_number}\n \nDepartment: {department}\n \nLevel: {level}"
+            message = '%s ' %(msg)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    if 'next' in request.POST:
+                        messages.add_message(request, messages.SUCCESS, 'Account created successfully.', extra_tags='success')
+                        return HttpResponseRedirect(reverse(request.POST.get('next')))
+                    else:
+                        messages.add_message(request, messages.SUCCESS, 'Account created successfully.', extra_tags='success')
+                        return HttpResponseRedirect(reverse('ent:article_list'))
+                else:
+                    return HttpResponse("User is not active")
+            else:
+                return HttpResponse("User is None")
+
+            #messages.add_message(request, messages.SUCCESS, 'Account created successfully. An activation email has been sent to you.')
+            #return redirect('user_login')
+    else:
+        form = UserCreationForm()
+        #profile_form = ProfileForm()
+        profile_form_students = ProfileFormStudents()
+    context = {
+        'form': form,
+        #'profile_form': profile_form,
+        'profile_form_students': profile_form_students,
+    }
+    return render(request, "ent/register.html", context)
+
+
+
+
 
 
 def activate(request, uidb64, token):
@@ -1082,10 +1144,46 @@ def activate(request, uidb64, token):
     if user is not None and generate_token.check_token(user, token):
             user.is_active = True
             user.save()
-            messages.add_message(request, messages.INFO, 'Account activated successfully. Now you can login your account.')
+            messages.add_message(request, messages.SUCCESS, 'Account activated successfully. Now you can login your account.', extra_tags='success')
             return redirect('user_login')
     else:
         return render(request, "ent/activate_failed.html", status=401)
+
+
+
+
+def post_edit(request, id, slug):
+    post = get_object_or_404(Post, id=id, slug=slug)
+
+    if request.method == 'POST' and request.is_ajax():
+        print("whya")
+        form = PostCreateFormForFree(instance=post)
+        context = {
+            'form': form
+        }
+        html = render_to_string('ent/post-edit.html', context, request=request)
+        return JsonResponse({'form': html})
+
+
+    if request.method == 'POST':
+
+        form = PostCreateFormForFree(instance=post, data=request.POST, files=request.FILES)
+        if request.user != post.author:
+            raise Http404()
+        else:
+            if form.is_valid():
+                post.body = form.cleaned_data['description']
+                form.save()
+                post = Post.objects.get(id=id, slug=slug)
+                post.body = post.description
+                post.save()
+                print("saved")
+                messages.success(request, 'Post edited successfully', extra_tags='success')
+                return redirect('ent:article_detail', id=id, slug=slug)
+    else:
+        return redirect('ent:article_detail', id=id, slug=slug)
+
+
 
 
 
@@ -1104,12 +1202,12 @@ def upload_free_at_given(request):
             post.reference = reference
             post.body = request.POST['description']
             post.save()
-            subject = f"{user} just made a new post on yctmarket"
+            subject = f"{user} just made a new post on allschoolsng"
             message = '%s %s %s ' %(title, amount, user)
             emailFrom = [settings.EMAIL_HOST_USER]
             emailTo = [settings.EMAIL_HOST_USER]
             send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-            messages.success(request, "Post has been successfully created.")
+            messages.success(request, "Post has been successfully created.", extra_tags='success')
             return redirect('ent:article_list')
     else:
         form = PostCreateFormForFree()
@@ -1144,7 +1242,7 @@ def upload_product(request, store_id, store_slug):
             emailFrom = [settings.EMAIL_HOST_USER]
             emailTo = [settings.EMAIL_HOST_USER]
             send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-            messages.success(request, "Product has been successfully created.")
+            messages.success(request, "Product has been successfully created.", extra_tags='success')
             return redirect('store_detail', id=store.id, slug=store.slug)
     else:
         form = UploadProductForFree()
@@ -1244,7 +1342,7 @@ def pay_per_upload(request):
             #    "tx_ref":reference,
             #    "amount":payment,
             #    "currency":"NGN",
-            #    "redirect_url":"https://www.yctmarket.com/thank_you/",
+            #    "redirect_url":"https://www.allschoolsng.com/thank_you/",
             #    "payment_options":"card",
             #    "customer":{
             #       "email":email,
@@ -1254,7 +1352,7 @@ def pay_per_upload(request):
             #    "customizations":{
             #       "title":"Pay per upload",
             #       "description":"Customers pay a token to upload their product",
-            #       "logo":"https://yctmarket.pythonanywhere.com/static/img/yctmarket.png"
+            #       "logo":"https://www.allschoolsng.com/static/img/yct11.png"
             #    }
             # }
             # url = "https://api.flutterwave.com/v3/payments"
@@ -1282,21 +1380,26 @@ def user_login(request):
             username = request.POST['username']
             password = request.POST['password']
             if '@' in username:
-                user =  User.objects.get(email=username)
-                username = user.username
-            user = authenticate(username=username, password=password)
+                try:
+                    user =  User.objects.get(email=username)
+                    username = user.username
+                    user = authenticate(username=username, password=password)
+                except:
+                    user = None
+            #user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
                     login(request, user)
                     if 'next' in request.POST:
                         return redirect(request.POST.get('next'))
                     else:
+                        messages.success(request, 'Login successful', extra_tags='success')
                         return HttpResponseRedirect(reverse('ent:article_list'))
                 else:
-                    messages.info(request, 'User not active, re-request your activation link')
+                    messages.info(request, 'User not active, re-request your activation link', extra_tags='warning')
                     return HttpResponseRedirect(reverse('ent:re_request_activation_link'))
             else:
-                messages.error(request, 'Information provided not correct. Check username or password or check your email to activate your account.')
+                messages.error(request, 'Information provided not correct. Check email or password', extra_tags='error')
                 form = UserLoginForm()
                 context = {
                     'form': form,
@@ -1317,6 +1420,7 @@ def edit(request):
     username = request.user
     user = User.objects.get(username=username)
     profile = Profile.objects.get(user=user)
+    phonenumber = PhoneNumber.objects.get(user=user)
     shop_owners_list = []
     try:
         shop_owned_by_user = Stores.objects.get(owner=request.user or None)
@@ -1336,36 +1440,34 @@ def edit(request):
             shop_owned_by_user = None
     user_posts = Post.objects.filter(author=username)
     if request.method == 'POST':
+
+        if request.user.groups.filter(name='Students'):
+            profile_form1 = ProfileFormStudents(instance=phonenumber, data=request.POST, files=request.FILES)
+        else:
+            profile_form1 = ProfileFormTutors(instance=phonenumber, data=request.POST, files=request.FILES)
+
         user_form = UserEditForm(instance=request.user, data=request.POST)
-        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
-        if user_form.is_valid() and profile_form.is_valid():
+
+        if user_form.is_valid() and profile_form1.is_valid():
             #profile_form.save()
             #user_form.save()
-            profile_form.save(commit=False)
-            user_form.save(commit=False)
-            print("up")
-            #print(prof.cleaned_data['photo'])
-            #profile.photo = request.POST['photo']
-            print("down")
-            #print(profile.photo)
-            #photo = profile.photo
-            #prof.photo = profile_form.cleaned_data['photo']
-            profile.dob = request.POST['dob']
-            user.username = request.POST['username']
-            user.first_name = request.POST['first_name']
-            user.last_name = request.POST['last_name']
-            user.email = request.POST['email']
-            profile.save()
-            user.save()
-            #profile_form.save()
-            #user_form.save()
-            messages.success(request, 'Profile edited successfully')
-            #prof = Profile.objects.get(user=user)
+            profil_form = profile_form1.save(commit=False)
+
+            profil_form.user = user
+
+            user_form.save()
+            profil_form.save()
+
+            messages.success(request, 'Profile edited successfully', extra_tags='success')
     else:
+
+        if request.user.groups.filter(name='Students'):
+            profile_form1 = ProfileFormStudents(instance=phonenumber)
+        else:
+            profile_form1 = ProfileFormTutors(instance=phonenumber)
+
         user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(instance=request.user.profile)
-        #photo = None
-    return render(request, 'ent/edit.html', {'shop_owned_by_user': shop_owned_by_user, 'user_form': user_form, 'profile_form': profile_form, 'user_posts':user_posts, 'profile':profile, 'shop_owners_list':shop_owners_list})
+    return render(request, 'ent/edit.html', {'shop_owned_by_user': shop_owned_by_user, 'user_form': user_form, 'profile_form1': profile_form1, 'user_posts':user_posts, 'profile':profile, 'phonenumber': phonenumber, 'shop_owners_list':shop_owners_list})
 
 
 
@@ -1393,7 +1495,7 @@ def upload_product1(request, store_id, store_slug):
             emailFrom = [settings.EMAIL_HOST_USER]
             emailTo = [settings.EMAIL_HOST_USER]
             send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-            messages.success(request, "Product has been edited")
+            messages.success(request, "Product has been edited", extra_tags='success')
             return redirect('shop_detail', id=store.id, slug=store.slug)
     else:
         form = UploadProductForFree(instance=request.user)
@@ -1535,12 +1637,12 @@ def free_month(request):
             post.duration = 11
             storename = request.POST['storename']
             post.save()
-            subject = f"{user} just created a free shop at yctmarket"
+            subject = f"{user} just created a free shop at allschoolsng"
             message = '%s %s ' %(storename, user)
             emailFrom = [settings.EMAIL_HOST_USER]
             emailTo = [settings.EMAIL_HOST_USER]
             send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-            messages.success(request, "Shop has been successfully created.")
+            messages.success(request, "Shop has been successfully created.", extra_tags='success')
             return redirect('store')
     else:
         form = ShopFreeForOneMonth()
@@ -1576,7 +1678,7 @@ def pay_for_six_month(request):
             number = user_number.phone_number
             payment = 400000
             headers = {
-                        'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
+                        'Authorization': 'Bearer sk_test_3be5de37862bdd6a684d0f2fe08c2ef6dfbb5111',
                         'Content-Type': 'application/json',
                     }
             data = {"reference": reference, "amount":payment, "email":email}
@@ -1651,6 +1753,7 @@ def pay_for_one_year(request):
 
 def user_logout(request):
     logout(request)
+    messages.add_message(request, messages.SUCCESS, 'Logout successful.', extra_tags='success')
     return redirect('ent:article_list')
 
 

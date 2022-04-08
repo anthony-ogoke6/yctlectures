@@ -1,0 +1,67 @@
+{% extends 'ent/base.html' %}
+
+{% block title %}Enrolled courses{% endblock %}
+
+
+{% block style %}
+{% if object_list|length > 3 %}
+<style>
+.set1{
+    display:grid;
+    grid-gap:20px;
+    grid-template-columns: auto;
+    grid-template-areas: 'contact';
+
+}
+
+</style>
+{% else %}
+
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:'contact';
+}
+  </style>
+  {% endif %}
+
+
+{% endblock %}
+
+
+{% block content %}
+ <h1>Enrolled Courses</h1>
+ <br>
+ <br>
+ <div class="module">
+ {% for course in object_list %}
+ <div class="course-info">
+     <h6>DEPARTMENT OF {{ course.school|upper }}</h6>
+     <br>
+
+ 	<h5><b>COURSE:-</b> {{ course.name|upper }}</h5>
+ 	<br>
+ <a class="btn btn-success" href="{% url 'students:student_department_detail' course.id %}">Access contents</a>
+ <br>
+ <hr>
+ <br>
+ <br>
+ </div>
+
+ {% empty %}
+ <p>
+ You are not enrolled in any courses yet.
+
+to enroll in a course.
+ </p>
+ {% endfor %}
+ </div>
+{% endblock %}

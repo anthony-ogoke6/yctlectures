@@ -1,5 +1,9 @@
 {% extends 'ent/base.html' %}
 
+{% load crispy_forms_tags %}
+
+{% load humanize %}
+
 
 
 {% block title %}{{ post.title|title }} | {{ block.super }}{% endblock %}
@@ -17,6 +21,12 @@
 <meta property="og:description" content="{{ post.description|linebreaks }}" />
 <meta property="og:url" content="" href="{{ post.get_absolute_url }}" />
 <meta property="og:image" content="{{ url }}" />
+<meta property="og:image:secure_url" content="{{ post.get_absolute_url }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content='default'>
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="628" />
+<meta property="fb:app_id" content="2847533872174572" />
 
 <meta name="description" content="{{ post.snippet|safe }}">
 <meta name="keywords" content="{{ post.snippet|safe }}">
@@ -24,37 +34,168 @@
 {% endblock %}
 
 
-{% block lin %}
+<!--{% block lin %}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {% endblock %}
 
+-->
 
 
 
 
-{% block content %}
+{% block post %}
+
+
+
+<style>
+.steady {
+    font-size: xxx-large;
+    font-weight: 700;
+    color: #e82b2b;
+}
+</style>
+
+
+<!-- Large modal -->
+
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title steady" id="exampleModalLongTitle">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span></strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        <form id="a_form3" role="form" method="POST" action="{% url 'ent:comment_login' id=post.id slug=post.slug amount=post.amount %}">
+            {% csrf_token %}
+            <div id="comment-login">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer container-login100-form-btn">
+        <button id="upload_form3" type="submit" class="btn btn-primary login100-form-btn" form="a_form3">Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Large modal -->
+
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable1" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title steady" id="exampleModalLongTitle1" style="">Register</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+            {% if profileform.errors %}
+                {% for field in profileform %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in profileform.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span></strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        <form id="a_form4" role="form" method="POST" action="{% url 'ent:comment_register' id=post.id slug=post.slug amount=post.amount %}">
+            {% csrf_token %}
+            <div id="comment-register">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer container-login100-form-btn">
+        <button id="upload_form4" type="submit" class="btn btn-primary login100-form-btn" form="a_form4">Register</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 
 <section id="" class="">
   <div class="row">
-<div class="col-md-8">
+<div class="col-md-12">
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-8 offset-md-2">
 
     {% if post.pic %}
 
 
     <img class="main-image mySlides" src="{{ post.pic.url }}" style="width:100%"/>
 
-  </div>
+
     {% endif %}
+    {% if post.vid %}
+
+    <br>
+    <br>
+    <video width="400" controls>
+  <source src="{{ post.vid.url }}" type="video/mp4">
+  <!--<source src="movie.ogg" type="video/ogg">-->
+  Your browser does not support the video tag.
+</video>
+    {% endif %}
+    </div>
   </div> <!-- col-md-4 -->
   <br><br>
-  <div class="col-md-8" style="background-color: white;">
+  <div class="col-md-8 offset-md-2" style="background-color: white;">
     <h2 id="increase">{{ post.title|upper }}</h2>
     <hr>
     <h6>Views: {{ post.view_count }} </h6>
     <hr/>
-    <div class="price">{{ post.company_name }} ||||| {{ post.created }}</div>
+    <div class="price">{{ post.company_name }} ||||| {{ post.created|naturaltime }}</div>
     <hr/>
 
     <h3 id="increase">--->><h3>
@@ -76,12 +217,94 @@
           </div>
         </div> <!-- col-md-8 -->
       </div> <!-- row -->
-      <div class="col-md-8">
+      <div class="col-md-8 offset-md-2">
 
 <div>
      {% if not post.restrict_comment %}
         <div class="main-comment-section">
-          {% include 'ent/comments.html' %}
+
+
+
+
+
+
+          {{ comments.count }} Comment{{ comments|pluralize }}
+<div class="container-fluid mt-2">
+  <div class="form-group row">
+    <form method="post" class="comment-form" action=".">
+      {% csrf_token %}
+      {{ comment_form|crispy }}
+      {% if request.user.is_authenticated %}
+        <input type="submit" value="Submit" class="btn btn-outline-success">
+      {% else %}
+        <small id="colorr">You must be logged in to post a comment</small><br>
+          <small>
+                                                  <a id="open111" class="username111" data-username="{{post.id}}" data-info="{{post.slug}}" data-amount="{{post.amount}}" style="color:red;">Login</a> |||||
+                                                  <a id="open222" class="username222" data-username="{{post.id}}" data-info="{{post.slug}}" data-amount="{{post.amount}}" style="color:red;">Register</a>
+
+                                                  <a id="edit_showww" style="visibility: hidden;" data-toggle="modal" data-target="#exampleModalScrollable"></a>
+                                                  <a id="edit_showww1" style="visibility: hidden;" data-toggle="modal" data-target="#exampleModalScrollable1"></a>
+                                                </small>
+                                                <br>
+
+
+        <input type="submit" value="Submit" title="you must be logged in to make a comment" class="btn btn-outline-success" disabled>
+
+
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<br>
+<br>
+
+
+{% for comment in comments %}
+  <blockquote class="blockquote">
+    <p class="mb-0"><small style="font-size: 15px; margin: 20px; color:#000000;">{{ comment.content }}</small></p>
+    <footer style="text-align: left; margin-top: 0; background-color: #33333300; font-size: 70%; padding: 10px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ comment.user|capfirst }} -->> Reply ({{ comment.replies.count }})</cite></small>
+      <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
+    </footer>
+  </blockquote>
+
+  <div class="replied-comments container mt-2" style="display:none;">
+    {% for reply in comment.replies.all %}
+
+    <blockquote class="blockquote">
+      <p class="mb-0"><small style="font-size: 15px;  margin: 20px; padding: 20px; color:#000000;">{{ reply.content }}</small></p>
+      <footer style="text-align: left; left; margin-top: 0; paddin:0; background-color: #33333300; font-size: 70%; padding: 30px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ reply.user|capfirst }}</cite></small>
+    </footer>
+    </blockquote>
+    {% endfor %}
+    <div class="form-group row">
+      <form method="post" class="reply-form" action=".">
+        {% csrf_token %}
+        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+        {{ comment_form.as_p }}
+        {% if request.user.is_authenticated %}
+          <input type="submit" value="Submit" class="btn btn-outline-success">
+        {% else %}
+          <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+{% endfor %}
+
+
+
+
+
+
         </div>
       {% endif %}
 
@@ -94,6 +317,14 @@
 
         </div> <!-- row -->
       </section>
+
+
+
+
+
+
+
+
 
 
 
@@ -115,27 +346,169 @@
 {% block java %}
   <script>
 
-  function currentDiv(n) {
-  showDivs(slideIndex = n);
-}
-
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
-  }
-  x[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " w3-opacity-off";
-}
 
 
+$(document).ready(function(){
 
+
+  console.log("check here345")
+
+
+var post_id;
+var post_slug;
+var post_amount;
+var r_url;
+$('.username111').click(function(e){
+    console.log("check here")
+    e.preventDefault();
+    post_id = $(this).attr("data-username");
+    post_slug = $(this).attr("data-info");
+    post_amount = $(this).attr("data-amount");
+    r_url = `https://www.yctmarket.com/${post_id}/${post_slug}/${post_amount}/comment_login/`;
+    saveans();
+});
+
+
+
+
+    function saveans(){
+        $.ajax({
+            type: 'POST',
+            url: r_url,
+            headers: {'X-CSRFToken': csrftoken},
+            data : {
+              "post_id": post_id
+            },
+            dataType: 'json',
+            beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                $("#overlay").fadeIn(300);　
+            },
+            success: function(data){
+                $('#comment-login').html(data.form);
+            },
+            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                 $("#overlay").fadeOut(300);
+                 $("#edit_showww").click();
+            }
+        });
+        return false;
+    }
+
+
+
+    function getCookie(name){
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function(){
+  console.log("check here34dfghjkl5")
+
+var post_id;
+var post_slug;
+var post_amount;
+var r_url;
+$('.username222').click(function(e){
+    e.preventDefault();
+    post_id = $(this).attr("data-username");
+    post_slug = $(this).attr("data-info");
+    post_amount = $(this).attr("data-amount");
+    r_url = `https://www.yctmarket.com/${post_id}/${post_slug}/${post_amount}/comment_register/`;
+    saveans();
+});
+
+
+
+
+    function saveans(){
+        $.ajax({
+            type: 'POST',
+            url: r_url,
+            headers: {'X-CSRFToken': csrftoken},
+            data : {
+              "post_id": post_id
+            },
+            dataType: 'json',
+            beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                $("#overlay").fadeIn(300);　
+            },
+            success: function(data){
+                $('#comment-register').html(data.form);
+            },
+            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                 $("#overlay").fadeOut(300);
+                 $("#edit_showww1").click();
+            }
+        });
+        return false;
+    }
+
+
+
+    function getCookie(name){
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+
+
+
+
+
+
+});
     </script>
     {% endblock %}

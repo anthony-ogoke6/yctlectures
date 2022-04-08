@@ -1,0 +1,45 @@
+{% extends 'ent/base.html' %}
+
+{% block title %}My courses{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+
+{% block content %}
+ <h1>My courses</h1>
+ <div class="module">
+ {% for course in object_list %}
+ <div class="course-info">
+
+  <h3>{{ course.name }}</h3>
+ <p><a href="{% url 'students:student_department_detail' course.id %}">Access contents</a></p>
+ </div>
+ {% empty %}
+ <p>
+ You are not enrolled in any courses yet.
+ <p><a href="{% url 'edu:department_list' %}">Browse Course</a></p>
+ 
+to enroll in a course.
+ </p>
+ {% endfor %}
+ </div>
+{% endblock %}

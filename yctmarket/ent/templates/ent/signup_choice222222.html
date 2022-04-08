@@ -1,0 +1,74 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block con %}
+
+
+<div id="set1" style="display:unset"></div>
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="wrap-login100">
+        <hr>
+
+        <span class="login100-form-title">
+            Register As?
+          </span>
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="pricing.css" rel="stylesheet">
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+
+  <h1><small>?</small> ? <small>?</small></h1>
+</div>
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Students</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">Student</h1>
+        <a href="{% url 'signup_students' %}" class="txt3">
+            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Select</button>
+          </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="flex-col-c p-t-170 p-b-40">
+                    <span class="txt1 p-b-9">
+                      Already have an account?
+                    </span>
+
+                    <a href="{% url 'user_login' %}" class="txt3">
+                      Login
+                    </a>
+                  </div>
+
+
+
+</div>
+
+{% endblock %}

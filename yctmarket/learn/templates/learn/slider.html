@@ -1,0 +1,167 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="install">
+                <h2>Autoplay with loop, pause on hover, display slide count</h2>
+                <h4 style="margin:0 0 10px 0;">
+                    <span id="current">1</span> of 
+                    <span id="total">6</span>
+                </h4>
+                        
+                <div class="demo hasActive">
+                    <div class="lSSlideOuter ">
+                        <div class="lSSlideWrapper usingCss" style="transition-timing-function: ease; transition-duration: 400ms;">
+
+
+                            <ul id="autoplay" class="gallery content-slider list-unstyled clearfix lightSlider lsGrab lSSlide" style="width: 2696px; height: 165px; padding-bottom: 0%; transform: translate3d(-674px, 0px, 0px);">
+                                <li class="clone left" style="width: 214.667px; margin-right: 10px;">
+                                <h3>4</h3>
+                                </li>
+                                <li class="clone left" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>5</h3>
+                                </li>
+                                <li class="clone left" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>6</h3>
+                                </li>
+                                <li class="lslide active" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>1</h3>
+                                </li>
+                                <li class="lslide" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>2</h3>
+                                </li>
+                                <li class="lslide" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>3</h3>
+                                </li>
+                                <li class="lslide" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>4</h3>
+                                </li>
+                                <li class="lslide" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>5</h3>
+                                </li>
+                                <li class="lslide" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>6</h3>
+                                </li>
+                                <li class="clone right" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>1</h3>
+                                </li>
+                                <li class="clone right" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>2</h3>
+                                </li>
+                                <li class="clone right" style="width: 214.667px; margin-right: 10px;">
+                                    <h3>3</h3>
+                                </li>
+                            </ul>
+                            <div class="lSAction">
+                                <a class="lSPrev"></a><a class="lSNext"></a>
+                            </div>
+                        </div>
+                        <ul class="lSPager lSpg" style="margin-top: 5px; transform: translate3d(0px, 0px, 0px);">
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li class=""><a href="#">4</a></li>
+                            <li class=""><a href="#">5</a></li>
+                            <li class=""><a href="#">6</a></li>
+                        </ul>
+                    </div>
+                </div>
+                        
+                <div class="call">
+                    <pre class="prettyprint linenums" style="margin-top:0;">
+                        <ol class="linenums">
+                            <li class="L0">
+                                <span class="pln">$</span>
+                                <span class="pun">(</span>
+                                <span class="pln">document</span>
+                                <span class="pun">).</span>
+                                <span class="pln">ready</span>
+                                <span class="pun">(</span>
+                                <span class="kwd">function</span>
+                                <span class="pun">()</span>
+                                <span class="pln"> </span>
+                                <span class="pun">{</span>
+                            </li>
+                            <li class="L1">
+                                <span class="pln">    </span>
+                                <span class="kwd">var</span>
+                                <span class="pln"> autoplaySlider </span>
+                                <span class="pun">=</span>
+                                <span class="pln"> $</span>
+                                <span class="pun">(</span>
+                                <span class="str">'#autoplay'</span>
+                                <span class="pun">).</span>
+                                <span class="pln">lightSlider</span>
+                                <span class="pun">({</span>
+                            </li>
+                            <li class="L2">
+                                <span class="pln">        </span>
+                                <span class="kwd">auto</span>
+                                <span class="pun">:</span>
+                                <span class="kwd">true</span>
+                                <span class="pun">,</span>
+                            </li><li class="L3">
+                                <span class="pln">        loop</span>
+                                <span class="pun">:</span>
+                                <span class="kwd">true</span>
+                                <span class="pun">,</span>
+                            </li>
+                            <li class="L4">
+                                <span class="pln">        pauseOnHover</span>
+                                <span class="pun">:</span>
+                                <span class="pln"> </span>
+                                <span class="kwd">true</span>
+                                <span class="pun">,</span>
+                            </li>
+                            <li class="L5">
+                                <span class="pln">        onBeforeSlide</span>
+                                <span class="pun">:</span><span class="pln"> </span>
+                                <span class="kwd">function</span>
+                                <span class="pln"> </span>
+                                <span class="pun">(</span>
+                                <span class="pln">el</span>
+                                <span class="pun">)</span>
+                                <span class="pln"> </span>
+                                <span class="pun">{</span>
+                            </li>
+                            <li class="L6">
+                                <span class="pln">            $</span>
+                                <span class="pun">(</span>
+                                <span class="str">'#current'</span>
+                                <span class="pun">).</span>
+                                <span class="pln">text</span>
+                                <span class="pun">(</span>
+                                <span class="pln">el</span>
+                                <span class="pun">.</span>
+                                <span class="pln">getCurrentSlideCount</span>
+                                <span class="pun">());</span>
+                            </li>
+                            <li class="L7">
+                                <span class="pln">        </span>
+                                <span class="pun">}</span>
+                                <span class="pln"> </span>
+                            </li>
+                            <li class="L8">
+                                <span class="pln">    </span>
+                                <span class="pun">});</span>
+                            </li>
+                            <li class="L9">
+                                <span class="pln">    $</span>
+                                <span class="pun">(</span>
+                                <span class="str">'#total'</span>
+                                <span class="pun">).</span>
+                                <span class="pln">text</span>
+                                <span class="pun">(</span>
+                                <span class="pln">autoplaySlider</span>
+                                <span class="pun">.</span>
+                                <span class="pln">getTotalSlideCount</span>
+                                <span class="pun">());</span>
+                            </li>
+                            <li class="L0"><span class="pun">});</span></li>
+                        </ol>
+                    </pre>
+                </div>
+            </section>
+                
+        </div>
+    </div>
+</div>

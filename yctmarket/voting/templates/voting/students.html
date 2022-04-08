@@ -1,0 +1,246 @@
+
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block title %}
+ {% if students|length > 0 %}
+ Manage Students
+ {% else %}No Students {% endif %}
+
+{% endblock %}
+
+
+
+{% block content %}
+ <h3>
+ {% if students|length > 0 %}
+ Manage students for course: <b>{{course.name}}</b>
+ {% else %}
+ No students in course: <b>{{course.name}}</b>
+ {% endif %}
+ </h3>
+
+
+ <divclass="module" style="">
+ <br>
+
+
+
+
+ <form class="form-group" action="{% url 'students:export_users_xls' course_id=course.id slug=course.slug %}" method="POST" enctype="multipart/form-data" action="" >
+  {% csrf_token %}
+
+  {% if department_access %}
+    <select id="department_access" name="department">
+        <option value="">----</option>
+        {% for i in department_access %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+
+  <br>
+  <br>
+
+    <button id="btn-excel" class="btn btn-success">Download Excel Result</button>
+    {% endif %}
+ </form>
+ <!--<div>Download the result of students for this course to excel</div>-->
+
+ <br>
+ <hr>
+
+  <div id="modulez">
+      <h4 id="nums"><b>Total Number of Students: </b><span id="numba" style="color:red;">{{ students.count }}</span></h4><hr><br><br>
+{% for student in students %}
+{% for i in about %}
+{% if student.username == i.user.username %}
+<div id="dept">
+<h5>
+    <b>Full Name :</b> {{ student.last_name|lower|capfirst }} {{ student.first_name|lower|capfirst }}
+ </h5>
+
+ {% if i.phone_number %}
+ <h5>
+    <b>Phone Number :</b> {{ i.phone_number }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Phone Number :</b> Not Set
+ </h5>
+ {% endif %}
+
+
+{% if i.matric_number %}
+ <h5>
+    <b>Matric Number :</b> {{ i.matric_number|lower|upper }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Matric Number :</b> Not Set
+ </h5>
+ {% endif %}
+
+ {% if i.department %}
+ <h5>
+  <b>Department :</b> {{ i.department }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Department :</b> Not Set
+ </h5>
+  {% endif %}
+
+{% if i.level %}
+ <h5>
+    <b>Level </b>: {{ i.level }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Level :</b> Not Set
+ </h5>
+  {% endif %}
+ <br>
+
+
+  <a id="save_ans1" class="btn btn-danger myclass" href="#">Delete Student
+
+  <input id="option1" type="hidden" name="name1" value="{{ course.id }}">
+ <input id="option2" type="hidden" name="name1" value="{{ course.slug }}">
+ <input id="option3" type="hidden" name="name1" value="{{ i.user.username }}"></a>
+ <hr>
+ <br>
+ </div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+</div>
+ </div>
+
+
+ <br>
+ <br>
+{% endblock %}
+
+
+{% block java %}
+  <script>
+
+      var department_access = document.querySelector('#department_access');
+
+      var btn_excel = document.querySelector('#btn-excel');
+
+      department_access.setAttribute('class', 'form-control');
+
+
+
+
+
+      department_access.required = true;
+
+
+
+$(document).ready(function() {
+    $('#department_access').select2({
+        placeholder: "Select Department",
+        allowClear: true,
+        width: "70%",
+        theme:"classic"
+    });
+});
+
+
+
+
+$(document).ready(function(){
+    $('a.myclass').click(function(e){
+  //$('#save_ans1').click(function(){
+  e.preventDefault();
+  //$(this).children('input#option1').val()
+      var g = $(this).children('input#option1').val()
+      var name1 = $(this).children('input#option2').val()
+      var k = $(this).children('input#option3').val()
+      console.log("calling")
+      console.log(k)
+      console.log(name1)
+
+      saveans1(g, name1, k);
+      $(this).parent().hide(600);
+      var numba = $('#numba');
+      //alert(numba)
+      var num = parseInt(numba.text());
+      var res = num - 1;
+      numba.text(res);
+  });
+
+  function saveans1(course_id, course_slug, username){
+      console.log("ajax_function")
+      console.log(course_slug)
+      console.log(username)
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'students:delete_student' %}",
+          //url: '/students/delete/student/',
+          headers: {'X-CSRFToken': csrftoken},
+          data : {
+              'course_id': course_id,
+              'course_slug': course_slug,
+              'username': username
+          },
+          dataType: 'json',
+          success: function(data){
+              //console.log(data.form)
+              //$('#modulez').html(data.form);
+          }
+      });
+      return false;
+  }
+
+  function getCookie(name){
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+});
+
+</script>
+    {% endblock %}

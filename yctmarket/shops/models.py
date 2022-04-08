@@ -40,6 +40,7 @@ class Stores(models.Model):
         ('Babies & Kids','Babies & Kids'),
         ('Commercial Equipment & Tool','Commercial Equipment & Tool'),
         ('Electronics','Electronics'),
+        ('Entertainment','Entertainment'),
         ('Fashion','Fashion'),
         ('Health & Beauty','Health & Beauty'),
         ('Home, Furniture & Appliances','Home, Furniture & Appliances'),
@@ -54,28 +55,29 @@ class Stores(models.Model):
 
     reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
-    storename       =       models.CharField(max_length=200)
-    description         =       models.TextField(default='')
-    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
-    slug                =       models.SlugField(max_length=200)
+    storename       =       models.CharField(max_length=200, blank=True, null=True)
+    description         =       models.TextField(default='', blank=True, null=True)
+    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES), blank=True, null=True)
+    slug                =       models.SlugField(max_length=200, blank=True, null=True)
     #amount          =       models.PositiveIntegerField(default=0)
-    category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
+    category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES), blank=True, null=True)
     logo           =       models.ImageField(blank=True, null=True)
-    tags                = TaggableManager()
-    owner            =       models.OneToOneField(User, on_delete=models.CASCADE, related_name='store_owner_name')
+    owner            =       models.OneToOneField(User, on_delete=models.CASCADE, related_name='store_owner_name', blank=True, null=True)
     available           =       models.BooleanField(default=True)
     #stock               =       models.PositiveIntegerField(default=0)
 
     created             =       models.DateTimeField(auto_now_add=True)
     updated             =       models.DateTimeField(auto_now=True)
     published_date      =       models.DateTimeField(auto_now_add=True)
-    view_count          =       models.PositiveIntegerField(default=0)
+    view_count          =       models.PositiveIntegerField(default=0, blank=True, null=True)
     duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
 
 
 
     class Meta:
         ordering = ['-id']
+        verbose_name = 'store'
+        verbose_name_plural = 'stores'
 
     def __str__(self):
         return self.storename
@@ -139,27 +141,28 @@ class Shops(models.Model):
 
     reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
-    storename       =       models.CharField(max_length=200)
-    description         =       models.TextField(default='')
-    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
+    storename       =       models.CharField(max_length=200, blank=True, null=True)
+    description         =       models.TextField(default='', blank=True, null=True)
+    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES), blank=True, null=True)
     slug                =       models.SlugField(max_length=200)
     #amount          =       models.PositiveIntegerField(default=0)
-    category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
+    category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES), blank=True, null=True)
     logo                =       models.ImageField(blank=True, null=True)
-    tags                = TaggableManager()
-    owner            =       models.OneToOneField(User, on_delete=models.CASCADE, related_name='shop_owner_name')
+    owner            =       models.OneToOneField(User, on_delete=models.CASCADE, related_name='shop_owner_name', blank=True, null=True)
     available           =       models.BooleanField(default=True)
     #stock               =       models.PositiveIntegerField(default=0)
 
     created             =       models.DateTimeField(auto_now_add=True)
     updated             =       models.DateTimeField(auto_now=True)
-    view_count          =       models.PositiveIntegerField(default=0)
+    view_count          =       models.PositiveIntegerField(default=0, blank=True, null=True)
     duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
 
 
 
     class Meta:
         ordering = ['-id']
+        verbose_name = 'Shop'
+        verbose_name_plural = 'Shops'
 
     def __str__(self):
         return self.storename
@@ -199,6 +202,7 @@ class Product(models.Model):
         ('Babies & Kids','Babies & Kids'),
         ('Commercial Equipment & Tool','Commercial Equipment & Tool'),
         ('Electronics','Electronics'),
+        ('Entertainment','Entertainment'),
         ('Fashion','Fashion'),
         ('Health & Beauty','Health & Beauty'),
         ('Home, Furniture & Appliances','Home, Furniture & Appliances'),
@@ -214,13 +218,14 @@ class Product(models.Model):
 
 
     reference           =       models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    title               =       models.CharField(max_length=200)
-    slug                =       models.SlugField(max_length=200)
-    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES))
-    author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_posts')
-    store               =       models.ForeignKey(Stores, default='', on_delete=models.CASCADE, related_name='product_in_store')
-    tags                = TaggableManager()
-    amount              =       models.PositiveIntegerField(default='')
+    title               =       models.CharField(max_length=200, blank=True, null=True)
+    slug                =       models.SlugField(max_length=200, blank=True, null=True)
+    status              =       models.CharField(max_length=10, choices=BLANK_CHOICE_DASH + list(STATUS_CHOICES), blank=True, null=True)
+    author              =       models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_posts', blank=True, null=True)
+    store               =       models.ForeignKey(Stores, default='', on_delete=models.CASCADE, related_name='product_in_store', blank=True, null=True)
+    amount              =       models.PositiveIntegerField(blank=True, null=True)
+    song                =       models.FileField(upload_to='media/', blank=True, null=True)
+    singer              =       models.CharField(max_length=2000, blank=True, null=True)
     #amountInDols              =       models.PositiveIntegerField(default='1')
     #category            =       models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products2')
     category            =       models.CharField( max_length=100, choices=BLANK_CHOICE_DASH + list(CATEGORY_CHOICES))
@@ -235,8 +240,8 @@ class Product(models.Model):
     view_count          =       models.PositiveIntegerField(default=0)
 
     duration            =       models.PositiveIntegerField(blank=True, null=True, choices=BLANK_CHOICE_DASH + list(DURATION_CHOICES))
-    available           =       models.BooleanField(default=True)
-    stock               =       models.PositiveIntegerField(default=0)
+    available           =       models.BooleanField(default=True, blank=True, null=True)
+    stock               =       models.PositiveIntegerField(default=0, blank=True, null=True)
 
     created             =       models.DateTimeField(auto_now_add=True)
     updated             =       models.DateTimeField(auto_now=True)
@@ -244,6 +249,7 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['-id']
+
 
     def __str__(self):
         return self.title

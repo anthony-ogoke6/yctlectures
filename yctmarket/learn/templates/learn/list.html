@@ -1,0 +1,146 @@
+
+{% extends 'ent/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load auth_extras %}
+
+{% load ent_tags %}
+
+
+
+
+{% load staticfiles %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+{% block title %}
+{% if category %}Departments |{{ category.name }}{% else %}Courses |{{ block.super }}{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+      <!--<p class="w3-right">
+      <i class="fa fa-shopping-cart w3-margin-right"></i>
+      <i class="fa fa-search"></i>
+    </p>-->
+      <h1>Uploaded Courses</h1>
+
+  <!-- Image header-->
+  <div class="w3-display-container w3-container infinite-container">
+    <br>
+    <hr>
+
+    {% for course in object_list %}
+    <div class="course-info infinite-item">
+
+    <h6>DEPARTMENT OF {{ course.school|upper }}</h6>
+    <h5><b>COURSE:-</b> {{ course.name|upper }}</h5>
+    <br>
+
+    <p> |
+    <a class="ahover" style="color: #dc3545;" href="{% url 'learn:department_edit' pk=course.pk %}">Edit</a>   |
+    <a class="ahover" style="color: #dc3545;" href="{% url 'learn:department_delete' pk=course.pk %}">Delete</a>   |
+    <a class="ahover" style="color: #dc3545;" href="{% url 'learn:department_course_update' pk=course.pk %}">Edit chapters</a> |
+    {% if course.modules.count > 0 %}
+    <a class="ahover" style="color: #dc3545;" href="{% url 'learn:topic_content_list' topic_id=course.modules.first.id %}">Manage contents</a> |
+    <a class="ahover" style="color: #dc3545;" href="{% url 'students:students' course_id=course.id slug=course.slug %}">Manage students</a> |
+    {% endif %}
+
+    </p>
+    </div>
+    <br>
+    <hr>
+    <br>
+    {% empty %}
+    <p>You haven't created any courses yet.</p>
+
+    <br>
+    <br>
+    {% endfor %}
+
+    <div id='design'>
+    <p>
+    <a href="{% url 'learn:department_create' %}" class="button"><button class="btn btn-success">Create new
+    course</button></a>
+    </p>
+    </div>
+
+<br>
+<br>
+<hr>
+
+
+
+  </div>
+
+  {% if article.has_next %}
+        <a id="more" class="infinite-more-link" href="?page={{ article.next_page_number }}" style="text-align:center;">Loading...</a>
+      {% endif %}
+
+
+</div>
+</div>
+
+<br><br><br><br><br><br>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+<script>
+
+
+
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+    $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+    $('.loading').hide();
+    }
+});
+
+
+
+
+</script>
+{% endblock %}
+

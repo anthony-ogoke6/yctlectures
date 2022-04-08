@@ -1,0 +1,191 @@
+{% extends 'ent/base.html' %}
+
+{% block style %}
+  <style>
+   #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Assesment | {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+<div class="col-lg-8 border border-success p-4 m-4 mx-auto">
+  {% if questions|length  > 0 %}
+  {% for i in questions %}
+  {% if i.question in score_questions %}
+  {% if i.answer in score_answer %}
+  <h4 style="">Question {{questions.number}} of {{questions.paginator.count}}</h4>
+  <h1>Question</h1><h3>{{ i.question|capfirst }}?</h3>
+  <br>
+  <br>
+
+  <h5 style="text-align: center;">Question already attempted by you.</h5>
+
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+    <a href="?page={{ questions.next_page_number }}"><button class="btn form-control btn-primary">Check Next</button></a>
+    {% else %}
+
+    {% if i.question in score_questions %}
+  {% if i.answer in score_answer %}
+  <input id="option5" type="hidden" name="name1" value="{{ id }}">
+    <input id="option6" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+  <a id="link1" href="{% url 'students:saveans1' id=id slug=slug topic_id=topic_id page_no=questions.number %}"><button class="btn form-control btn-primary">Submit Assesment</button></a>
+  <br>
+  <hr>
+    <a id="link1" href="{% url 'students:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to course</button></a>
+
+    {% else %}
+    <input id="option5" type="hidden" name="name1" value="{{ id }}">
+    <input id="option6" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+
+    <a id="link1" href="{% url 'students:saveans1' id=id slug=slug topic_id=topic_id page_no=questions.number %}"><button class="btn form-control btn-primary">Submit Assesment</button></a>
+
+    {% endif %}
+    {% else %}
+    <input id="option5" type="hidden" name="name1" value="{{ id }}">
+    <input id="option6" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+
+    <a id="link1" href="{% url 'students:saveans1' id=id slug=slug topic_id=topic_id page_no=questions.number %}"><button class="btn form-control btn-primary">Submit Assesment</button></a>
+
+    {% endif %}
+    {% endif %}
+
+  </div>
+  </div>
+
+  {% else %}
+
+  <h4 style="">Question {{questions.number}} of {{questions.paginator.count}}</h4>
+    <h1>Question</h1><h3>{{ i.question|capfirst }}?</h3>
+  <form class="form-group" method="POST" enctype="multipart/form-data" action="">
+    <div class="radio">
+      <label><input id="option1" type="radio" name="name" value="{{ i.option1 }}">{{i.option1|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option2" type="radio" name="name" value="{{ i.option2 }}">{{i.option2|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option3" type="radio" name="name" value="{{ i.option3 }}">{{i.option3|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option4" type="radio" name="name" value="{{ i.option4 }}">{{i.option4|capfirst}}</label>
+    </div>
+    <input id="option5" type="hidden" name="name1" value="{{ id }}">
+    <input id="option6" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+  </form>
+  <div class="form-group">
+    <button id="save_ans" class="btn btn-success">Submit Answer</button>
+  </div>
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+    <a href="?page={{ questions.next_page_number }}"><button class="btn form-control btn-primary">Next</button></a>
+    {% else %}
+<a id="link1" href="{% url 'students:saveans1' id=id slug=slug topic_id=topic_id page_no=questions.number %}"><button class="btn form-control btn-primary">Submit Assesment</button></a>
+    {% endif %}
+
+  </div>
+  </div>
+
+  {% endif %}
+
+  {% else %}
+
+  <h4 style="">Question {{questions.number}} of {{questions.paginator.count}}</h4>
+    <h1>Question</h1><h3>{{ i.question|capfirst }}?</h3>
+  <form class="form-group" method="POST" enctype="multipart/form-data" action="">
+    <div class="radio">
+      <label><input id="option1" type="radio" name="name" value="{{ i.option1 }}">{{i.option1|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option2" type="radio" name="name" value="{{ i.option2 }}">{{i.option2|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option3" type="radio" name="name" value="{{ i.option3 }}">{{i.option3|capfirst}}</label>
+    </div>
+    <div class="radio">
+      <label><input id="option4" type="radio" name="name" value="{{ i.option4 }}">{{i.option4|capfirst}}</label>
+    </div>
+    <input id="option5" type="hidden" name="name1" value="{{ id }}">
+    <input id="option6" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+  </form>
+  <div class="form-group">
+    <button id="save_ans" class="btn btn-success">Submit Answer</button>
+  </div>
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+    <a href="?page={{ questions.next_page_number }}"><button class="btn form-control btn-primary">Next</button></a>
+    {% else %}
+    <a id="link1" href="{% url 'students:saveans1' id=id slug=slug topic_id=topic_id page_no=questions.number %}"><button class="btn form-control btn-primary">Submit Assesment</button></a>
+    {% endif %}
+
+  </div>
+  </div>
+
+
+  {% endif %}
+  {% endfor %}
+
+
+  {% else %}
+
+  <h2 style="text-align: center;">No question on this lecture yet.</h2>
+  <a id="link1" href="{% url 'students:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to course</button></a>
+
+
+  {% endif %}
+
+
+
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+ {% block java %}
+<script>
+
+ </script>
+ {% endblock %}
+

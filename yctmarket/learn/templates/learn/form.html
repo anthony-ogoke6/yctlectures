@@ -1,0 +1,299 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+  .select2-container--classic .select2-search--dropdown .select2-search__field {
+    border: 1px solid #020202;
+    outline: 0;
+}
+  </style>
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}{% if object %}Edit Course {{ object.title }}
+
+ {% else %}
+ Create a new department
+ {% endif %} | {{ block.super }}
+
+ {% endblock %}
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+
+<h1>
+ {% if object %} Edit Course: <b>{{ object.name|capfirst }}</b>
+  {% else %}
+  Create A New Course
+ {% endif %}
+ </h1>
+      <br>
+
+
+<form class="form-group" method="POST" enctype="multipart/form-data" action="" >
+  {% csrf_token %}
+
+  {% if form.school %}
+  Department Course Belong To<span style="color:red;">*</span><br>
+  {{ form.school }}<br>
+  {{ form.school.errors }}
+  {% endif %}
+  <br>
+
+  {% if form.name %}
+  Course Title<span style="color:red;">*</span><br>
+  {{ form.name }}<br>
+  {{ form.name.errors }}
+  {% endif %}
+  <br>
+
+  {% if form.amount %}
+  Amoun In NGN<br>
+  {{ form.amount }}<br>
+  {{ form.amount.errors }}
+  {% endif %}
+  <br>
+
+  {% if form.overview %}
+  Course Description<span style="color:red;">*</span><br>
+  {{ form.overview }}<br>
+  {{ form.overview.errors }}
+  {% endif %}
+  <br>
+
+  {% if form.photo %}
+  Course Image<br>
+  {{ form.photo }}<br>
+  {{ form.photo.errors }}
+  {% endif %}
+  <br>
+
+
+  {% if form.general %}
+  Limit Students<br>
+  {{ form.general }}<br>
+  {{ form.general.errors }}
+  {% endif %}
+  <br>
+
+<div id="dept">
+  {% if form.department_access %}
+  Select Departments Offering Course<span style="color:red;">*</span><br>
+  {{ form.department_access }}<br>
+  {{ form.department_access.errors }}
+  {% endif %}
+  <br>
+
+
+  {% if form.level %}
+  Select Levels Offering Course<span style="color:red;">*</span><br>
+  {{ form.level }}<br>
+  {{ form.level.errors }}
+  {% endif %}
+  <br>
+  <hr>
+
+<br>
+  <p id="toggle">Department(s) offering course</p>
+
+  <br>
+  <div id="dept2">
+      {% for i in a %}
+      <p>● {{i}}  | <a class="myclass" data-value="{{ i }}" href="#"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+  <br>
+  <hr>
+
+
+    <p id="toggle1">level(s) taking course</p>
+
+  <br>
+  <div id="dept1">
+      {% for i in d %}
+      <p>● {{i}}  | <a class="myclass" data-value="{{ i }}" href="#"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+  </div>
+  <br>
+
+  <br>
+
+
+    <button class="btn btn-success">Save Course</button>
+ </form>
+</div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+
+<br><br>
+<br><br>
+
+
+{% endblock %}
+
+{% block java %}
+  <script>
+
+      var school = document.querySelector('#id_school');
+      var department_access = document.querySelector('#id_department_access');
+      var level = document.querySelector('#id_level');
+
+      var name1 = document.querySelector('#id_name');
+      var amount = document.querySelector('#id_amount');
+      var overview = document.querySelector('#id_overview');
+      var photo = document.querySelector('#id_photo');
+
+      school.setAttribute('class', 'form-control');
+      //school.setAttribute('name', 'departments');
+      department_access.setAttribute('class', 'form-control');
+      department_access.setAttribute('name', 'department_access');
+
+      level.setAttribute('class', 'form-control');
+      level.setAttribute('name', 'level');
+      //school.setAttribute('multiple', 'multiple);
+      name1.setAttribute('class', 'form-control');
+      amount.setAttribute('class', 'form-control');
+      overview.setAttribute('class', 'form-control');
+      photo.setAttribute('class', 'form-control');
+
+
+      photo.style.height = "50%";
+      amount.style.height = "50%";
+
+
+
+
+
+
+
+      name1.required = true;
+      school.required = true;
+      department_access.multiple = true;
+      level.multiple = true;
+      //amount.required = true;
+      overview.required = true;
+      //photo.required = true;
+
+
+
+      $(document).ready(function() {
+    $('#id_school').select2({
+        placeholder: "Select department",
+        allowClear: true,
+        width: "element",
+        theme:"classic"
+    });
+});
+
+ $(document).ready(function() {
+     $('#id_department_access').val('1');
+    $('#id_department_access').select2({
+        placeholder: "Select Department Offering Course",
+        allowClear: true,
+        width: "resolve",
+        theme:"classic"
+    });
+});
+
+ $(document).ready(function() {
+     $('#id_level').val('1');
+    $('#id_level').select2({
+        placeholder: "Select Levels Offering Course",
+        allowClear: true,
+        width: "resolve",
+        theme:"classic"
+    });
+});
+
+
+$(document).ready(function(){
+    var n = $('#id_department_access');
+    var theSelection = $('#department_access').val();
+    n.val() = '------';
+});
+
+
+
+$(document).ready(function(){
+    var n = $("#dept");
+    n.hide();
+});
+
+
+$(document).ready(function(){
+    var n = $("#id_general");
+    n.click(function(){
+        $("#dept").toggle(200);
+    });
+});
+
+$(document).ready(function(){
+	$('a.myclass').click(function(e){
+	    e.preventDefault();
+	    var g = $(this).attr('data-value');
+	    //var h = $(this).data('value');
+	    var name1 = $('#id_name').val();
+	    //var school1 = $('#id_school').val();
+	    var k = $('#id_school').children('option:selected').text();
+	    saveans(g, name1, k);
+	});
+
+	function saveans(g, course, school){
+	    $.ajax({
+	        type: 'POST',
+	        url: "{% url 'learn:departmental_access_delete' %}",
+	        headers: {'X-CSRFToken': csrftoken},
+	        data : {
+	            'ans': g,
+	            'course': course,
+	            'school': school
+	        },
+	        dataType: 'json',
+	        success: function(data){
+	            console.log(data.form)
+	            $('#dept').html(data.form);
+	        }
+	    });
+	    return false;
+	}
+
+	function getCookie(name){
+	    let cookieValue = null;
+	    if (document.cookie && document.cookie !== '') {
+	        const cookies = document.cookie.split(';');
+	        for (let i = 0; i < cookies.length; i++) {
+	            const cookie = cookies[i].trim();
+	            // Does this cookie string begin with the name we want?
+	            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+	                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                break;
+	            }
+	        }
+	    }
+	    return cookieValue;
+	}
+	const csrftoken = getCookie('csrftoken');
+
+});
+
+
+
+
+</script>
+{% endblock %}

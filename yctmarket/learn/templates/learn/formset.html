@@ -1,0 +1,155 @@
+
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+{% block title %}
+ Edit "{{ course.name|capfirst }}"
+{% endblock %}
+
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+<h1>Edit</h1>
+
+      <br>
+
+      <div class="module">
+      	<h2>{{ course.name|upper }} <br><br>(Chapters)</h2>
+        <br>
+      	<form class="form-group" action="" method="post">
+		 <!--{{ formset|crispy }}-->
+		 {{ formset.management_form }}
+		 {% csrf_token %}
+
+		 {% for form in formset %}
+		 <div class="inlineform">
+
+		 {{ form.id }}
+
+		 {% for hidden in form.hidden_fields %}
+           {{ hidden }}
+ {% endfor %}
+
+
+		 {% if form.name %}
+        {{ form.name.label }}
+         {{ form.name }}<br>
+         {% endif %}
+
+
+        {% if form.description %}
+        {{ form.description.label }}<br>
+         {{ form.description }}<br>
+         {% endif %}
+
+         {% if formset.can_delete %}
+
+ {% if formset.instance.pk %}
+
+
+                {{ form.DELETE }}<br>
+
+            {% endif %}
+
+            {% endif %}
+
+
+
+
+
+            </div>
+    {% endfor %}
+
+
+		  <p><br><input type="submit" class="btn btn-success" value="Save chapters"></p>
+		 </form>
+		</div>
+
+
+</div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+
+<br><br>
+<br><br>
+
+
+{% endblock %}
+
+
+{% block java %}
+  <script>
+
+        var inputs = document.querySelectorAll('.textinput ');
+         var labels = document.querySelectorAll('.ckeditoruploadingwidget');
+
+        for (var index = 0; index < inputs.length; ++index){
+
+            inputs[index].setAttribute('class', 'form-control');
+
+        }
+
+
+
+        for (var index = 0; index < labels.length; ++index){
+            labels[index].setAttribute('class', 'form-control');
+            labels[index].style.height = "50%";
+        }
+
+
+        $(document).ready(function() {
+            $('.inlineform').formset({
+                prefix: '{{ formset.prefix }}'
+            });
+        })
+
+
+        window.onload = function (){
+        var divv = document.querySelectorAll('.inlineform');
+
+        for (var index = 0; index < divv.length; ++index){
+
+            var boo = divv[index].querySelectorAll('input');
+            var foo = boo[0].getAttribute("value");
+            if (!foo){
+                var too = divv[index].querySelectorAll('.delete-row');
+                console.log('foo')
+                too[0].click()
+                console.log(foo)
+
+            }
+        }
+
+        }
+    </script>
+    {% endblock %}

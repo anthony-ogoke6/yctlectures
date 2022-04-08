@@ -11,31 +11,72 @@
 
     <div class="logo">
         <a href="{% url 'ent:article_list' %}">
-        <img src="{% static 'img/yctmarket.png' %}" alt="Image Not Found">
+        <img style="width:100px;" src="{% static 'img/yct22.png' %}" alt="Image Not Found">
+
+        {% if not request.user.is_authenticated %}
+        {% else %}
+        <p style="color: white; margin-top:-5px;">{{ request.user.username|upper }}</p>
+        {% endif %}
         </a>
     </div>
 
 
     <ul class="nav-links">
         {% url 'ent:article_list' as article_list %}
+        {% url 'learn:department_list' as department_list %}
         {% url 'store' as store %}
         {% url 'about' as about %}
         {% url 'user_login' as user_login %}
-        {% url 'signup_view' as signup_view %}
+        {% url 'signup_choice' as signup_choice %}
         {% url 'ent:edit' as edit %}
         {% url 'upload_free_at_given' as upload_free_at_given %}
         {% url 'contact_page' as contact_page %}
         <li >
-            <a class="{% if request.path == article_list %}active{% endif %}" href="{% url 'ent:article_list' %}">Market</a>
+            <a class="{% if request.path == article_list %}active{% endif %}" href="{% url 'ent:article_list' %}">Home</a>
         </li>
 
         <li >
-            <a class="{% if request.path == store %}active{% endif %}" href="{% url 'store' %}">Stores</a>
+            <a class="{% if request.path == department_list %}active{% endif %}" href="{% url 'learn:department_list' %}">Course</a>
         </li>
+
+        {% if not request.user.is_authenticated %}
+
+            <li>
+            <a class="{% if request.path == user_login  %}active{% endif %}" href="{% url 'user_login' %}" >login</a>
+            </li>
+                <li >
+                <a class="{% if request.path == signup_choice %}active{% endif %}" href="{% url 'signup_choice' %}">Signup</a>
+            </li>
+        {% else %}
+
 
 
         <li >
-            <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'upload_free_at_given' %}">Post</a>
+            <a class="{% if request.path == edit %}active{% endif %}" href="{% url 'ent:edit' %}">Profile</a>
+          </li>
+
+          <li>
+              <a  href="{% url 'user_logout' %}">Logout</a>
+
+          </li>
+
+
+
+          <!--<li>
+              <a href="#">{{ request.user.username }}</a>
+          </li>-->
+
+
+        {% endif %}
+
+
+        <!--<li >
+            <a class="{% if request.path == store %}active{% endif %}" href="{% url 'store' %}">Shops</a>
+        </li>-->
+
+
+        <li >
+            <a class="{% if request.path == post_create %}active{% endif %}" href="{% url 'upload_free_at_given' %}" data-toggle="modal" data-target="#exampleModalScrollable3">Donate</a>
         </li>
 
         <li>
@@ -46,27 +87,7 @@
             <a class="{% if request.path == about %}active{% endif %}" href="{% url 'about' %}">Policy</a>
         </li>-->
 
-        {% if not request.user.is_authenticated %}
 
-            <li>
-            <a class="{% if request.path == user_login  %}active{% endif %}" href="{% url 'user_login' %}" >login</a>
-            </li>
-                <li >
-                <a class="{% if request.path == signup_view %}active{% endif %}" href="{% url 'signup_view' %}">Sign-Up</a>
-            </li>
-        {% else %}
-
-        <li >
-            <a class="{% if request.path == edit %}active{% endif %}" href="{% url 'ent:edit' %}">Profile</a>
-          </li>
-
-
-          <li>
-              <a  href="{% url 'user_logout' %}">Logout</a>
-          </li>
-
-
-        {% endif %}
 
 
     </ul>

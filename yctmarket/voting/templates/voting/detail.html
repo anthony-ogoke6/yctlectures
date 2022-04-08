@@ -1,0 +1,100 @@
+{% extends 'ent/base.html' %}
+
+
+{% block title %}
+ {{ object.name }}
+{% endblock %}
+
+
+{% block style %}
+  <style>
+
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+
+
+
+.vp-center {
+    display: -webkit-box;
+    display: contents;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+  </style>
+
+
+{% endblock %}
+
+
+{% block content %}
+ <h2>
+  {{ course.name|upper }}
+ </h2>
+
+
+
+
+
+ <div style="width:100%;" class="contents">
+	 <h3>Sections/Years</h3>
+	 <hr>
+ 	<ul id="modules">
+	 {% for m in p.modules1.all %}
+		<li data-id="{{ m.id }}" {% if m == topic %} class="selected"{% endif %}>
+			<a href="{% url 'students1:student_department_detail_module' p.id m.id %}">
+				<h6>
+					Section {{ m.order|add:1}} <br>{{ m.name }} <small><--- click here to vote in this section/year </small>
+				</h6>
+			</a>
+		</li>
+		<hr>
+		{% empty %}
+		<li>No modules yet.</li>
+
+		{% endfor %}
+	 </ul>
+ </div>
+
+
+
+
+
+  <div style="width:100%; margin:auto;" class="module">
+  	<h4>Section {{ topic.order|add:1 }} <a href="{% url 'students1:assignment_module' id=object_id slug=object_slug topic_id=module_id %}" class="btn btn-success">
+ Start Voting
+ </a></h4>
+ </div>
+
+
+
+
+
+
+
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+{% endblock %}
+
+

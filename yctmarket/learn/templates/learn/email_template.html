@@ -1,0 +1,141 @@
+{% load ent_tags %}
+
+{% block title %}
+ {{ name }}
+{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% block content %}
+
+
+ <h3>Course Title: {{ course.name|upper }}</h3>
+
+ <h3>
+ 	Full Name :  {{ user.first_name }}  {{ user.last_name }}
+ </h3>
+
+
+{% if matric_number %}
+ <h3>
+ 	Matric Number : {{ matric_number }}
+ </h3>
+
+ {% endif %}
+
+
+{% if department %}
+ <h3>
+ 	Department : {{ department }}
+ </h3>
+{% endif %}
+
+
+{% if level %}
+ <h3>
+    Level : {{ level }}
+ </h3>
+ {% endif %}
+
+
+ <hr>
+ <br>
+ <br>
+
+{% for i in modules %}
+{% answered_assignment user id slug as answered %}
+{% if i.order|add:1 in answered %}
+
+<h3>Chapter {{ i.order|add:1}}: {{i.name|capfirst}}</h3>
+ <br>
+
+
+
+
+
+ {% for p in i.assignments.all %}
+
+ <p><b>Question {{forloop.counter}}: {{p.question}}?</b></p>
+
+
+
+ {% for h in scores %}
+
+
+ {% if p.question == h.question %}
+
+
+
+  <p><b>Students Answer:</b> {{h.student_answer}}</p>
+  <p><b>Correct Answer:</b> {{h.correct_answer}}</p>
+  <p style="color:blue;"><b>Score {{h.score}}</b></p>
+
+
+
+
+ {% endif %}
+
+ {% endfor %}
+ <br>
+  <hr>
+ {% endfor %}
+
+
+
+{% else %}
+
+ <hr>
+ <hr>
+ <hr>
+ <hr>
+ <br>
+<h3>Chapter {{ i.order|add:1}}: {{i.name|capfirst}}</h3>
+<p style="color:red;">This chapter has not been attempted.</p>
+ <br>
+ <br>
+ <br>
+
+ {% endif %}
+
+
+
+
+ {% endfor %}
+<hr>
+ <hr>
+ <hr>
+ <hr>
+  <h2 style="color:blue;"><b>Total Score:</b> {{total}}</h2>
+{% endblock %}
+
+
+
+
+

@@ -1,7 +1,7 @@
      <div class="topnav">
     <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a class="active" href="{% url "store" %}">Search Products</a>
+                <a class="active" href="{% url 'store' %}">Search Products</a>
             </li>
         {% for c in categories %}
             <li {% if category.slug == c.slug %}class="selected"{% endif %}>
@@ -17,9 +17,45 @@
     </form>
   </div>
 </div>
-
-<div style="padding-left:16px">
-  <h2 style="color: #F44336;">Your Market Place On Campus.</h2>
-  <p>Navigate through to view the products online.</p>
-  <p>You can upload your products by clicking on <bold>Post</bold> on the navigation bar.</p>
+{% if request.user.is_authenticated %}
+<div style="padding-left:16px;">
+    <h2 style="color: #F44336;">
+        {{ user.username|capfirst }}, welcome to YCTMarket
+    </h2>
 </div>
+
+{% else %}
+<!--<div style="padding-left:16px">
+  <h2 style="color: #F44336;">Connecting Schools...</h2>
+  <button type="button" class="btn btn-primary">YABATECH</button>
+<a href="#"><button type="button" class="btn btn-secondary">UNILAG</button></a>
+<a href="#"><button type="button" class="btn btn-success">OAU</button></a>
+<a href="#"><button type="button" class="btn btn-danger">UNIBEN</button></a>
+<a href="#"><button type="button" class="btn btn-warning">FUTA</button></a>
+<a href="#"><button type="button" class="btn btn-info">IMSU</button></a>
+<a href="#"><button type="button" class="btn btn-light">UNAB</button></a>
+<a href="#"><button type="button" class="btn btn-danger">FUTO</button></a>
+<a href="#"><button type="button" class="btn btn-danger">LASPOTECH</button></a>
+<a href="#"><button type="button" class="btn btn-warning">EBSU</button></a>
+<a href="#"><button type="button" class="btn btn-info">UNIUYO</button></a>
+<a href="#"><button type="button" class="btn btn-light">LASU</button></a>
+<a href="#"><button type="button" class="btn btn-success">UNN</button></a>
+
+<a href="#"><button type="button" class="btn btn-danger">NEKEDE</button></a>
+<a href="#"><button type="button" class="btn btn-warning">UNIILORIN</button></a>
+<a href="#"><button type="button" class="btn btn-info">TAISOLARIN</button></a>
+<a href="#"><button type="button" class="btn btn-light">BABCOCK</button></a>
+
+<a href="#"><button type="button" class="btn btn-danger">CONVENANT</button></a>
+<a href="#"><button type="button" class="btn btn-warning">REDEEM</button></a>
+<a href="#"><button type="button" class="btn btn-info">UNIABUJA</button></a>
+<a href="#"><button type="button" class="btn btn-light">FUNAAB</button></a>
+<a href="#"><button type="button" class="btn btn-success">ABSU</button></a>
+
+<a href="#"><button type="button" class="btn btn-danger">UNICAL</button></a>
+<a href="#"><button type="button" class="btn btn-warning">UNIPORT</button></a>
+
+<a href="#"><button type="button" class="btn btn-warning">U.I</button></a>
+
+</div>-->
+{% endif %}

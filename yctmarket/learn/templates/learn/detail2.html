@@ -1,0 +1,88 @@
+{% extends 'ent/base.html' %}
+
+
+{% block title %}
+ {{ object.name }}
+{% endblock %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+
+
+{% block content %}
+ <h1>
+ 	{{ module.name }}
+ </h1>
+
+ <div style="width:30%;" class="contents">
+	 <h3>Chapters</h3>
+	 <hr>
+ 	<ul id="modules">
+	 {% for m in object.modules.all %}
+		<li data-id="{{ m.id }}" {% if m == topic %} class="selected"{% endif %}>
+			<a href="{% url 'students:student_department_detail_module' object.id m.id %}">
+				<span>
+					Chapter <span class="order">{{ m.order|add:1}}</span>
+				</span>
+				<br>
+					{{ m.name }}:
+			</a>
+		</li>
+		<hr>
+		{% empty %}
+		<li>No modules yet.</li>
+
+		{% endfor %}
+	 </ul>
+ </div>
+
+  <div style="width:100%;" class="module">
+      <h2>Chapter {{ topic.order|add:1 }}</h2>
+ {% for content in topic.contents.all %}
+ {% with item=content.item %}
+
+
+ <br>
+ <h5>{{ item.name|upper }}</h5>
+
+ {{ item.render }}
+
+ <hr>
+ {% endwith %}
+ {% endfor %}
+ <a href="{% url 'students:assignment_module' id=object_id slug=object_slug topic_id=module_id %}" class="btn btn-success">
+     Take Assesment
+ </a>
+
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+
+ </div>
+{% endblock %}
+
+
+
+
+

@@ -12,22 +12,28 @@
       <div class="wrap-login100 normal">
 
         {% if form %}
-        <form method="post" action="{% url 'user_login' %}" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+        <form method="post" action="{% url 'user_login' %}" class="login100-form p-l-55 p-r-55 p-t-178">
           {% csrf_token %}
 
           <span class="login100-form-title">
-            Sign In
+            Login
           </span>
 
+          <label for="username">Email</label><span style="color: red">*</span>
           <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
-            <input class="input100" type="text" name="username" placeholder="Username or Email" required>
+            <input class="input100" type="email" name="username" placeholder="Email" required>
             <span class="focus-input100"></span>
           </div>
 
+          <label for="password">Password</label><span style="color: red">*</span>
           <div class="wrap-input100 validate-input" data-validate = "Please enter password">
-            <input class="input100" type="password" name="password" placeholder="Password" required>
+            <input class="input100" type="password" id="login_password" name="password" placeholder="Password" required>
             <span class="focus-input100"></span>
           </div>
+          <br>
+                  <span>Show Password</span>
+                  <input type="checkbox" id="box" onclick ="reveal()">
+                  <br>
 
           {% if request.GET.next %}
             <input type="hidden" name="next" value="{{ request.GET.next }}">
@@ -40,13 +46,13 @@
             </span>
 
             <a href="{% url 'password_reset' %}" class="txt2">
-              Username / Password?
+              Password?
             </a>
           </div>
 
           <div class="container-login100-form-btn">
             <button class="login100-form-btn">
-              Sign in
+              Login
             </button>
           </div>
           <br>
@@ -58,7 +64,7 @@
               Don’t have an account?
             </span>
 
-            <a href="{% url 'signup_view' %}" class="txt3">
+            <a href="{% url 'signup_choice' %}" class="txt3">
               Sign up now
             </a>
           </div>
@@ -70,3 +76,28 @@
 </div>
 
 {% endblock %}
+
+
+
+
+{% block java %}
+  <script>
+document.addEventListener('DOMContentLoaded', reveal);
+
+var new_password1 = document.querySelector('#login_password');
+
+function reveal(){
+    if(document.getElementById('box').checked){
+        new_password1.type='text';
+
+    }else{
+        new_password1.type='password';
+
+    }
+}
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}

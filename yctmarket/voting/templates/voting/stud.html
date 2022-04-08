@@ -1,0 +1,67 @@
+
+<div id="modulez">
+    <h4 id="nums"><b>Total Number of Students: </b><span id="numba" style="color:red;">{{ students.count }}</span></h4><hr><br><br>
+{% for student in students %}
+{% for i in about %}
+{% if student.username == i.user.username %}
+<div id="dept">
+<h5>
+    <b>Full Name :</b> {{ student.last_name|lower|capfirst }} {{ student.first_name|lower|capfirst }}
+ </h5>
+
+ {% if i.phone_number %}
+ <h5>
+    <b>Phone Number :</b> {{ i.phone_number }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Phone Number :</b> Not Set
+ </h5>
+ {% endif %}
+
+
+{% if i.matric_number %}
+ <h5>
+    <b>Matric Number :</b> {{ i.matric_number|lower|upper }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Matric Number :</b> Not Set
+ </h5>
+ {% endif %}
+
+ {% if i.department %}
+ <h5>
+  <b>Department :</b> {{ i.department }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Department :</b> Not Set
+ </h5>
+  {% endif %}
+
+{% if i.level %}
+ <h5>
+    <b>Level </b>: {{ i.level }}
+ </h5>
+ {% else %}
+ <h5>
+ <b>Level :</b> Not Set
+ </h5>
+  {% endif %}
+ <br>
+
+
+  <a id="save_ans1" class="btn btn-danger myclass" href="#">Delete Student
+
+  <input id="option1" type="hidden" name="name1" value="{{ course.id }}">
+ <input id="option2" type="hidden" name="name1" value="{{ course.slug }}">
+ <input id="option3" type="hidden" name="name1" value="{{ i.user.username }}"></a>
+ <hr>
+ <br>
+ </div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+ </div>
+

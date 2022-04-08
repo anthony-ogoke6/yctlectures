@@ -1,0 +1,122 @@
+{% extends 'ent/base.html' %}
+
+{% load humanize %}
+
+
+
+{% block title %}All voting systems{% endblock %}
+
+
+
+ {% block style %}
+ {% if departments|length > 0 %}
+  <style>
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+{% else %}
+<style>
+    #fix {
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
+    }
+
+    .set1 {
+        display: grid;
+        grid-gap: 20px;
+        grid-template-columns: auto;
+        grid-template-areas: 'contact';
+    }
+</style>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'ent/nav3.html' %}
+{% endblock %}
+
+
+{% block post %}
+<h2 style="color: #F44336;">{% if name %}{{ name|upper }}{% else %}All Voting Systems{% endif %}</h2>
+    <section id="tasklist" class="boxes center infinite-container">
+
+
+    {% for course in departments %}
+ {% with school=course.school %}
+
+      <div class="box infinite-item">
+
+          {% if course.photo %}
+          <a class="javs-link" href="{% url 'voting:department_detail' slug=course.slug %}">
+            <img class="javs-image" src="{{ course.photo.url }}" alt="Image Not Found" >
+          </a>
+          {% endif %}
+
+
+          <div class="card-body">
+
+
+
+          <h4><a id="amntt" href="{% url 'voting:department_detail' slug=course.slug %}">
+          {{ course.school|upper }}
+            </a>
+            </h4>
+            <h5 id="ppp" >
+            <a id="amntt" href="{% url 'voting:department_detail' slug=course.slug %}">
+              {{ course.name|upper }}
+            </a>
+          </h5>
+
+          </div>
+
+
+
+        </div>
+
+ {% endwith %}
+ {% empty %}
+ <h4 id='ppp'>No voting system with the search term.</h4>
+        {% endfor %}
+        </section>
+
+
+       {% if departments.has_next %}
+        <a id="more" class="infinite-more-link" href="?page={{ departments.next_page_number }}" style="text-align:center;">Loading...</a>
+      {% endif %}
+
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+<script>
+
+
+
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+    $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+    $('.loading').hide();
+    }
+});
+
+
+
+</script>
+{% endblock %}

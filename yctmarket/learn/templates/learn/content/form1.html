@@ -1,0 +1,197 @@
+
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+    .bigg{
+        font-size: 1rem;
+    }
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block title %}
+ {% if object %}
+ Edit content "{{ object.name }}"
+ {% else %}
+ Set Assesment Question
+ {% endif %}
+
+{% endblock %}
+
+
+
+{% block content %}
+ <h1>
+ {% if object %}
+ Edit content "{{ object.name }}"
+ {% else %}
+ Add Assesment
+ {% endif %}
+ </h1>
+
+
+ <div class="module" style="">
+
+ <form class="form-group" action="" method="post" enctype="multipart/form-data">
+
+
+ <!--{{ formset|crispy }}--><br>
+     {{ formset.management_form }}
+      {% csrf_token %}
+
+{% for form in formset %}
+
+<div class="inlineform">
+
+{% if form.question %}
+
+{{ form.id }}
+{{ form.question.label }}
+ {{ form.question }}<br>
+ {% endif %}
+
+
+{% if form.option1 %}
+{{ form.option1.label }}
+ {{ form.option1 }}<br>
+ {% endif %}
+
+
+{% if form.option2 %}
+{{ form.option2.label }}
+ {{ form.option2 }}<br>
+ {% endif %}
+
+
+{% if form.option3 %}
+{{ form.option3.label }}
+ {{ form.option3 }}<br>
+ {% endif %}
+
+
+{% if form.option4 %}
+{{ form.option4.label }}
+ {{ form.option4 }}<br>
+ {% endif %}
+
+
+
+{% if form.show_question %}
+Hide Question
+ {{ form.show_question }}<br>
+ {% endif %}
+
+
+
+
+
+{% if form.answer %}
+<span style="color: #ea4444;"><b>{{ form.answer.label }}</b></span>
+   {{ form.answer }}<br>
+{% endif %}
+
+ {% if formset.can_delete %}
+
+ {% if formset.instance.pk %}
+
+
+                {{ form.DELETE }}<br>
+
+            {% endif %}
+
+            {% endif %}
+
+
+
+
+
+
+
+            </div>
+    {% endfor %}
+
+ <p><br><input class="btn btn-success" type="submit" value="Save Assesment"></p>
+
+ </form>
+ </div>
+
+
+ <br>
+ <br>
+{% endblock %}
+
+
+
+
+{% block java %}
+  <script>
+        var inputs = document.querySelectorAll('.textinput ');
+         var labels = document.querySelectorAll('.ckeditoruploadingwidget');
+
+        for (var index = 0; index < inputs.length; ++index){
+
+            inputs[index].setAttribute('class', 'form-control');
+
+        }
+
+
+
+
+
+        var labels = document.querySelectorAll('.ckeditoruploadingwidget');
+
+        for (var index = 0; index < labels.length; ++index){
+            labels[index].setAttribute('class', 'form-control');
+            labels[index].style.height = "50%";
+        }
+
+
+        $(document).ready(function() {
+            $('.inlineform').formset({
+                prefix: '{{ formset.prefix }}'
+            });
+        })
+
+
+
+
+window.onload = function (){
+        var divv = document.querySelectorAll('.inlineform');
+
+        for (var index = 0; index < divv.length; ++index){
+
+            var boo = divv[index].querySelectorAll('input');
+            var foo = boo[0].getAttribute("value");
+            if (!foo){
+                var too = divv[index].querySelectorAll('.delete-row');
+                console.log('foo')
+                too[0].click()
+                console.log(foo)
+
+            }
+        }
+
+        }
+    </script>
+    {% endblock %}
+
+

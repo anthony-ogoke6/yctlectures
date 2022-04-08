@@ -10,12 +10,177 @@
       {% else %}
         <small id="colorr">You must be logged in to post a comment</small><br>
           <small>
-                                                  <a style="color:red;" href="{% url 'user_login' %}">Login</a> |||||
-                                                  <a style="color:red;" href="{% url 'signup_view' %}">Register</a>
+                                                  <a id="open111" class="username" data-username="{{post.id}}" data-info="{{post.slug}}" style="color:red;">Login</a> |||||
+                                                  <button id="id_open1" style="color:red;">Register</button>
+
+                                                  <a id="edit_showww" style="visibility: hidden;" data-toggle="modal" data-target="#exampleModalScrollable"></a>
                                                 </small>
                                                 <br>
 
+
+
+
+
+
+
+
+<div id="dept">
+                 <br>
+              <br>
+              <br>
+
+                    {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+            {% if profileform.errors %}
+                {% for field in profileform %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in profileform.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span></strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+
+             {% if form %}
+            <form method="post" action="{% url 'students1:pay_for_course_register' id=object.id slug=object.slug %}">
+              {% csrf_token %}
+
+              {% if form.username %}
+              Username<span style="color: red">*</span>
+              {{ form.username }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.username.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.first_name %}
+              First Name<span style="color: red">*</span>
+              {{ form.first_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.first_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.last_name %}
+              Last Name<span style="color: red">*</span>
+              {{ form.last_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.last_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.email %}
+              Email<span style="color: red">*</span>
+              {{ form.email }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.password1 %}
+              Password<span style="color: red">*</span>
+              {{ form.password1 }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password1 }}</div>
+              {% endif %}
+              {% endif %}
+
+
+              {% if form.password2 %}
+              Confirm Password<span style="color: red">*</span>
+              {{ form.password2 }}
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.password2.errors }}</div>
+              {% endif %}
+              <span style="color:green;">{{ form.password2.help_text }}</span>
+              {% endif %}
+
+              <span>Show Password</span>
+              <input type="checkbox" id="box" onclick="reveal()"><br><br>
+
+
+              {% if profileform.department %}
+              Department (Optional)
+              {{ profileform.department }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.level %}
+              Level (Optional)
+              {{ profileform.level }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.level.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.matric_number %}
+              Matric No. (Optional)
+              {{ profileform.matric_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.matric_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.phone_number %}
+              Phone Number (Optional)
+              {{ profileform.phone_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.phone_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+              <br>
+              <br>
+
+
+                <button class="btn btn-success">Vote Now</button>
+              </form>
+              {% endif %}
+
+
+              <br>
+              <br>
+              <br>
+              <br>
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
         <input type="submit" value="Submit" title="you must be logged in to make a comment" class="btn btn-outline-success" disabled>
+
+
       {% endif %}
     </form>
   </div>
@@ -27,7 +192,7 @@
 
 {% for comment in comments %}
   <blockquote class="blockquote">
-    <p class="mb-0"><small style="font-size: 15px; margin: 20px;">{{ comment.content }}</small></p>
+    <p class="mb-0"><small style="font-size: 15px; margin: 20px; color:#000000;">{{ comment.content }}</small></p>
     <footer style="text-align: left; margin-top: 0; background-color: #33333300; font-size: 70%; padding: 10px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ comment.user|capfirst }} -->> Reply ({{ comment.replies.count }})</cite></small>
       <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
     </footer>
@@ -37,7 +202,7 @@
     {% for reply in comment.replies.all %}
 
     <blockquote class="blockquote">
-      <p class="mb-0"><small style="font-size: 15px;  margin: 20px; padding: 20px;">{{ reply.content }}</small></p>
+      <p class="mb-0"><small style="font-size: 15px;  margin: 20px; padding: 20px; color:#000000;">{{ reply.content }}</small></p>
       <footer style="text-align: left; left; margin-top: 0; paddin:0; background-color: #33333300; font-size: 70%; padding: 30px;" class="blockquote-footer comment-footer"><small style="font-size: 100%; font-style: italic;">by <cite title="Source Title">{{ reply.user|capfirst }}</cite></small>
     </footer>
     </blockquote>
@@ -55,4 +220,12 @@
       </form>
     </div>
   </div>
+
+
+
+
+
+
+
+
 {% endfor %}

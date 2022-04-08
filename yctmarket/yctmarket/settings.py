@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'yctmarketinfo@gmail.com'
-EMAIL_HOST_PASSWORD = 'chinonso1990'
+EMAIL_HOST_PASSWORD = 'lzhpbzrtfjdqgsbt'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 
@@ -29,10 +29,10 @@ EMAIL_USE_TLS = True
 SECRET_KEY = '&2=i=#tpkeq4@=y7uydihv-!3t1zri2#y6*(dr*s=51qnuf8sx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
-ALLOWED_HOSTS = ['www.yctmarket.com']
+ALLOWED_HOSTS = ['www.allschoolsng.com', 'www.slimbodyofficial.com', 'www.yctmarket.pythonanywhere.com', 'yctmarket.pythonanywhere.com']
 
 SITE_ID = 1
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ent',
+    'learn',
     'ckeditor',
     'ckeditor_uploader',
     'social_django',
@@ -59,6 +60,13 @@ INSTALLED_APPS = [
     'shops',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'students',
+    'students1',
+    'easy_select2',
+    'voting',
+    'embed_video',
+    'multiselectfield',
+    'cart',
 ]
 
 
@@ -103,10 +111,10 @@ CKEDITOR_CONFIGS = {
          'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
         # 'height': 291,
          'width': '100%',
-        # 'filebrowserWindowHeight': 725,
-        # 'filebrowserWindowWidth': 940,
-        # 'toolbarCanCollapse': True,
-        # 'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
+         'filebrowserWindowHeight': 725,
+         'filebrowserWindowWidth': 940,
+         'toolbarCanCollapse': True,
+         'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
         'tabSpaces': 4,
         'extraPlugins': ','.join([
             'uploadimage', # the upload image feature
@@ -116,7 +124,7 @@ CKEDITOR_CONFIGS = {
             'autoembed',
             'embedsemantic',
             'autogrow',
-            # 'devtools',
+            'devtools',
             'widget',
             'lineutils',
             'clipboard',
@@ -171,6 +179,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'yctmarket.wsgi.application'
 
 
+FILE_UPLOAD_HANDLERS = (
+    "django_excel.ExcelMemoryFileUploadHandler",
+    "django_excel.TemporaryExcelFileUploadHandler")
+
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -185,19 +198,23 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+#AUTH_PASSWORD_VALIDATORS = [
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#    },
+#]
+
+
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
 ]
 
 
@@ -233,7 +250,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_REDIRECT_URL = 'article_list'
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/login/'
 
 
 

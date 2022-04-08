@@ -1,0 +1,513 @@
+{% extends 'ent/base.html' %}
+
+{% load voting_tags %}
+
+{% block style %}
+  <style>
+   #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+
+.big {
+    font-weight: 800;
+        color: #d53531;
+}
+
+.big1 {
+    font-weight: 800;
+}
+body{
+    background: linear-gradient(rgba(255, 255, 255,0.9), rgba(255, 255, 255,0.9)), url({{ course.photo.url }});
+    height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-size: cover;
+}
+
+html{
+    height: 100%;
+
+
+}
+
+.carousel-item {
+    min-height: 30px;
+    height:150px;
+}
+
+.bbig {
+    font-weight:800;
+    font-size: 16px;
+}
+
+
+@media screen and (min-width: 750px) {
+      .bbig {
+            font-weight:800;
+            font-size: 25px;
+        }
+    }
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Voting Session | {{ block.super }}{% endblock %}
+
+
+
+
+
+
+
+
+
+
+{% block jumbotron %}
+    <header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+
+      <div class="carousel-inner" role="listbox">
+        <!-- Slide One - Set the background image for this slide in the line below -->
+        {% if article1.0 %}
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ article1.0.pic.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h2 class="bbig">{{ article1.0.title|upper }}</h2>
+            <a href="{{ article1.0.get_absolute_url }}"><button type="button" class="btn btn-info">Read More</button></a>
+          </div>
+        </div>
+        {% endif %}
+        <!-- Slide Two - Set the background image for this slide in the line below -->
+        {% if article1.1 %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ article1.1.pic.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h2 class="bbig">{{ article1.1.title|upper }}</h2>
+            <a href="{{ article1.1.get_absolute_url }}"><button type="button" class="btn btn-info">Read More</button></a>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if article1.2 %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ article1.2.pic.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h2 class="bbig">{{ article1.2.title|upper }}</h2>
+            <a href="{{ article1.2.get_absolute_url }}"><button type="button" class="btn btn-info">Read More</button></a>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if article1.3 %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ article1.3.pic.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h2 class="bbig">{{ article1.3.title|upper }}</h2>
+            <a href="{{ article1.3.get_absolute_url }}"><button type="button" class="btn btn-info">Read More</button></a>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if article1.4 %}
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ article1.4.pic.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h2 class="bbig">{{ article1.4.title|upper }}</h2>
+            <a href="{{ article1.4.get_absolute_url }}"><button type="button" class="btn btn-info">Read More</button></a>
+          </div>
+        </div>
+        {% endif %}
+        <!-- Slide Three - Set the background image for this slide in the line below -->
+
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+
+
+  </header>
+
+
+
+{% endblock %}
+
+
+
+
+{% block content %}
+<div class="topnav">
+    <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a class="active">Search For Positions</a>
+            </li>
+
+    </ul>
+ <div class="search-container">
+    <form action="{% url 'students1:assignment_module' id=id slug=slug topic_id=topic_id %}">
+      <input type="text" placeholder="Type in search here..."  name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>
+
+
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+<h4 class="big1" style="margin:auto; text-align:center;" >{{ course.name|upper }}</h4>
+<div class="col-lg-8 border border-success p-4 m-4 mx-auto">
+  {% if questions|length  > 0 %}
+  {% for i in questions %}
+
+  <a class="fire_checking" id="{{i.id}}" style="visibility: hidden;" data-id="{{i.id}}" data-username="{{ i.username }}" data-question_id="{{ i.id }}" data-course_id="{{id}}" data-topic_id="{{topic_id}}"></a>
+  {% if ask == questions %}
+  {% if ask == questions %}
+  <h4 style="">You have {{questions.paginator.count}} vote{{ ask|pluralize }} left</h4>
+  <h3 class="big">{{ i.question|upper }}</h3>
+  <br>
+  <br>
+
+  <h5 style="text-align: center;">Voted already</h5>
+
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+
+    {% else %}
+
+    {% if i.question in score_questions %}
+  {% if i.answer in score_answer %}
+  <input id="option17" type="hidden" name="name1" value="{{i.id}}">
+  <input id="option18" type="hidden" name="name1" value="{{ id }}">
+    <input id="option19" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option20" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option21" type="hidden" name="name1" value="{{ questions.number }}">
+
+  <br>
+  <hr>
+    <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+
+    {% else %}
+    <input id="option17" type="hidden" name="name1" value="{{i.id}}">
+  <input id="option18" type="hidden" name="name1" value="{{ id }}">
+    <input id="option19" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option20" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option21" type="hidden" name="name1" value="{{ questions.number }}">
+    <br>
+  <hr>
+    <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+
+
+
+    {% endif %}
+    {% else %}
+    <input id="option17" type="hidden" name="name1" value="{{i.id}}">
+  <input id="option18" type="hidden" name="name1" value="{{ id }}">
+    <input id="option19" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option20" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option21" type="hidden" name="name1" value="{{ questions.number }}">
+    <br>
+  <hr>
+    <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+
+
+
+    {% endif %}
+    {% endif %}
+
+  </div>
+  </div>
+
+  {% else %}
+
+  <h4 style="">You have {{questions.paginator.count}} vote{{ ask|pluralize }} left</h4>
+    <h3 class="big">{{ i.question|upper }}</h3>
+  <form class="form-group" method="POST" enctype="multipart/form-data" action="">
+
+      {% if i.option1 != None %}
+    <div class="radio">
+      <label><input id="option1" type="radio" name="name" value="{{ i.option1 }}">{{i.option1|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option2 != None %}
+    <div class="radio">
+      <label><input id="option2" type="radio" name="name" value="{{ i.option2 }}">{{i.option2|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option3 != None %}
+    <div class="radio">
+      <label><input id="option3" type="radio" name="name" value="{{ i.option3 }}">{{i.option3|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option4 != None %}
+    <div class="radio">
+      <label><input id="option4" type="radio" name="name" value="{{ i.option4 }}">{{i.option4|capfirst}}</label>
+    </div>
+    {% endif %}
+
+
+    {% if i.option5 != None %}
+    <div class="radio">
+      <label><input id="option5" type="radio" name="name" value="{{ i.option5 }}">{{i.option5|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option6 != None %}
+    <div class="radio">
+      <label><input id="option6" type="radio" name="name" value="{{ i.option6 }}">{{i.option6|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option7 != None %}
+    <div class="radio">
+      <label><input id="option7" type="radio" name="name" value="{{ i.option7 }}">{{i.option7|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option8 != None %}
+    <div class="radio">
+      <label><input id="option8" type="radio" name="name" value="{{ i.option8 }}">{{i.option8|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option9 != None %}
+    <div class="radio">
+      <label><input id="option9" type="radio" name="name" value="{{ i.option9 }}">{{i.option9|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option10 != None %}
+    <div class="radio">
+      <label><input id="option10" type="radio" name="name" value="{{ i.option10 }}">{{i.option10|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option11 != None %}
+    <div class="radio">
+      <label><input id="option11" type="radio" name="name" value="{{ i.option11 }}">{{i.option11|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option12 != None %}
+    <div class="radio">
+      <label><input id="option12" type="radio" name="name" value="{{ i.option12 }}">{{i.option12|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option13 != None %}
+    <div class="radio">
+      <label><input id="option13" type="radio" name="name" value="{{ i.option13 }}">{{i.option13|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option14 != None %}
+    <div class="radio">
+      <label><input id="option14" type="radio" name="name" value="{{ i.option14 }}">{{i.option14|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option15 != None %}
+    <div class="radio">
+      <label><input id="option15" type="radio" name="name" value="{{ i.option15 }}">{{i.option15|capfirst}}</label>
+    </div>
+    {% endif %}
+
+
+    {% if i.option16 != None %}
+    <div class="radio">
+      <label><input id="option16" type="radio" name="name" value="{{ i.option16 }}">{{i.option16|capfirst}}</label>
+    </div>
+    {% endif %}
+    <input id="option17" type="hidden" name="name1" value="{{i.id}}">
+  <input id="option18" type="hidden" name="name1" value="{{ id }}">
+    <input id="option19" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option20" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option21" type="hidden" name="name1" value="{{ questions.number }}">
+  </form>
+  <div class="form-group">
+    <button id="save_ans1" class="btn btn-success vote">Vote</button>
+  </div>
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+    {% else %}
+    <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+    {% endif %}
+
+  </div>
+  </div>
+
+  {% endif %}
+
+  {% else %}
+
+  <h4 style="">You have {{questions.paginator.count}} vote{{ ask|pluralize }} left</h4>
+    <h3 class="big">{{ i.question|upper }}</h3>
+  <form class="form-group" method="POST" enctype="multipart/form-data" action="">
+
+    {% if i.option1 != None %}
+    <div class="radio">
+      <label><input id="option1" type="radio" name="name" value="{{ i.option1 }}">{{i.option1|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option2 != None %}
+    <div class="radio">
+      <label><input id="option2" type="radio" name="name" value="{{ i.option2 }}">{{i.option2|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option3 != None %}
+    <div class="radio">
+      <label><input id="option3" type="radio" name="name" value="{{ i.option3 }}">{{i.option3|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option4 != None %}
+    <div class="radio">
+      <label><input id="option4" type="radio" name="name" value="{{ i.option4 }}">{{i.option4|capfirst}}</label>
+    </div>
+    {% endif %}
+
+
+    {% if i.option5 != None %}
+    <div class="radio">
+      <label><input id="option5" type="radio" name="name" value="{{ i.option5 }}">{{i.option5|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option6 != None %}
+    <div class="radio">
+      <label><input id="option6" type="radio" name="name" value="{{ i.option6 }}">{{i.option6|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option7 != None %}
+    <div class="radio">
+      <label><input id="option7" type="radio" name="name" value="{{ i.option7 }}">{{i.option7|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option8 != None %}
+    <div class="radio">
+      <label><input id="option8" type="radio" name="name" value="{{ i.option8 }}">{{i.option8|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option9 != None %}
+    <div class="radio">
+      <label><input id="option9" type="radio" name="name" value="{{ i.option9 }}">{{i.option9|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option10 != None %}
+    <div class="radio">
+      <label><input id="option10" type="radio" name="name" value="{{ i.option10 }}">{{i.option10|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option11 != None %}
+    <div class="radio">
+      <label><input id="option11" type="radio" name="name" value="{{ i.option11 }}">{{i.option11|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option12 != None %}
+    <div class="radio">
+      <label><input id="option12" type="radio" name="name" value="{{ i.option12 }}">{{i.option12|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option13 != None %}
+    <div class="radio">
+      <label><input id="option13" type="radio" name="name" value="{{ i.option13 }}">{{i.option13|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option14 != None %}
+    <div class="radio">
+      <label><input id="option14" type="radio" name="name" value="{{ i.option14 }}">{{i.option14|capfirst}}</label>
+    </div>
+    {% endif %}
+
+    {% if i.option15 != None %}
+    <div class="radio">
+      <label><input id="option15" type="radio" name="name" value="{{ i.option15 }}">{{i.option15|capfirst}}</label>
+    </div>
+    {% endif %}
+
+
+    {% if i.option16 != None %}
+    <div class="radio">
+      <label><input id="option16" type="radio" name="name" value="{{ i.option16 }}">{{i.option16|capfirst}}</label>
+    </div>
+    {% endif %}
+    <input id="option17" type="hidden" name="name1" value="{{i.id}}">
+  <input id="option18" type="hidden" name="name1" value="{{ id }}">
+    <input id="option19" type="hidden" name="name1" value="{{ slug }}">
+    <input id="option20" type="hidden" name="name1" value="{{ topic_id }}">
+    <input id="option21" type="hidden" name="name1" value="{{ questions.number }}">
+  </form>
+  <div class="form-group">
+    <button id="save_ans1" class="btn btn-success vote">Vote</button>
+  </div>
+  <div class="paginator">
+  <div class="form-group">
+    {% if questions.has_next %}
+
+
+    {% else %}
+    <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+    {% endif %}
+
+  </div>
+  </div>
+
+
+  {% endif %}
+  {% endfor %}
+
+
+  {% else %}
+
+  <h2 style="text-align: center;">No position to vote for in this section/year.</h2>
+  <a id="link1" href="{% url 'students1:student_department_detail_module' course.id topic_id %}"><button class="btn form-control btn-primary">Back to section/year</button></a>
+
+
+  {% endif %}
+
+
+
+</div>
+</div>
+</div>
+<br><br><br><br>
+
+{% endblock %}
+
+ {% block java %}
+<script>
+
+ </script>
+ {% endblock %}
+

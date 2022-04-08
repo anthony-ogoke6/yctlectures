@@ -24,16 +24,34 @@
     {% endfor %}
 {% endif %}
 
+
+{% if profile_form_students.errors %}
+    {% for field in profile_form_students %}
+        {% for error in field.errors %}
+            <div>
+                <strong id='err'>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in profile_form_students.non_field_errors %}
+        <div>
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
             <div class="container-login100">
               <div class="wrap-login100 normal">
 
 
               {% if form %}
-                <form method="post" action="{% url 'signup_view' %}" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                <form method="post" action="" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
                   {% csrf_token %}
                   <span class="login100-form-title">
-                    Sign Up
+                    Register As A Student
                   </span>
+
+                  {{ form.username.label }}<span style="color: red">*</span>
 
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.username }}
@@ -45,18 +63,22 @@
                   {% endif %}
 
 
+                  {{ form.first_name.label }}<span style="color: red">*</span>
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.first_name }}
 
                     <span class="focus-input100"></span>
                   </div>
 
+
+                   {{ form.last_name.label }}<span style="color: red">*</span>
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.last_name }}
 
                     <span class="focus-input100"></span>
                   </div>
 
+                   {{ form.email.label }}<span style="color: red">*</span>
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.email }}
 
@@ -66,72 +88,86 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.email.errors }}</div>
                   {% endif %}
 
-                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
-                    {{ form.phoneNumber }}
+
+                  {{ profile_form_students.department.label }}<span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter department">
+                    {{ profile_form_students.department }}
 
                     <span class="focus-input100"></span>
                   </div>
-                  {% if form.errors %}
-                  <div class="wrap-input100 validate-input m-b-16">{{ form.phoneNumber.errors }}</div>
+                  {% if profile_form_students.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form_students.department.errors }}</div>
                   {% endif %}
-                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter Matric Number">
-                      {{ form.matric_number }}
-                      <span class="focus-input100"></span>
-                  </div>
 
-                  {% if form.errors %}
+
+                  {{ profile_form_students.level.label }}<span style="color: red">*</span>
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter department">
+
+                    {{ profile_form_students.level }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if profile_form_students.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form_students.level.errors }}</div>
+                  {% endif %}
+
+
+                {{ profile_form_students.matric_number.label }}<span style="color: red">*</span>
+                <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter matric number">
+            <input class="input100" type="text" name="matric_number" placeholder="Matric Number" id='id_matric_number' required>
+            <span class="focus-input100"></span>
+          </div>
+
+          {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.matric_number.errors }}</div>
                   {% endif %}
 
-                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter your date of birth">
-                      {{ profile_form.dob }}
 
-                      <span class"focus-input100"></span>
-                  </div>
-                  {% if profile_form.errors %}
-                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form.dob.errors }}</div>
+          {{ profile_form_students.phone_number.label }}<span style="color: red">*</span>
+          <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter phone number">
+            <input class="input100" type="number" name="phoneNumber" placeholder="Phone Number" id='id_phoneNumber' required>
+            <span class="focus-input100"></span>
+          </div>
+
+          {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.phone_number.errors }}</div>
                   {% endif %}
 
+
+
+
+
+                   {{ form.password1.label }}<span style="color: red">*</span>
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.password1 }}
 
                     <span class="focus-input100"></span>
                   </div>
 
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password1 }}</div>
+                  {% endif %}
+
+                   {{ form.password2.label }}<span style="color: red">*</span>
                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.password2 }}
                     <span class="focus-input100"></span>
                   </div>
+                  <span style="color:green;">{{ form.password2.help_text }}</span>
                   {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password2 }}</div>
                   {% endif %}
+                  <br>
+                  <br>
 
-                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please upload profile your picture">
-                      {{ profile_form.photo.label }}
-                      {{ profile_form.photo }}
-                      {{ profile_form.photo.help_text }}
-                      <span class= "focus-inout100"></span>
-                  </div>
-                  {% if profile_form.errors %}
-                  <div class="wrap-input100 validate-input m-b-16">{{ profile_form.errors.photo }}</div>
-                  {% endif %}
-
-
-
-
-                  <div class="text-right p-t-13 p-b-23">
-                    <span class="txt1">
-                      Forgot
-                    </span>
-
-                    <a href="#" class="txt2">
-                      Username / Password?
-                    </a>
-                  </div>
+                  <span>Show Password</span>
+                  <input type="checkbox" id="box" onclick ="reveal()">
+                  <br>
+                  <br>
 
                   <div class="container-login100-form-btn">
                     <button id="submitt" class="login100-form-btn">
-                      Sign up
+                      Register
                     </button>
                   </div>
                   <br>
@@ -164,56 +200,66 @@
 
 {% block java %}
   <script>
+  document.addEventListener('DOMContentLoaded', reveal);
         var username = document.querySelector('#id_username');
         var first_name = document.querySelector('#id_first_name');
         var last_name = document.querySelector('#id_last_name');
         var email = document.querySelector('#id_email');
-        var phone = document.querySelector('#id_phoneNumber');
-        var matric = document.querySelector('#id_matric_number');
-        var dob = document.querySelector('#id_dob');
+        var department = document.querySelector('#id_department');
+        var level = document.querySelector('#id_level');
+        //var phone = document.querySelector('#id_phone_number');
+        //var matric = document.querySelector('#id_matric_number');
         var password1 = document.querySelector('#id_password1');
         var password2 = document.querySelector('#id_password2');
-        var phoneNumber = document.querySelector('#id_phoneNumber');
-        var photo = document.querySelector('#id_photo');
+        /*var photo = document.querySelector('#id_photo');*/
         var label = document.createElement('label');
 
-        username.setAttribute('placeholder',"Username");
         username.setAttribute('class', 'input100');
-        first_name.setAttribute('placeholder',"Firstname");
         first_name.setAttribute('class', 'input100');
-        last_name.setAttribute('placeholder',"Lastname");
+        first_name.setAttribute('required', "true");
         last_name.setAttribute('class', 'input100');
-        email.setAttribute('placeholder',"Email");
+        last_name.setAttribute('required', "true");
         email.setAttribute('class', 'input100');
-        phone.setAttribute('placeholder',"Phone Number");
-        phone.setAttribute('class', 'input100');
-        matric.setAttribute('class', 'input100');
-        matric.setAttribute('placeholder', 'Matric Number')
-        dob.setAttribute('type', 'text');
+        email.setAttribute('required', "true");
+        department.setAttribute('class', 'input100');
+        department.setAttribute('required', "true");
+        level.setAttribute('class', 'input100');
+        level.setAttribute('required', "true");
+        //phone.setAttribute('class', 'input100');
+        //phone.setAttribute('required', "true");
+        //matric.setAttribute('class', 'input100');
+        //matric.setAttribute('required', "true");
+        /*dob.setAttribute('type', 'text');
         dob.setAttribute('onfocus', "(this.type='date')");
         dob.setAttribute('onblur', "(this.type='text')");
         dob.setAttribute('placeholder', 'Date of Birth');
         dob.setAttribute('class', 'input100');
-        password1.setAttribute('placeholder',"Password");
+        dob.setAttribute('required', "true");
+        dob.setAttribute('label', "Date of birth");*/
         password1.setAttribute('class', 'input100');
-        password2.setAttribute('placeholder',"Confirm Password");
         password2.setAttribute('class', 'input100');
-        photo.setAttribute('placeholder', 'Profile Picture');
-        photo.setAttribute('class', 'input100');
-        photo.setAttribut('help_text', "Upload profile photo")
-        phoneNumber.setAttribute('type', 'number');
+        //phone.setAttribute('type', 'number');
 
-        username.required = true;
-        first_name.required = true;
-        last_name.required = true;
-        email.required = true;
-        dob.required = true;
-        phone.required = true;
-        password1.required = true;
-        password2.required = true;
-        photo.required = true;
-        phoneNumber.required = true;
-        matric.required = true;
+
+        /*photo.style.height = "10%";*/
+        level.style.height = "10%";
+        department.style.height ="10%";
+
+
+        function reveal(){
+            if(document.getElementById('box').checked){
+                password1.type='text';
+                password2.type='text';
+
+            }else{
+                password1.type='password';
+                password2.type='password';
+
+            }
+        }
+
+
+
 
         var error = document.querySelector('#err');
         error.style.color = red;

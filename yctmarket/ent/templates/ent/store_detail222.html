@@ -1,0 +1,203 @@
+{% extends 'ent/base.html' %}
+
+{% load humanize %}
+
+{% block title %}{{ store.storename|title }} | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content="" href="{{ store.get_absolute_url }}">
+<meta name="twitter:title" content="{{ store.storename|linebreaks }}">
+<meta name="twitter:description" content="{{ store.description|linebreaks }}">
+ <meta name="twitter:image" content="{{ url }}">
+<meta property="og:title" content="{{ store.storename|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ store.description|linebreaks }}" />
+<meta property="og:url" content="" href="{{ store.get_absolute_url }}" />
+<meta property="og:image" content="{{ url }}" />
+
+{% endblock %}
+
+
+{% block lin %}
+<style>
+      #whyy {
+          color: #f2f2f2;
+      }
+    </style>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+{% block jumbotron %}
+    <header>
+        <div class="search-container">
+            <form action="{% url 'store_detail' id=store.id slug=store.slug %}">
+        <input type="text" name="search" placeholder="Search..."  id="searchnews">
+        </form>
+        </div>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+          {% if a %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        {% endif %}
+
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <!-- Slide One - Set the background image for this slide in the line below -->
+        {% if store %}
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ store.logo.url }}'); background-size: cover;">
+          <div id='back' style="display: block!important;" class="carousel-caption d-none d-md-block">
+            <h1 >{{ store.storename|upper }}</h1>
+            <p id='whyyy' style="color: #f2f2f2;">{{ store.description }} </p>
+          </div>
+        </div>
+        {% endif %}
+
+    </div>
+  </header>
+
+
+{% endblock %}
+
+
+{% block post %}
+<h2 style="color: #F44336;">{% if search %}{{ search|upper }}{% else %}Products{% endif %}</h2>
+    <section id="tasklist" class="boxes center infinite-container">
+
+
+
+
+      {% for p in article %}
+        <div class="box infinite-item">
+
+          {% if p.image %}
+          <a class="javs-link" href="{{ p.get_absolute_url }}">
+            <img class="javs-image" src="{{ p.image.url }}" alt="Image Not Found" >
+          </a>
+          {% endif %}
+          <div class="card-body">
+          <h5 id="ppp" ><a id="amntt" href="{{ p.get_absolute_url }}">{{ p.title|upper }}</a></h5>  <h5>{{post.title}}</h5>
+                                    <p class="card-text">
+                                        {{p.description|truncatewords:20}}
+                                    </p>
+                                </div>
+                                {% if p.amount %}
+          <p id="amnt" class="javs-price">#{{ p.amount|intcomma }}</p><br>
+
+          <form style="margin-bottom: 0px;" id="hold" action="" method="post">
+              {% csrf_token %}
+
+            Quantity
+            {{ cart_product_form.quantity }}<br><br>
+
+            {{ cart_product_form.update }}
+
+
+            <input id="option1" type="hidden" name="name1" value="{{ p.id  }}">
+            <input id="option2" type="hidden" name="name1" value="{{ p.slug }}">
+            <input id="option4" type="hidden" name="name1" value="{{ p.amount }}">
+            <input id='option3' class="cd-add-to-cart js-cd-add-to-cart" type="button" value="Add to cart">
+            </form>
+          {% endif %}
+
+          <p class="javs-id" style="display:none;">{{ p.id }}</p>
+
+
+
+            <!--<input id="option3" class="cd-add-to-cart js-cd-add-to-cart" type="button" name="name1" value="Add to cart">-->
+
+
+
+
+
+
+         <!-- <p class="tags">
+           Tags:
+           {% for tag in p.tags.all %}
+           <a href="{% url 'ent:post_list_by_tag' tag.slug %}">
+           {{ tag.name }}
+           </a>
+           {% if not forloop.last %}, {% endif %}
+           {% endfor %}
+          </p>-->
+
+        </div>
+        {% empty %}
+        <h4 id="ppp">
+            No product with the search term.
+        </h4>
+        {% endfor %}
+        </section>
+
+
+        {% if article.has_next %}
+        <a id="more" class="infinite-more-link" href="?page={{ article.next_page_number }}" style="text-align:center;">Loading...</a>
+      {% endif %}
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block java %}
+<script>
+
+
+
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+    $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+    $('.loading').hide();
+    }
+});
+
+
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 9000);
+}
+
+</script>
+{% endblock %}
+
+

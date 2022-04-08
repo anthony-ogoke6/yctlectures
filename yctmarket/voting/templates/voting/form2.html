@@ -1,0 +1,183 @@
+
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+  </style>
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}{% if object %}Edit Course "{{ object.title }}"
+
+ {% else %}
+ Create a new department
+ {% endif %} | {{ block.super }}
+
+ {% endblock %}
+
+
+
+
+
+
+{% block con %}
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div>
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div>
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
+
+
+
+
+<div id="set1"  style="display:unset">
+     <div class="limiter">
+            <div class="container-login100">
+              <div class="wrap-login100 normal">
+
+
+{% if form %}
+
+  <form method="post" enctype="multipart/form-data" action="" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+    {% csrf_token %}
+    {% if object %} Edit Course "{{ object.title }}"
+    {% else %}
+    <span class="login100-form-title">
+      Create A New Course
+    </span>
+
+    {% endif %}
+
+
+
+  {% if form.school %}
+  {{ form.school.label }}*
+
+
+  <div class="wrap-input100 validate-input m-b-16" data-validate="Please select school">
+    {{ form.school }}
+
+    <span class="focus-input100"></span>
+  </div>
+  {% endif %}
+  {% if form.errors %}
+  <div class="wrap-input100 validate-input m-b-16">{{ form.school.errors }}</div>
+  {% endif %}
+
+
+  {% if form.name %}
+  {{ form.name.label }}*
+
+
+  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+    {{ form.name }}
+
+    <span class="focus-input100"></span>
+  </div>
+  {% endif %}
+  {% if form.errors %}
+  <div class="wrap-input100 validate-input m-b-16">{{ form.name.errors }}</div>
+  {% endif %}
+
+  {% if form.slug %}
+  {{ form.slug.label }}*
+
+
+  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+    {{ form.slug }}
+
+    <span class="focus-input100"></span>
+  </div>
+  {% endif %}
+  {% if form.errors %}
+  <div class="wrap-input100 validate-input m-b-16">{{ form.slug.errors }}</div>
+  {% endif %}
+
+
+  {{ form.overview.label }}*
+
+
+  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+    {{ form.overview }}
+
+    <span class="focus-input100"></span>
+  </div>
+  {% if form.errors %}
+  <div class="wrap-input100 validate-input m-b-16">{{ form.overview.errors }}</div>
+  {% endif %}
+
+<br>
+
+  <div class="container-login100-form-btn">
+    <button id="submitt" class="login100-form-btn">
+      Save
+    </button>
+  </div>
+
+  {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+  {% endif %}
+
+  <br>
+  <br>
+  <br>
+</form>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+
+<br><br>
+<br><br>
+
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+        var school = document.querySelector('#id_school');
+        var name1 = document.querySelector('#id_name');
+        var slug = document.querySelector('#id_slug');
+        var overview1 = document.querySelector('#id_overview');
+
+        school.setAttribute('class', 'input100');
+        name1.setAttribute('class', 'input100');
+        slug.setAttribute('class', 'input100');
+        overview1.setAttribute('class', 'input100');
+
+        overview1.style.height = "50%";
+
+        var error = document.querySelector('li');
+        error.style.color = red;
+
+    </script>
+    {% endblock %}

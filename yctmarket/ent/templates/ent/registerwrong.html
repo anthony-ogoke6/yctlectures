@@ -1,0 +1,176 @@
+{% extends 'ent/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block container %}
+
+
+<div id="set1" style="display:unset">
+
+     <div class="limiter">
+
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div>
+                <strong id='err'>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div>
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+            <div class="container-login100">
+              <div class="wrap-login100 normal">
+
+
+              {% if form %}
+                <form method="post" action="" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                  {% csrf_token %}
+                  <span class="login100-form-title">
+                    Sign Up
+                  </span>
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.as_p }}
+                    {{ profile_form_students.as_p }}
+
+
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter matric number">
+            <input class="input100" type="text" name="matric_number" placeholder="Matric Number" id='id_matric_number' required>
+            <span class="focus-input100"></span>
+          </div>
+
+
+          <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter phone number">
+            <input class="input100" type="number" name="phoneNumber" placeholder="Phone Number" id='id_phoneNumber' required>
+            <span class="focus-input100"></span>
+          </div>
+
+                    <!--
+
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please upload profile your picture">
+                      {{ profile_form.photo.label }}
+                      {{ profile_form.photo }}
+                      {{ profile_form.photo.help_text }}
+                      <span class= "focus-inout100"></span>
+                  </div> -->
+
+
+                  <div class="container-login100-form-btn">
+                    <button id="submitt" class="login100-form-btn">
+                      Sign up
+                    </button>
+                  </div>
+                  <br>
+
+                  {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    <br>
+                  {% endif %}
+
+                  <div class="flex-col-c p-t-170 p-b-40">
+                    <span class="txt1 p-b-9">
+                      Already have an account?
+                    </span>
+
+                    <a href="{% url 'user_login' %}" class="txt3">
+                      Login
+                    </a>
+                  </div>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+        </div> <!-- /container -->
+{% endblock %}
+
+
+{% block java %}
+  <script>
+
+        var inputs = document.querySelectorAll('input');
+        var username = document.querySelector('#id_username');
+        var first_name = document.querySelector('#id_first_name');
+        var last_name = document.querySelector('#id_last_name');
+        var email = document.querySelector('#id_email');
+        var department = document.querySelector('#id_department');
+        var level = document.querySelector('#id_level');
+        var phone = document.querySelector('#id_phoneNumber');
+        var matric = document.querySelector('#id_matric_number');
+        //var dob = document.querySelector('#id_dob');
+        var password1 = document.querySelector('#id_password1');
+        var password2 = document.querySelector('#id_password2');
+        /*var photo = document.querySelector('#id_photo');*/
+        var label = document.createElement('label');
+
+        username.setAttribute('placeholder',"Username");
+        username.setAttribute('class', 'input100');
+        first_name.setAttribute('placeholder',"Firstname");
+        first_name.setAttribute('class', 'input100');
+        first_name.setAttribute('required', "true");
+        last_name.setAttribute('placeholder',"Lastname");
+        last_name.setAttribute('class', 'input100');
+        last_name.setAttribute('required', "true");
+        email.setAttribute('placeholder',"Email");
+        email.setAttribute('class', 'input100');
+        email.setAttribute('required', "true");
+        department.setAttribute('placeholder',"Department");
+        department.setAttribute('class', 'input100');
+        department.setAttribute('required', "true");
+        level.setAttribute('placeholder',"Level");
+        level.setAttribute('class', 'input100');
+        level.setAttribute('required', "true");
+        phone.setAttribute('placeholder',"Phone Number");
+        phone.setAttribute('class', 'input100');
+        matric.setAttribute('class', 'input100');
+        matric.setAttribute('placeholder', 'Matric Number')
+        /*dob.setAttribute('type', 'text');
+        dob.setAttribute('onfocus', "(this.type='date')");
+        dob.setAttribute('onblur', "(this.type='text')");
+        dob.setAttribute('placeholder', 'Date of Birth');
+        dob.setAttribute('class', 'input100');
+        dob.setAttribute('required', "true");
+        dob.setAttribute('label', "Date of birth");*/
+        password1.setAttribute('placeholder',"Password");
+        password1.setAttribute('class', 'input100');
+        password2.setAttribute('placeholder',"Confirm Password");
+        password2.setAttribute('class', 'input100');
+        phone.setAttribute('type', 'number');
+
+
+        /*photo.style.height = "10%";*/
+        level.style.height = "10%";
+        department.style.height ="10%";
+
+
+
+
+
+        for (var index = 0; index < inputs.length; ++index){
+
+            inputs[1].setAttribute('class', 'input100');
+            inputs[2].setAttribute('class', 'input100');
+            inputs[4].setAttribute('class', 'input100');
+
+            inputs[index].required = true;
+            //image2.required = false;
+            //image3.required = false;
+
+
+
+        }
+
+        var error = document.querySelector('#err');
+        error.style.color = red;
+
+    </script>
+    {% endblock %}

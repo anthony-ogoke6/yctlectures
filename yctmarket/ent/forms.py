@@ -5,10 +5,12 @@ from django.core.validators import RegexValidator
 	#class Meta:
 		#model = models.Article
 		#fields = ['title', 'body', 'slug', 'thumb']
-from .models import Article, Post, InfiniteScroll, Comment, Profile
+from .models import Article, Post, InfiniteScroll, Comment, Profile, PhoneNumber
 from shops.models import Product
 from shops.models import Stores, Shops
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 
 class RequiredFieldsMixin():
@@ -23,6 +25,20 @@ class RequiredFieldsMixin():
             for key in self.fields:
                 if key not in fields_required:
                     self.fields[key].required = False
+
+
+
+
+
+
+class DonationCreateForm(forms.Form):
+    firstname = forms.CharField(label="", widget= forms.TextInput(attrs = {'placeholder':'Firstname'}))
+    lastname = forms.CharField(label="", widget= forms.TextInput(attrs = {'placeholder':'Firstname'}))
+    email = forms.CharField(label="", widget=forms.EmailInput(attrs = {'placeholder':'Email'}))
+    amount = forms.CharField(label="", widget=forms.NumberInput(attrs = {'placeholder':'Amount'}))
+    phone_number = forms.CharField(label="", widget=forms.NumberInput(attrs = {'placeholder':'Phone Number'}))
+
+
 
 
 
@@ -71,6 +87,8 @@ class EmailFormForPayment(forms.ModelForm):
         'view_count',
         'status',
         'amount',
+        'stock',
+        'link',
         )
 
 
@@ -109,6 +127,8 @@ class EmailFormForMeetUp(forms.ModelForm):
         'view_count',
         'status',
         'amount',
+        'stock',
+        'link',
         )
 
 
@@ -190,6 +210,8 @@ class UploadProductForFree(forms.ModelForm):
         fields = (
             'category',
             'title',
+            'song',
+            'singer',
             'description',
             'amount',
             'image',
@@ -233,6 +255,42 @@ class UserRegistrationForm(forms.ModelForm):
         return email
 
 
+
+
+
+
+
+
+
+class TutorRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(widget = forms.PasswordInput())
+    password2 = forms.CharField(widget = forms.PasswordInput())
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            )
+
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data.get('password1')
+        confirm_password = self.cleaned_data.get('password2')
+        if password != confirm_password:
+            raise forms.ValidationError("Password Mismatch")
+        return confirm_password
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Password Mismatch")
+        return email
+
+
+
+
 class UserEditForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
@@ -248,14 +306,75 @@ class UserEditForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('user', 'dob', 'photo',)
+        fields = ('dob',)
+
+
+class ProfileForm1(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('prefix',)
+
+class ProfileFormTutors(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = ('prefix', 'phone_number', 'photo',)
+
+class ProfileFormStudents(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = ('phone_number', 'matric_number', 'department', 'level', 'photo',)
+
+    def clean_matric_number(self):
+        matric_number = self.cleaned_data.get('matric_number')
+        print(matric_number)
+        try:
+            confirm = PhoneNumber.objects.filter(matric_number=matric_number)
+            print('matric_number')
+            print(confirm)
+        except:
+            confirm = None
+            print(matric_number)
+        if confirm != None:
+            if len(confirm) > 0:
+                self.add_error("matric_number", "Matric Number Already Exist")
+        return matric_number
+
+class ProfileFormStudents1(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = ('phone_number', 'matric_number', 'department', 'level',)
+
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ('user',)
+
+
 class ReRequestActivationForm(forms.Form):
     email = forms.EmailField(required=True)
+
+
+
+class ProfileEditForm1(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        exclude = ('user',)
+
+
+class ProfileEditFormStudents(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = ('phone_number', 'matric_number', 'department', 'level',)
+
+
+
+class ProfileEditFormTutors(forms.ModelForm):
+    class Meta:
+        model = PhoneNumber
+        fields = ('phone_number', 'prefix',)
+
+
 
 
 

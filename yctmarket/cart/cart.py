@@ -44,18 +44,18 @@ class Cart(object):
         for post in posts:
             self.cart[str(post.id)]['post'] = post
             for item in self.cart.values():
-                item['price'] = Decimal(item['price'])
-                item['total_price'] = item['price'] * item['quantity']
+                item['price'] = int(item['price'])
+                item['total_price'] = item['price'] * int(item['quantity'])
                 yield item
 
 
 
     def __len__(self):
-        return sum(item['quantity'] for item in self.cart.values())
+        return sum(int(item['quantity']) for item in self.cart.values())
 
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        return sum(int(item['price']) * int(item['quantity']) for item in self.cart.values())
 
 
     def clear(self):

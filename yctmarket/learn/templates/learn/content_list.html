@@ -1,0 +1,162 @@
+{% extends 'ent/base.html' %}
+
+{% load course %}
+
+{% block title %}
+ Course {{ topic.order|add:1 }}: {{ topic.name }}
+{% endblock %}
+
+
+{% block content %}
+{% with course=topic.course %}
+ <h1>{{ course.name|upper }}</h1>
+ <div class="contents">
+ <h3>Chapters</h3>
+ <ul id="modules">
+ 	<hr>
+ {% for m in course.modules.all %}
+ <li data-id="{{ m.id }}" {% if m == topic %} class="selected"{% endif %}>
+ <a href="{% url 'learn:topic_content_list' m.id %}">
+ <span>
+ Chapter <span class="order">{{ m.order|add:1 }}</span>
+ </span>
+ <br>
+ {{ m.name }}
+ </a>
+ <br>
+ <hr>
+ </li>
+ {% empty %}
+ <li>No courses yet.</li>
+ {% endfor %}
+ </ul>
+ <p><a style='color:red' href="{% url 'learn:department_course_update' course.id %}"><b>Edit chapters<b></a></p>
+ </div>
+
+ <br>
+ <div class="module">
+ <h2>Chapter {{ topic.order|add:1 }}: {{ topic.name|capfirst }}</h2>
+ 	<br>
+ <h3>Content:</h3>
+ <hr>
+ <div id="module-contents">
+ {% for content in topic.contents.all %}
+ <div data-id="{{ content.id }}">
+ {% with item=content.item %}
+ <h5>{{ item|capfirst }} ({{ item|model_name|capfirst }})</h5><br>
+ <p>
+    <a class="btn btn-success"  href="{% url 'learn:topic_content_update' topic.id item|model_name item.id %}">Edit</a>
+    </p>
+    <br>
+ <form action="{% url 'learn:topic_content_delete' content.id %}" method="post">
+ <input class="btn btn-success" type="submit" value="Delete">
+
+ {% csrf_token %}
+ </form>
+ {% endwith %}
+ </div>
+ <br>
+ <hr>
+ {% empty %}
+ <p>This chapter has no contents yet.</p>
+ {% endfor %}
+
+ </div>
+ <hr>
+ <h3>Add new content to chapter:</h3>
+ <ul class="content-types">
+ <li>
+ 	<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='text' %}">Text</a>
+ </li>
+ <li>
+ 	<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='image'%}">Image</a>
+ </li>
+ <li>
+ 	<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='video'%}">Video</a>
+ </li>
+ <li>
+ 	<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='file'%}">File</a>
+ </li>
+ <br>
+ <br>
+ <br>
+ <hr>
+ <h3>Assesment Questions:</h3>
+ <br>
+  {% for i in assignment %}
+{% if i.question %}
+  <p><b>Question: <h5> {{i.question|capfirst}}?</h5></b></p>
+  <br>
+{% endif %}
+  {% endfor %}
+  <br>
+
+ <li>
+ 	<a class="btn btn-success" href="{% url 'learn:add_assignment' topic_id=topic.id slug=course.slug course_id=course.id %}">Add Assignment</a>
+
+ 	</li>
+ 	<br>
+ 	{% if assignment.0.question %}
+ 	<li>
+ 	<a class="btn btn-success" href="{% url 'learn:edit_assignment' topic_id=topic.id slug=course.slug course_id=course.id %}">Edit Assignment</a>
+
+ </li>
+ {% endif %}
+ </ul>
+ </div>
+ <br>
+ <br>
+ <br>
+
+{% endwith %}
+{% endblock %}
+
+
+
+
+{% block domready %}
+console.log("helooooooo1111111")
+$('#modules').sortable({
+	stop: function(event, ui) {
+		modules_order = {};
+		module_children = $('#modules').children()
+		$('#modules').children().each(function(){
+			// update the order field
+			$(this).find('.order').text($(this).index() + 1);
+			// associate the module's id with its order
+			modules_order[$(this).data('id')] = $(this).index();
+			console.log("Below is mudules_order:")
+			console.log(modules_order)
+ 	});
+ 	$.ajax({
+ 		type: 'POST',
+		url: '{% url "topic_order" %}',
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		data: JSON.stringify(modules_order),
+ 	});
+ }
+});
+
+$('#module-contents').sortable({
+	stop: function(event, ui) {
+		contents_order = {};
+		content_children = $('#module-contents').children()
+		$('#module-contents').children().each(function(){
+	 		// associate the module's id with its order
+	 		contents_order[$(this).data('id')] = $(this).index();
+	 		console.log("Below is content_order:")
+			console.log(contents_order)
+ 	});
+ 	$.ajax({
+ 		type: 'POST',
+ 		url: '{% url "learn:content_order" %}',
+ 		contentType: 'application/json; charset=utf-8',
+ 		dataType: 'json',
+ 		data: JSON.stringify(contents_order),
+ 	});
+ }
+});
+
+
+{% endblock %}

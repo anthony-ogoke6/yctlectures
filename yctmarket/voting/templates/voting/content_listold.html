@@ -1,0 +1,114 @@
+{% extends 'ent/base.html' %}
+
+{% load learn_tags %}
+
+{% block title %}
+ Course {{ topic.order|add:1 }}: {{ topic.name }}
+{% endblock %}
+
+
+{% block content %}
+  {% with course=module.course %}
+    <h1>{{ course.name|upper }}</h1>
+		<div class="contents">
+		 	<h3>Chapters</h3>
+      <ul id="modules">
+        {% for m in course.modules.all %}
+          <li data-id="{{ m.id }}" {% if m == module %}
+           class="selected"{% endif %}>
+            <a href="{% url 'learn:topic_content_list' m.id %}">
+				<span>
+					Chapter <span class="order">{{ m.order|add:1 }}</span>
+				</span>
+				<br>
+				{{ m.name }}
+			</a>
+			<br>
+			<hr>
+          </li>
+        {% empty %}
+          <li>No modules yet.</li>
+        {% endfor %}
+      </ul>
+      <p><a style='color:red' href="{% url 'learn:department_course_update' course.id %}"><b>Edit chapters<b></a></p>
+    </div>
+    <div class="module">
+      <h2>Module {{ module.order|add:1 }}: {{ module.title }}</h2>
+      <h3>Module contents:</h3>
+
+      <div id="module-contents">
+        {% for content in module.contents.all %}
+          <div data-id="{{ content.id }}">
+            {% with item=content.item %}
+              <h5>{{ item|capfirst }} ({{ item|model_name|capfirst }})</h5><br>
+              <p>
+			    <a class="btn btn-success"  href="{% url 'learn:topic_content_update' topic.id item|model_name item.id %}">Edit</a>
+			</p>
+              <form action="{% url 'learn:topic_content_delete' content.id %}" method="post">
+				<input class="btn btn-success" type="submit" value="Delete">
+
+					{% csrf_token %}
+			</form>
+            {% endwith %}
+          </div>
+        {% empty %}
+          <p>This module has no contents yet.</p>
+        {% endfor %}
+      </div>
+      <h3>Add new content:</h3>
+      <ul class="content-types">
+        <li>
+		<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='text' %}">Text</a>
+		</li>
+		<li>
+		<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='image'%}">Image</a>
+		</li>
+		<li>
+		<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='video'%}">Video</a>
+		</li>
+		<li>
+		<a href="{% url 'learn:topic_content_create' topic_id=topic.id model_name='file'%}">File</a>
+		</li>
+      </ul>
+    </div>
+  {% endwith %}
+{% endblock %}
+
+{% block domready %}
+  $('#modules').sortable({
+      stop: function(event, ui) {
+          modules_order = {};
+          $('#modules').children().each(function(){
+              // update the order field
+              $(this).find('.order').text($(this).index() + 1);
+              // associate the module's id with its order
+              modules_order[$(this).data('id')] = $(this).index();
+          });
+          $.ajax({
+              type: 'POST',
+              url: '{% url "module_order" %}',
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              data: JSON.stringify(modules_order)
+          });
+      }
+  });
+
+  $('#module-contents').sortable({
+      stop: function(event, ui) {
+          contents_order = {};
+          $('#module-contents').children().each(function(){
+              // associate the module's id with its order
+              contents_order[$(this).data('id')] = $(this).index();
+          });
+
+          $.ajax({
+              type: 'POST',
+              url: '{% url "content_order" %}',
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              data: JSON.stringify(contents_order),
+          });
+      }
+  });
+{% endblock %}

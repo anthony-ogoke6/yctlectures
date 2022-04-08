@@ -1,0 +1,24 @@
+<div class="topnav">
+    <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a class="active" href="{% url 'voting:department_list' %}">Search voting system</a>
+            </li>
+        {% for c in categories %}
+            <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+                <a class="active" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+ <div class="search-container">
+    <form action="{% url 'voting:department_list' %}">
+      <input type="text" placeholder="Type in search here..."  name="q">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>
+
+<div style="padding-left:16px">
+  <h2 style="color: #F44336;">YCTMarket Voting System</h2>
+  <p>Navigate through to view the all voting system on allschoolsng</p>
+</div>

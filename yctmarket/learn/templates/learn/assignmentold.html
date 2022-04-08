@@ -1,0 +1,81 @@
+{% extends 'ent/base.html' %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Assesment | {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+
+<div id="addQuestion">
+<div class="col-sm-8 form-group-lg">
+
+{% if questions %}
+<div class="col-lg-8 border border-success p-4 m-4 mx-auto">
+	{% for i in questions %}
+	<h4 style="">Question {{questions.number}} of {{questions.paginator.count}}</h4>
+	<h1>Question - {{ i.question }}</h1>
+	<form class="form-group" method="POST" enctype="multipart/form-data" action="">
+		<div class="radio">
+			<label><input id="option1" type="radio" name="name" value="{{ i.option1 }}">{{i.option1}}</label>
+		</div>
+		<div class="radio">
+			<label><input id="option2" type="radio" name="name" value="{{ i.option2 }}">{{i.option2}}</label>
+		</div>
+		<div class="radio">
+			<label><input id="option3" type="radio" name="name" value="{{ i.option3 }}">{{i.option3}}</label>
+		</div>
+		<div class="radio">
+			<label><input id="option4" type="radio" name="name" value="{{ i.option4 }}">{{i.option4}}</label>
+		</div>
+		<input id="option5" type="hidden" name="name1" value="{{ id }}">
+		<input id="option6" type="hidden" name="name1" value="{{ slug }}">
+		<input id="option7" type="hidden" name="name1" value="{{ topic_id }}">
+		<input id="option8" type="hidden" name="name1" value="{{ questions.number }}">
+	</form>
+	{% endfor %}
+	<div class="form-group">
+		<button id="save_ans" class="btn btn-success">Submit Answer</button>
+	</div>
+	<div class="paginator">
+	<div class="form-group">
+		{% if questions.has_next %}
+
+		<a href="?page={{ questions.next_page_number }}"><button class="btn form-control btn-primary" id=submitAnswer>Next</button></a>
+		{% else %}
+		<a id="link1" href="#"><button class="btn form-control btn-primary" id=submitAssesment>Submit Assesment</button></a>
+		{% endif %}
+
+	</div>
+	</div>
+</div>
+{% else %}
+<h3>No assesment questions for this chapter.</h3><br>
+<a id="link1" href="{% url 'students:student_department_detail' course.pk %}"><button class="btn form-control btn-primary" id=submitAssesment>Back to course</button></a>
+{% endif %}
+</div>
+</div>
+
+{% endblock %}

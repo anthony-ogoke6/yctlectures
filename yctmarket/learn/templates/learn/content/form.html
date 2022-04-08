@@ -1,0 +1,83 @@
+
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block title %}
+ {% if object %}
+ Edit content "{{ object.name }}"
+ {% else %}
+ Add a new content
+ {% endif %}
+
+{% endblock %}
+
+
+
+{% block content %}
+ <h1>
+ {% if object %}
+ Edit: "{{ object.name|upper }}"
+ {% else %}
+ Add a new content
+ {% endif %}
+ </h1>
+
+
+ <div class="w3-display-container w3-container" style="width:70%">
+ <h2>Content info</h2>
+ <form action="" method="POST" enctype="multipart/form-data">
+ {{ form|crispy }}
+ {% csrf_token %}
+ <p><br><input class="btn btn-success" type="submit" value="Save content"></p>
+ </form>
+ </div>
+
+
+ <br>
+ <br>
+{% endblock %}
+
+{% block java %}
+  <script>
+
+        var inputs = document.querySelectorAll('input');
+
+        for (var index = 0; index < inputs.length; ++index){
+            if (inputs[index].getAttribute('class') == 'btn btn-success'){
+            inputs[index].setAttribute('class', 'btn btn-success');
+            }else{
+                inputs[index].setAttribute('class', 'form-control');
+            }
+        }
+    </script>
+    {% endblock %}

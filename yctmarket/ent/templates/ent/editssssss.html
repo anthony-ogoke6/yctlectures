@@ -1,0 +1,323 @@
+{% extends 'ent/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load auth_extras %}
+
+{% load ent_tags %}
+
+
+
+{% load staticfiles %}
+
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+}
+
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+{% block title %}Profile | {{ block.super }}{% endblock %}
+
+
+{% block content %}
+<div id="addQuestion">
+  <div class="col-sm-8 form-group-lg">
+      <!--<p class="w3-right">
+      <i class="fa fa-shopping-cart w3-margin-right"></i>
+      <i class="fa fa-search"></i>
+    </p>-->
+      <h1>Profile</h1>
+
+      <!-- <body class="w3-content" style="max-width:1200px">-->
+
+<!-- Sidebar/menu
+<nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
+  <div class="w3-container w3-display-container w3-padding-16">
+    <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+    <h3 class="w3-wide"><b>LOGO</b></h3>
+  </div>
+  <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
+    <a href="#" class="w3-bar-item w3-button">Shirts</a>
+    <a href="#" class="w3-bar-item w3-button">Dresses</a>
+    <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn">
+      Jeans <i class="fa fa-caret-down"></i>
+    </a>
+    <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+      <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a>
+      <a href="#" class="w3-bar-item w3-button">Relaxed</a>
+      <a href="#" class="w3-bar-item w3-button">Bootcut</a>
+      <a href="#" class="w3-bar-item w3-button">Straight</a>
+    </div>
+    <a href="#" class="w3-bar-item w3-button">Jackets</a>
+    <a href="#" class="w3-bar-item w3-button">Gymwear</a>
+    <a href="#" class="w3-bar-item w3-button">Blazers</a>
+    <a href="#" class="w3-bar-item w3-button">Shoes</a>
+  </div>
+  <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a>
+  <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a>
+</nav>-->
+
+
+
+<!-- Overlay effect when opening sidebar on small screens
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT!
+<div class="w3-main" style="">
+
+  <!-- Push down content on small screens
+  <div class="w3-hide-large" style="margin-top:83px"></div>-->
+
+
+  {% if request.user.is_authenticated %}
+  {% if request.user|has_group:'Instructors' %}
+  <a href="{% url 'learn:manage_department_list' %}"><button class="btn btn-success">Uploaded Courses</button></a>
+
+  {% courses_students_is_in request.user as students %}
+  {% if students %}
+  <a href="{% url 'students:student_department_list' %}"><button class="btn btn-success">Enrolled Courses</button></a>
+
+  {% endif %}
+
+  {% else %}
+  {% courses_students_is_in request.user as students %}
+  {% if students %}
+  <a href="{% url 'students:student_department_list' %}"><button class="btn btn-success">Enrolled Courses</button></a>
+  {% endif %}
+
+  {% endif %}
+{% endif %}
+
+ <hr>
+
+
+  {% if request.user in shop_owners_list %}
+  <br>
+
+  <a href="{{ shop_owned_by_user.get_absolute_url }}"><button class="btn btn-success">Open Store</button></a>
+
+  {% else %}
+  <br>
+
+
+   <a href="{% url 'plan' %}"><button class="btn btn-success">Create Store</button></a>
+
+  {% endif %}
+
+
+    <br>
+    <br>
+    <br>
+    <p class="w3-left">Profile Pic</p> <a src="" >
+
+
+
+  <!-- Image header-->
+  <div class="w3-display-container w3-container">
+
+      {% if profile %}
+    <img src="{{ profile.photo.url }}" alt="" style="width:300px">
+    {% endif %}
+    <div class="" style="padding:24px 48px">
+      <h1 class="w3-jumbo w3-hide-small">{{ request.user.username }}</h1>
+    </div>
+  </div>
+  <br>
+
+
+<form class="form-group" method="post" enctype="multipart/form-data" action="">
+  {% csrf_token %}
+
+  {% if user_form.username %}
+  {{ user_form.username.label }}<br>
+  {{ user_form.username }}<br><br>
+  {% endif %}
+
+  {% if user_form.first_name %}
+  {{ user_form.first_name.label }}<br>
+  {{ user_form.first_name }}<br><br>
+  {% endif %}
+
+  {% if user_form.last_name %}
+  {{ user_form.last_name.label }}<br>
+  {{ user_form.last_name }}<br><br>
+  {% endif %}
+
+  {% if user_form.email %}
+  {{ user_form.email.label }}<br>
+  {{ user_form.email }}<br><br>
+  {% endif %}
+
+  {% if profile_form.dob %}
+  {{ profile_form.dob.label }}<br>
+  {{ profile_form.dob }}<br><br>
+  {% endif %}
+
+ {% if profile_form.photo %}
+  {{ profile_form.photo.label }}<br>
+  {{ profile_form.photo }}<br><br>
+  {% endif %}
+
+
+  <button class="btn btn-success">Save</button>
+  </form>
+
+
+
+
+
+<br>
+<br>
+<hr>
+
+  <h3>Products posted by you...</h3>
+
+
+  <div class="w3-container w3-text-grey" id="jeans">
+
+    <h3>{% total_posts request.user %} item(s).</h3>
+  </div>
+  <hr>
+
+  {% show_posts_per_user request.user %}
+
+
+
+
+  </div>
+
+</div>
+</div>
+
+<br><br><br><br><br><br>
+
+
+<script>
+// Accordion
+function myAccFunc() {
+  var x = document.getElementById("demoAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+// Click on the "Jeans" link on page load to open the accordion for demo purposes
+document.getElementById("myBtn").click();
+
+
+// Open and close sidebar
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("myOverlay").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("myOverlay").style.display = "none";
+}
+</script>
+
+</div>
+
+
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+var username = document.querySelector('#id_username');
+var first_name = document.querySelector('#id_first_name');
+var last_name = document.querySelector('#id_last_name');
+var email = document.querySelector('#id_email');
+var dob = document.querySelector('#id_dob');
+var photo = document.querySelector('#id_photo');
+
+username.setAttribute('class', 'form-control');
+username.setAttribute('placeholder', 'Username');
+first_name.setAttribute('class', 'form-control');
+first_name.setAttribute('placeholder', 'First Name');
+last_name.setAttribute('class', 'form-control');
+last_name.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+dob.setAttribute('class', 'form-control');
+dob.setAttribute('placeholder', 'DOB');
+photo.setAttribute('class', 'form-control');
+photo.setAttribute('placeholder', 'Photo');
+
+username.required = true;
+first_name.required = true;
+last_name.required = true;
+email.required = true;
+dob.required = true;
+photo.required = true;
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

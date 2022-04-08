@@ -1,0 +1,109 @@
+{% extends 'ent/base.html' %}
+
+{% load voting_tags %}
+
+{% block style %}
+  <style>
+   #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+
+.big {
+    font-weight: 800;
+        color: #d53531;
+}
+
+.big1 {
+    font-weight: 800;
+}
+body{
+    background: linear-gradient(rgba(255, 255, 255,0.9), rgba(255, 255, 255,0.9)), url({{ course.photo.url }});
+    height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html{
+    height: 100%;
+
+
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Voting Session | {{ block.super }}{% endblock %}
+
+
+{% block jumbotron %}
+<div class="topnav">
+    <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a class="active">Search For  Candidates Or Positions</a>
+            </li>
+
+    </ul>
+ <div class="search-container">
+    <form action="{% url 'students1:assignment_module' id=id slug=slug topic_id=topic_id %}">
+      <input type="text" placeholder="Type in search here..."  name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+{% block content %}
+
+<div class="row">
+  {% for i in questions %}
+  <div class="col-md-6 post-col">
+    <div class="card flex-md-row mb-4 shadow-sm h-md-250">
+
+
+        {% if i.question in score_questions %}
+        <img class="card-img-left flex-auto d-none d-lg-block" data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]" style="width: 200px; height: 250px;" src="{{ course.photo.url }}" data-holder-rendered="true">
+        {% endif %}
+        <div class="card-body d-flex flex-column align-items-start">
+          <strong class="d-inline-block mb-2 text-primary">World</strong>
+          <h3 class="mb-0">
+            <a class="text-dark" href="">{{ i.question|upper }}</a>
+          </h3>
+          <div class="mb-1 text-muted">Nov 12</div>
+          <p class="card-text mb-auto">{{ i.option1 }}</p>
+          <a href="">Continue reading</a>
+        </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+ {% block java %}
+<script>
+
+ </script>
+ {% endblock %}
+

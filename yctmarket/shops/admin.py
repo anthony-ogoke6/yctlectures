@@ -3,8 +3,6 @@ from .models import Product, Shops, Stores
 # Register your models here.
 
 
-Product
-
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']

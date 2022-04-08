@@ -1,0 +1,145 @@
+{% extends 'ent/base.html' %}
+
+
+{% load humanize %}
+
+
+
+{% block title %}FACE OF THE WEEK | {{ block.super }}{% endblock %}
+
+{% block tweet %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tonybrainsblog">
+<meta name="twitter:creator" content="@tonybrainsblog">
+<meta name="twitter:url" content="" href="{{ post.get_absolute_url }}">
+<meta name="twitter:title" content="{{ post.title|linebreaks }}">
+<meta name="twitter:description" content="{{ post.description|linebreaks }}">
+ <meta name="twitter:image" content="{{ url }}">
+<meta property="og:title" content="{{ post.title|linebreaks }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ post.description|linebreaks }}" />
+<meta property="og:url" content='' href="{{ post.get_absolute_url }}" />
+<meta property="og:image" content="{{ url }}" />
+
+<meta name="description" content="{{ post.snippet|safe }}">
+<meta name="keywords" content="{{ post.snippet|safe }}">
+
+{% endblock %}
+
+
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+<section id="" class="">
+  <div class="row">
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-4 w3-content">
+
+    {% if post.image %}
+
+
+    <img class="main-image mySlides" src="{{ post.image.url }}" style="width:100%"/>
+
+
+    {% endif %}
+  </div> <!-- col-md-4 -->
+  <br><br>
+  <div class="col-md-8">
+    <h2 id="increase">{{ post.title|upper }}</h2>
+    <p>{{ post.created }}</p>
+    <p>Views: {{ post.view_count}}</p>
+    <br>
+    <hr/>
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% if post.body %}
+      <div class="panel panel-default">
+        <div id="collapseOne" class="" role="tabpanel" aria-labelledby="headingOne">
+          <div style="margin-left: 20px;color: #df1057;" class="panel-body">
+            {{ post.body|safe|linebreaks }} </div>
+        </div>
+      </div>
+      {% endif %}
+
+          </div>
+        </div> <!-- col-md-8 -->
+      </div> <!-- row -->
+      </div> <!-- col-md-8 -->
+      <div class="col-md-4">
+
+
+      </div> <!-- col-md-4 -->
+        </div> <!-- row -->
+      </section>
+
+
+    <br/><br/><br/>
+
+{% endblock %}
+
+
+
+{% block java %}
+  <script>
+
+  function currentDiv(n) {
+  showDivs(slideIndex = n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-opacity-off";
+}
+
+
+
+var firstname = document.querySelector('#id_firstname');
+var lastname = document.querySelector('#id_lastname');
+var email = document.querySelector('#id_email');
+var address = document.querySelector('#id_address');
+var phoneNumber = document.querySelector('#id_phoneNumber');
+
+
+firstname.setAttribute('class', 'form-control');
+firstname.setAttribute('placeholder', 'First Name');
+lastname.setAttribute('class', 'form-control');
+lastname.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+address.setAttribute('class', 'form-control');
+address.setAttribute('placeholder', 'Address');
+phoneNumber.setAttribute('class', 'form-control');
+phoneNumber.setAttribute('placeholder', 'Phone Number');
+phoneNumber.setAttribute('type', 'number');
+
+firstname.required = true;
+lastname.required = true;
+email.required = true;
+address.required = true;
+phoneNumber.required = true;
+
+var error = document.querySelector('li');
+error.style.color = red;
+
+    </script>
+    {% endblock %}

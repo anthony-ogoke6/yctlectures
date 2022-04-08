@@ -1,0 +1,34 @@
+{% extends 'ent/base.html' %}
+
+{% block style %}
+  <style>
+  #fix {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %}Assesment | {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+	<h1>{{total}}</h1>
+
+
+{% endblock %}

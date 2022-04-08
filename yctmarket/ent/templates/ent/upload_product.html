@@ -62,6 +62,35 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.title.errors }}</div>
                   {% endif %}
 
+                  <p id="toggle" style="cursor:pointer;"><span style="color:#007bff;">Click here if you want to upload music</span></p>
+
+
+                  <div id="dept" style="display:none;">
+
+                  {{ form.song.label }}
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.song }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.song.errors }}</div>
+                  {% endif %}
+
+                  {{ form.singer.label }}
+
+                  <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                    {{ form.singer }}
+
+                    <span class="focus-input100"></span>
+                  </div>
+                  {% if form.errors %}
+                  <div class="wrap-input100 validate-input m-b-16">{{ form.singer.errors }}</div>
+                  {% endif %}
+
+                  </div>
+
                     {{ form.description.label }}*
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.description }}
@@ -76,7 +105,7 @@
 
 
 
-                   {{ form.amount.label }}*
+                   {{ form.amount.label }}
                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                     {{ form.amount }}
 
@@ -87,7 +116,7 @@
                   {% endif %}
 
                    {{ form.image.label }}*
-                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please select image">
                     {{ form.image }}
 
                     <span class="focus-input100"></span>
@@ -96,8 +125,13 @@
                   <div class="wrap-input100 validate-input m-b-16">{{ form.image.errors }}</div>
                   {% endif %}
 
-                  {{ form.image2.label }}*
-                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                  <p id="toggle1" style="cursor:pointer;"><span style="color:#007bff;">Click here to add 2 more images</span></p>
+
+
+                  <div id="dept1" style="display:none;">
+
+                  {{ form.image2.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please select image">
                     {{ form.image2 }}
 
                     <span class="focus-input100"></span>
@@ -107,8 +141,8 @@
                   {% endif %}
 
 
-                  {{ form.image3.label }}*
-                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                  {{ form.image3.label }}
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please select image">
                     {{ form.image3 }}
 
                     <span class="focus-input100"></span>
@@ -116,10 +150,11 @@
                   {% if form.errors %}
                   <div class="wrap-input100 validate-input m-b-16">{{ form.image3.errors }}</div>
                   {% endif %}
+                  </div>
 
 
                     {{ form.status.label }}*
-                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                   <div class="wrap-input100 validate-input m-b-16" data-validate="Please select status">
                     {{ form.status }}
 
                     <span class="focus-input100"></span>
@@ -159,18 +194,15 @@
 
 {% block java %}
   <script>
-
-        var inputs = document.querySelectorAll('input');
-        var image2 = document.querySelector('id_image2');
-        var image3 = document.querySelector('id_image3');
-        var text_area = document.querySelector('#id_description');
+     var text_area = document.querySelector('#id_description');
         var category = document.querySelector('#id_category');
+        var singer = document.querySelector('#id_singer');
+        var song = document.querySelector('#id_song');
         var amount = document.querySelector('#id_amount');
         var image = document.querySelector('#id_image');
         var image2 = document.querySelector('#id_image2');
         var image3 = document.querySelector('#id_image3');
         var status1 = document.querySelector('#id_status');
-        var label = document.createElement('label');
 
         text_area.setAttribute('class', 'input100');
         amount.setAttribute('class', 'input100');
@@ -180,33 +212,35 @@
         image3.setAttribute('class', 'input100');
         status1.setAttribute('class', 'input100');
         category.setAttribute('class', 'input100');
+        song.setAttribute('class', 'input100');
+        singer.setAttribute('class', 'input100');
         text_area.style.height = "50%";
         image.style.height = "10%";
+        image.required = true;
         image2.style.height = "10%";
         image3.style.height = "10%";
+        song.style.height = "10%";
         category.style.height = "10%";
         status1.style.height = "10%";
 
         text_area.required = true;
-        amount.required = true;
 
 
-        for (var index = 0; index < inputs.length; ++index){
-
-            inputs[1].setAttribute('class', 'input100');
-            inputs[2].setAttribute('class', 'input100');
-            inputs[4].setAttribute('class', 'input100');
-
-            inputs[index].required = true;
-            //image2.required = false;
-            //image3.required = false;
+        $(document).ready(function(){
+            var n = $("#toggle");
+            n.click(function(){
+                $("#dept").toggle(200);
+            });
+        });
 
 
+        $(document).ready(function(){
+            var n = $("#toggle1");
+            n.click(function(){
+                $("#dept1").toggle(200);
+            });
+        });
 
-        }
-
-        var error = document.querySelector('li');
-        error.style.color = red;
 
     </script>
     {% endblock %}

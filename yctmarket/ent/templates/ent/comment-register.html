@@ -1,0 +1,154 @@
+
+              {% if form.username %}
+              Username<span style="color: red">*</span>
+              {{ form.username }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.username.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.first_name %}
+              First Name<span style="color: red">*</span>
+              {{ form.first_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.first_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.last_name %}
+              Last Name<span style="color: red">*</span>
+              {{ form.last_name }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.last_name.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.email %}
+              Email<span style="color: red">*</span>
+              {{ form.email }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if form.password1 %}
+              Password<span style="color: red">*</span>
+              {{ form.password1 }}<br>
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.errors.password1 }}</div>
+              {% endif %}
+              {% endif %}
+
+
+              {% if form.password2 %}
+              Confirm Password<span style="color: red">*</span>
+              {{ form.password2 }}
+              {% if form.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ form.password2.errors }}</div>
+              {% endif %}
+              <span style="color:green;">{{ form.password2.help_text }}</span>
+              {% endif %}
+
+              <span>Show Password</span>
+              <input type="checkbox" id="box" onclick="reveal()"><br><br>
+
+
+              {% if profileform.department %}
+              Department (Optional)
+              {{ profileform.department }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.email.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.level %}
+              Level (Optional)
+              {{ profileform.level }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.level.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.matric_number %}
+              Matric No. (Optional)
+              {{ profileform.matric_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.matric_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+
+              {% if profileform.phone_number %}
+              Phone Number (Optional)
+              {{ profileform.phone_number }}<br>
+              {% if profileform.errors %}
+              <div class="wrap-input100 validate-input m-b-16">{{ profileform.phone_number.errors }}</div>
+              {% endif %}
+              {% endif %}
+              <br>
+              <br>
+
+              <script>
+                  var username = document.querySelector('#id_username');
+var firstname = document.querySelector('#id_first_name');
+var lastname = document.querySelector('#id_last_name');
+var email = document.querySelector('#id_email');
+var password1 = document.querySelector('#id_password1');
+var password2 = document.querySelector('#id_password2');
+var login_password = document.querySelector('#login_password');
+
+
+var phone_number = document.querySelector('#id_phone_number');
+var matric_number = document.querySelector('#id_matric_number');
+var department = document.querySelector('#id_department');
+var level = document.querySelector('#id_level');
+
+
+username.setAttribute('class', 'form-control');
+username.setAttribute('placeholder', 'Username');
+
+
+firstname.setAttribute('class', 'form-control');
+firstname.setAttribute('placeholder', 'First Name');
+lastname.setAttribute('class', 'form-control');
+lastname.setAttribute('placeholder', 'Last Name');
+email.setAttribute('class', 'form-control');
+email.setAttribute('placeholder', 'Email');
+
+
+phone_number.setAttribute('class', 'form-control');
+phone_number.setAttribute('placeholder', 'Phone Number');
+
+
+matric_number.setAttribute('class', 'form-control');
+matric_number.setAttribute('placeholder', 'Matric Number');
+department.setAttribute('class', 'form-control');
+department.setAttribute('placeholder', 'Department');
+level.setAttribute('class', 'form-control');
+level.setAttribute('placeholder', 'Level');
+
+
+
+password1.setAttribute('class', 'form-control');
+password1.setAttribute('placeholder', 'Password');
+
+password2.setAttribute('class', 'form-control');
+password2.setAttribute('placeholder', 'Confirm password');
+firstname.required = true;
+lastname.required = true;
+email.required = true;
+password1.required = true;
+password2.required = true;
+
+function reveal(){
+    if(document.getElementById('box').checked){
+        password1.type='text';
+        password2.type='text';
+
+    }else{
+        password1.type='password';
+        password2.type='password';
+
+    }
+}
+
+              </script>

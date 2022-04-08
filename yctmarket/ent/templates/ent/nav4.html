@@ -1,0 +1,15 @@
+<div class="topnav">
+    <ul>
+            <li {% if not category %}class="selected"{% endif %}>
+                <a class="active">Search</a>
+            </li>
+
+    </ul>
+
+ <div class="search-container">
+    <form action="{% url 'voting:department_list' %}">
+      <input type="text" placeholder="Type in search here..."  name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>

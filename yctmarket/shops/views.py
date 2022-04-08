@@ -40,8 +40,17 @@ import hashlib
 import json
 
 import logging
+
+from cart.forms import CartAddProductForm
 # Create your views here.
 
+
+
+
+def product_detail(request, id, slug):
+    product = get_object_or_404(Product, id=id, slug=slug, available=True)
+    cart_product_form = CartAddProductForm()
+    return render(request, 'shop/product/detail.html', {'product': product, 'cart_product_form': cart_product_form})
 
 
 
@@ -82,49 +91,51 @@ def shop_detail(request, id, slug):
     amount = post.amount
     print(amount)
     postTitle = post.title
+
+
     if request.method == 'POST':
-        print("it got here")
-        form = EmailFormForPayment(request.POST or None)
+        print("it got here1")
+        form = EmailFormForPayment(request.POST)
+        print(form)
+        print("form")
 
-        #if form.is_valid():
-        firstname = request.POST['firstname']
-        print(firstname)
-        lastname = request.POST['lastname']
-        print(lastname)
-        email = request.POST['email']
-        print(email)
-        quantity = request.POST['quantity']
-        print(quantity)
-        amount = int(str(post.amount) + "00") * int(quantity)
-        address = request.POST['address']
-        print(address)
-        phoneNumber = request.POST['phoneNumber']
-        print("it got here too")
-        print(phoneNumber)
-        subject = 'Customer about to pay at yctmarket'
-        message = '%s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber)
-        emailFrom = [settings.EMAIL_HOST_USER]
-        emailTo = [settings.EMAIL_HOST_USER]
-        send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
-
-        r = PurchaseReference(firstname=firstname, lastname=lastname, email=email)
-        reference = str(r.reference)
-        r.save()
-
-        headers = {
+        if form.is_valid():
+            print("it got here2")
+            firstname = request.POST['firstname']
+            print(firstname)
+            lastname = request.POST['lastname']
+            print(lastname)
+            email = request.POST['email']
+            print(email)
+            quantity = request.POST['quantity']
+            print(quantity)
+            amount = int(str(post.amount) + "00") * int(quantity)
+            address = request.POST['address']
+            print(address)
+            phoneNumber = request.POST['phoneNumber']
+            print("it got here too")
+            print(phoneNumber)
+            subject = 'Customer about to pay at yctmarket'
+            message = '%s %s %s %s %s ' %(firstname, lastname, email, address, phoneNumber)
+            emailFrom = [settings.EMAIL_HOST_USER]
+            emailTo = [settings.EMAIL_HOST_USER]
+            send_mail(subject, message, emailFrom, emailTo, fail_silently=True )
+            r = PurchaseReference(firstname=firstname, lastname=lastname, email=email)
+            reference = str(r.reference)
+            r.save()
+            headers = {
                 'Authorization': 'Bearer sk_live_ffb5db8bf8d3abe7f343a743ae58ac5911c68d11',
-                'Content-Type': 'application/json',
+               'Content-Type': 'application/json',
             }
 
+            data = {"reference": reference, "amount": amount, "email": email}
+            url = "https://api.paystack.co/transaction/initialize"
+            response = requests.request("POST", url, headers=headers, json=data)
+            res = response.json()
 
-        data = {"reference": reference, "amount": amount, "email": email}
-        url = "https://api.paystack.co/transaction/initialize"
-        response = requests.request("POST", url, headers=headers, json=data)
-        res = response.json()
-
-        checkout = res['data']['authorization_url']
-        return redirect(checkout)
-        #return redirect('thanks')
+            checkout = res['data']['authorization_url']
+            return redirect(checkout)
+            #return redirect('thanks')
 
     else:
         form = EmailFormForPayment()
@@ -137,7 +148,7 @@ def shop_detail(request, id, slug):
         #'similar_posts': similar_posts
     }
 
-    return render(request, 'ent/shop_detail.html', context)
+    return render(request, 'shops/shop_detail.html', context)
 
 
 

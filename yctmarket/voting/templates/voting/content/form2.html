@@ -1,0 +1,118 @@
+
+{% extends 'ent/base.html' %}
+
+
+
+{% load crispy_forms_tags %}
+
+
+{% block style %}
+  <style>
+    .bigg{
+        font-size: 1rem;
+    }
+  .set1 {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto;
+    grid-template-areas:
+      'contact';
+}
+  </style>
+
+
+{% endblock %}
+{% block lin %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+
+
+{% block title %}
+ {% if object %}
+ Edit content "{{ object.name }}"
+ {% else %}
+ Set Assesment Question
+ {% endif %}
+
+{% endblock %}
+
+
+
+{% block content %}
+ <h1>
+ {% if object %}
+ Edit content "{{ object.name }}"
+ {% else %}
+ Add Assesment
+ {% endif %}
+ </h1>
+
+
+ <div class="module" style="width:70%">
+
+ <form class="form-group" action="" method="post" enctype="multipart/form-data">
+ {{ formset|crispy }}<br>
+     {{ formset.management_form }}
+ {% csrf_token %}
+
+ <p><br><input class="btn btn-success" type="submit" value="Save Assesment"></p>
+ </form>
+ </div>
+
+
+ <br>
+ <br>
+{% endblock %}
+
+
+
+
+{% block java %}
+  <script>
+
+        var inputs = document.querySelectorAll('input');
+        var labels = document.querySelectorAll('.checkbox');
+        var labels1 = document.querySelectorAll('.control-label');
+
+
+
+
+
+
+        for (var index = 0; index < labels1.length; ++index){
+
+
+
+            labels1[index].setAttribute('class', 'bigg');
+        }
+
+        /*for (var index = 0; index < inputs.length; ++index){
+
+
+
+            inputs[index].setAttribute('class', 'form-control');
+        }*/
+
+        for (var index = 0; index < labels.length; ++index){
+            var linebreak = document.createElement("hr");
+
+
+            var checkbox = labels[index]
+            function insertAfter(referenceNode, newNode){
+                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            }
+            insertAfter(checkbox, linebreak);
+        }
+
+        for (var index = 0; index < inputs.length; ++index){
+            if (inputs[index].getAttribute('class') == 'checkboxinput' ){
+                inputs[index].setAttribute('class', 'checkboxinput');
+            }else if (inputs[index].getAttribute('class') == 'btn btn-success'){
+                inputs[index].setAttribute('class', 'btn btn-success');
+            }else{
+                inputs[index].setAttribute('class', 'form-control');
+            }
+        }
+    </script>
+    {% endblock %}

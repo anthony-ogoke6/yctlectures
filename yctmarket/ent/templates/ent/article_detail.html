@@ -18,8 +18,14 @@
 <meta property="og:title" content="{{ post.title|linebreaks }}" />
 <meta property="og:type" content="article" />
 <meta property="og:description" content="{{ post.description|linebreaks }}" />
-<meta property="og:url" content='' href="{{ post.get_absolute_url }}" />
+<meta property="og:url" content="" href="{{ post.get_absolute_url }}" />
 <meta property="og:image" content="{{ url }}" />
+<meta property="og:image:secure_url" content="{{ post.get_absolute_url }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content='default'>
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="628" />
+<meta property="fb:app_id" content="2847533872174572" />
 
 <meta name="description" content="{{ post.snippet|safe }}">
 <meta name="keywords" content="{{ post.snippet|safe }}">
@@ -36,6 +42,49 @@
 
 
 {% block content %}
+
+<!-- Large modal -->
+
+<div class="modal fade bd-example-modal-lg" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title steady" id="exampleModalLongTitle">Edit Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>
+                            <strong id='err'><span style="color: red">{{ error|escape }}</span</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>
+                        <strong><span style="color: red">{{ error|escape }}</span></strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        <form id="a_form3" role="form" method="POST" enctype="multipart/form-data" action="{% url 'ent:post_edit' id=post.id slug=post.slug %}">
+            {% csrf_token %}
+            <div id="post-edit">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer container-login100-form-btn">
+        <button id="upload_form3" type="submit" class="btn btn-primary login100-form-btn" form="a_form3">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <section id="" class="">
   <div class="row">
@@ -64,12 +113,32 @@
   <br><br>
   <div class="col-md-8">
     <h2 id="increase">{{ post.title|upper }}</h2>
-    <p class="tags">Tags: {{ post.tags.all|join:", " }} {% if request.user == post.author %}|||||
-    <a class="btn btn-success" href="{% url 'ent:post_delete' id=post.id slug=post.slug %}">Delete Post</a></p>
+    {% if request.user == post.author %}
+    <div class="price">{{ post.created|naturaltime }}</div>
+    <p>
+    <a class="btn btn-success" href="{% url 'ent:post_delete' id=post.id slug=post.slug %}">Delete Post</a> |||||
+
+
+ <a id="open111" class="btn btn-success username111" data-username="{{post.id}}" data-info="{{post.slug}}" style="color:#ffff;">Edit Post</a>
+
+ <a id="edit_post" style="visibility: hidden;" data-toggle="modal" data-target="#exampleModalScrollable"></a>
+ </p>
     {% endif %}
     <br>
-    <div class="price">Price: {{ amount|intcomma }} NGN</div>
+    <div class="price" style="color:#c40606">Price: {{ amount|intcomma }} NGN</div>
     <hr/>
+
+
+
+
+
+    <!--<form action="" method="post">
+      {{ cart_product_form }}
+      {% csrf_token %}
+      <input id="option1" type="hidden" name="name1" value="{{ post.id  }}">
+    <input id="option2" type="hidden" name="name1" value="{{ post.slug }}">
+      <input id='add_cart' type="submit" class="cd-add-to-cart js-cd-add-to-cart" value="Add to cart">
+    </form>-->
 
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -131,6 +200,8 @@
         </div> <!-- col-md-8 -->
       </div> <!-- row -->
       </div> <!-- col-md-8 -->
+
+      <hr/>
       <div class="col-md-4">
 
 
@@ -150,6 +221,14 @@
   {% else %}
   <br/><br/><br/>
   <form action="{% url 'ent:article_detail' id=post.id slug=post.slug %}" method="post">
+      <span class="login100-form-title">
+                    Fill Form Below
+                  </span>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
   {% csrf_token %}
 
   {% if form.firstname %}
@@ -238,8 +317,77 @@ email.required = true;
 address.required = true;
 phoneNumber.required = true;
 
-var error = document.querySelector('li');
-error.style.color = red;
 
+
+$(document).ready(function(){
+
+
+  console.log("check here345 again")
+
+
+var post_id;
+var post_slug;
+var r_url;
+$('.username111').click(function(e){
+    console.log("check here")
+    e.preventDefault();
+    post_id = $(this).attr("data-username");
+    post_slug = $(this).attr("data-info");
+    r_url = `https://www.yctmarket.com/${post_id}/${post_slug}/post_edit/`;
+    saveans();
+});
+
+
+
+
+    function saveans(){
+        $.ajax({
+            type: 'POST',
+            url: r_url,
+            headers: {'X-CSRFToken': csrftoken},
+            data : {
+              "post_id": post_id,
+              "post_slug": post_slug
+            },
+            dataType: 'json',
+            beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                $("#overlay").fadeIn(300);　
+            },
+            success: function(data){
+                $('#post-edit').html(data.form);
+            },
+            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                 $("#overlay").fadeOut(300);
+                 $("#edit_post").click();
+            }
+        });
+        return false;
+    }
+
+
+
+    function getCookie(name){
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+
+
+
+
+});
     </script>
     {% endblock %}

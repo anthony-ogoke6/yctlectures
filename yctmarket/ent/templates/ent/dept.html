@@ -1,0 +1,24 @@
+
+<div id="dept">
+    <div id="dept2">
+      {% for i in dept %}
+      <p>● {{i}}  | <a class="myclass" data-value="{{ i }}" href="#"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+
+  <br>
+  <hr>
+
+  <p id="toggle1">level(s) taking course</p>
+
+  <br>
+  <div id="dept1">
+      {% for i in level %}
+      <p>● {{i}}  | <a class="myclass" data-value="{{ i }}" href="#"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+
+</div>
+
+
+

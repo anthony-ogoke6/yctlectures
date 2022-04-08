@@ -1,0 +1,85 @@
+
+<div id="dept">
+    <div id="dept2">
+      {% for i in dept %}
+      <p>● {{i}}  | <a class="myclass1" onclick="editing(this.getAttribute('data-value'))" data-value="{{ i }}"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+
+  <br>
+  <hr>
+
+  <p id="toggle1">level(s) that can vote</p>
+
+  <br>
+  <div id="dept1">
+      {% for i in level %}
+      <p>● {{i}}  | <a class="myclass1" onclick="editing(this.getAttribute('data-value'))" data-value="{{ i }}"><span style="color:red;">Delete</span></a></p>
+      {% endfor %}
+  </div>
+
+
+
+  <script type="text/javascript">
+
+function editing(username) {
+
+    function getCookie(name){
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function roll(username){
+      var name1 = $("input[id=option8]").val()
+      var k = $('#id_school').children('option:selected').text();
+      saveans3(username, name1, k);
+    }
+
+    roll(username);
+
+
+    function saveans3(g, course, school){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'voting:departmental_access_delete' %}",
+            headers: {'X-CSRFToken': csrftoken},
+            data : {
+                'ans': g,
+                'course': course,
+                'school': school
+            },
+            beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                $("#overlay").fadeIn(300);　
+            },
+            dataType: 'json',
+            success: function(data){
+                $('#dept').html(data.form);
+            },
+            complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                 $("#overlay").fadeOut(300);
+            }
+        });
+        return false;
+    }
+
+
+
+}
+
+</script>
+
+</div>
+
+
+
